@@ -7,4 +7,27 @@ Author: msfz751
 Maintainer: Who to complain to <yourfault@somewhere.net>
 Description: More about what it does (maybe more than one line)
 License: What license is it under?
-Imports: logging
+Imports: logging,
+  pacman,
+  bayesplot,
+  brms,
+  tidybayes,
+  rcartocolor,
+  hrbrthemes,
+  ghibli,
+  wesanderson,
+  broom,
+  parallel,
+  viridis,
+  tidyverse,
+  gridExtra,
+  ggrepel,
+  GGally,
+  grid,
+  ggthemes,
+  ggbeeswarm,
+  MCMCglmm,
+  dutchmasters,
+  fiftystater,
+  rethinking
+RoxygenNote: 6.1.1
