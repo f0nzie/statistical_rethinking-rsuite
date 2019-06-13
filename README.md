@@ -16,6 +16,16 @@ So, what I did is creating an isolated environment for the book, one where all t
 
 Because `rsuite` allows a supervising project on top of other projects or packages, you can control the date of the snapshot; the R version under you want the book to be built; the names of all the packages that satisfy the dependencies for the book to work; place the source code of the package if the package is not in CRAN; along with a master project and a master package that takes care of reproducing the whole book, again and again, even after changing the operating system.
 
+## How to reproduce this ebook yourself
+1. Download and install the RSuite client. AVailable for Linux, Mac and Windows.
+2. Install the `rsuite` package with `rsuite install`
+3. Clone or download this repository.
+4. Change to this repo folder and install the dependencies on its own isolated reproducible environment. Use `rsuite proj depsinst`
+5. Build the project with `rsuite proj build`
+6. Go to the folder `/work/book` and open the project `Statistical Rethinking with brms, ggplot2, and the tidyverse.Rproj`.
+7. Click on the RStudio `Build book`
+8. Enjoy
+
 
 ## References
 
