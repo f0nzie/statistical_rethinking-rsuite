@@ -1,0 +1,15 @@
+*
+!.gitignore
+!.Rprofile
+!Statistical Rethinking with brms, ggplot2, and the tidyverse.Rproj
+!*.Rmd
+!README.md
+!*.yml
+!Pictures/*
+!06_sims/*
+!fit0.rds
+!fit1.rda
+!fit2.rds
+!LICENSE
+!underscore.sty
+!spank.xlsx
