@@ -14,4 +14,4 @@
 !underscore.sty
 !spank.xlsx
 _main.Rmd
-!public/*
+!public/**
