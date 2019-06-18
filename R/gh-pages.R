@@ -22,7 +22,7 @@ args <- args_parser()
 # git subtree push --prefix work/book/public https://github.com/f0nzie/statistical_rethinking-rsuite.git gh-pages
 
 git_cmd <- "git subtree push --prefix "
-output_folder <- "work/book/public"
+output_folder <- "work/book/_book"
 repository <- "https://github.com/f0nzie/statistical_rethinking-rsuite.git"
 gh_pages <- "gh-pages"
 
