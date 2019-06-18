@@ -5,6 +5,7 @@
 !*.Rmd
 !README.md
 !*.yml
+!recoding_Statistical_Rethinking_1.0.1_PDF_version.pdf
 !Pictures/*
 !06_sims/*
 !fit0.rds
@@ -14,4 +15,5 @@
 !underscore.sty
 !spank.xlsx
 _main.Rmd
+!LaTeX/*
 !public/**
