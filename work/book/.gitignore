@@ -6,7 +6,7 @@
 !README.md
 !*.yml
 !recoding_Statistical_Rethinking_1.0.1_PDF_version.pdf
-!Pictures/*
+!pictures/*
 !06_sims/*
 !fit0.rds
 !fit1.rda
