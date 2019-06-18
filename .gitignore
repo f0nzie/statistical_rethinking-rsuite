@@ -4,3 +4,5 @@
 .Rbuildignore
 .Ruserdata
 config.txt
+
+work/book/_main\.Rmd
