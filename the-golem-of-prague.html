@@ -4,11 +4,11 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>References | Statistical Rethinking with brms, ggplot2, and the tidyverse</title>
+  <title>Chapter 2 The Golem of Prague | Statistical Rethinking with brms, ggplot2, and the tidyverse</title>
   <meta name="description" content="This project is an attempt to re-express the code in McElreath’s textbook. His models are re-fit in brms, plots are redone with ggplot2, and the general data wrangling code predominantly follows the tidyverse style." />
   <meta name="generator" content="bookdown 0.11 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="References | Statistical Rethinking with brms, ggplot2, and the tidyverse" />
+  <meta property="og:title" content="Chapter 2 The Golem of Prague | Statistical Rethinking with brms, ggplot2, and the tidyverse" />
   <meta property="og:type" content="book" />
   
   
@@ -16,7 +16,7 @@
   <meta name="github-repo" content="ASKURZ/Statistical_Rethinking_with_brms_ggplot2_and_the_tidyverse" />
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="References | Statistical Rethinking with brms, ggplot2, and the tidyverse" />
+  <meta name="twitter:title" content="Chapter 2 The Golem of Prague | Statistical Rethinking with brms, ggplot2, and the tidyverse" />
   <meta name="twitter:site" content="@SolomonKurz" />
   <meta name="twitter:description" content="This project is an attempt to re-express the code in McElreath’s textbook. His models are re-fit in brms, plots are redone with ggplot2, and the general data wrangling code predominantly follows the tidyverse style." />
   
@@ -31,8 +31,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
   
-<link rel="prev" href="small-worlds-and-large-worlds.html">
-
+<link rel="prev" href="intro.html">
+<link rel="next" href="small-worlds-and-large-worlds.html">
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
@@ -187,17 +187,64 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="references" class="section level1 unnumbered">
-<h1>References</h1>
+<div id="the-golem-of-prague" class="section level1">
+<h1><span class="header-section-number">Chapter 2</span> The Golem of Prague</h1>
+<div class="figure" style="text-align: center"><span id="fig:unnamed-chunk-3"></span>
+<img src="pictures/Golem_and_Loew.jpg" alt="Rabbi Loew and Golem by Mikoláš Aleš, 1899" width="20%" />
+<p class="caption">
+Figure 2.1: Rabbi Loew and Golem by Mikoláš Aleš, 1899
+</p>
+</div>
+<p>As he opened the chapter, McElreath told us that</p>
+<blockquote>
+<p>ultimately Judah was forced to destroy the golem, as its combination of extraordinary power with clumsiness eventually led to innocent deaths. Wiping away one letter from the inscription <em>emet</em> to spell instead <em>met</em>, “death,” Rabbi Judah decommissioned the robot.</p>
+<h2 id="statistical-golems"><span class="header-section-number">2</span> Statistical golems</h2>
+<p>Scientists also make golems. Our golems rarely have physical form, but they too are often made of clay, living in silicon as computer code. These golems are scientific model. But these golems have real effects on the world, through the predictions they make and the intuitions they challenge or inspire. A concern with truth enlivens these models, but just like a golem or a modern robot, scientific models are neither true nor false, neither prophets nor charlatans. Rather they are constructs engineered for some purpose. These constructs are incredibly powerful, dutifully conducting their programmed calculations. (p. 1, <em>emphasis</em> in the original)</p>
+</blockquote>
+<p>There are a lot of great points, themes, methods, and factoids in this text. For me, one of the most powerful themes interlaced throughout the pages is how we should be skeptical of our models. Yes, learn Bayes. Pour over this book. Fit models until late into the night. But please don’t fall into blind love with their elegance and power. If we all knew what we were doing, there’d be no need for science. For more wise deflation along these lines, do check out <a href="https://djnavarro.net/post/2018-09-15-open-closed/"><em>A personal essay on Bayes factors</em></a>, <a href="https://link.springer.com/article/10.1007/s42113-018-0019-z"><em>Between the Devil and the Deep Blue Sea: Tensions Between Scientific Judgement and Statistical Model Selection</em></a> and <a href="https://www.youtube.com/watch?v=tNkmsAOn7aU"><em>Science, statistics and the problem of “pretty good inference”</em></a>, a blog, paper and talk by the inimitable <a href="https://twitter.com/djnavarro?lang=en">Danielle Navarro</a>.</p>
+<p>Anyway, McElreath left us no code or figures to translate in this chapter. But before you skip off to the next one, why not invest a little time soaking in this chapter’s material by watching <a href="https://www.youtube.com/watch?v=oy7Ks3YfbDg&amp;t=14s&amp;frags=pl%2Cwn">McElreath present it</a>? He’s an engaging speaker and the material in his online lectures does not entirely overlap with that in the text.</p>
+<div id="reference" class="section level2 unnumbered">
+<h2>Reference</h2>
+<p><a href="https://xcelab.net/rm/statistical-rethinking/">McElreath, R. (2016). <em>Statistical rethinking: A Bayesian course with examples in R and Stan.</em> Chapman &amp; Hall/CRC Press.</a></p>
+</div>
+<div id="session-info" class="section level2 unnumbered">
+<h2>Session info</h2>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">sessionInfo</span>()</code></pre>
+<pre><code>## R version 3.6.0 (2019-04-26)
+## Platform: x86_64-pc-linux-gnu (64-bit)
+## Running under: Ubuntu 18.04.2 LTS
+## 
+## Matrix products: default
+## BLAS:   /opt/R/3.6.0/lib/R/lib/libRblas.so
+## LAPACK: /opt/R/3.6.0/lib/R/lib/libRlapack.so
+## 
+## locale:
+##  [1] LC_CTYPE=en_US.UTF-8       LC_NUMERIC=C              
+##  [3] LC_TIME=en_US.UTF-8        LC_COLLATE=en_US.UTF-8    
+##  [5] LC_MONETARY=en_US.UTF-8    LC_MESSAGES=en_US.UTF-8   
+##  [7] LC_PAPER=en_US.UTF-8       LC_NAME=C                 
+##  [9] LC_ADDRESS=C               LC_TELEPHONE=C            
+## [11] LC_MEASUREMENT=en_US.UTF-8 LC_IDENTIFICATION=C       
+## 
+## attached base packages:
+## [1] stats     graphics  grDevices utils     datasets  methods   base     
+## 
+## loaded via a namespace (and not attached):
+##  [1] Rcpp_1.0.1      bookdown_0.11   digest_0.6.19   crayon_1.3.4   
+##  [5] rprojroot_1.3-2 backports_1.1.4 pacman_0.5.1    magrittr_1.5   
+##  [9] evaluate_0.14   highr_0.8       stringi_1.4.3   rstudioapi_0.10
+## [13] rmarkdown_1.13  tools_3.6.0     stringr_1.4.0   xfun_0.7       
+## [17] yaml_2.2.0      compiler_3.6.0  htmltools_0.3.6 knitr_1.23</code></pre>
 
+</div>
 </div>
             </section>
 
           </div>
         </div>
       </div>
-<a href="small-worlds-and-large-worlds.html" class="navigation navigation-prev navigation-unique" aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-
+<a href="intro.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="small-worlds-and-large-worlds.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
