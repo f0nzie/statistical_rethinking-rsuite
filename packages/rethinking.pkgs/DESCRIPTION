@@ -29,5 +29,6 @@ Imports: logging,
   MCMCglmm,
   dutchmasters,
   fiftystater,
-  rethinking
+  rethinking,
+  extrafont
 RoxygenNote: 6.1.1
