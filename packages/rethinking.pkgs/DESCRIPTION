@@ -30,5 +30,6 @@ Imports: logging,
   dutchmasters,
   fiftystater,
   rethinking,
-  extrafont
+  extrafont,
+  mapproj
 RoxygenNote: 6.1.1
