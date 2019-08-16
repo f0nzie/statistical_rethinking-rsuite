@@ -6,7 +6,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>8 Markov Chain Monte Carlo | Statistical Rethinking with brms, ggplot2, and the tidyverse</title>
   <meta name="description" content="This project is an attempt to re-express the code in McElreath’s textbook. His models are re-fit in brms, plots are redone with ggplot2, and the general data wrangling code predominantly follows the tidyverse style." />
-  <meta name="generator" content="bookdown 0.11 and GitBook 2.6.7" />
+  <meta name="generator" content="bookdown 0.12 and GitBook 2.6.7" />
 
   <meta property="og:title" content="8 Markov Chain Monte Carlo | Statistical Rethinking with brms, ggplot2, and the tidyverse" />
   <meta property="og:type" content="book" />
@@ -24,7 +24,7 @@
 <meta name="author" content="A Solomon Kurz" />
 
 
-<meta name="date" content="2019-06-18" />
+<meta name="date" content="2019-08-16" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -55,7 +55,6 @@ a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
 a.sourceLine:empty { height: 1.2em; }
 .sourceCode { overflow: visible; }
 code.sourceCode { white-space: pre; position: relative; }
-div.sourceCode { margin: 1em 0; }
 pre.sourceCode { margin: 0; }
 @media screen {
 div.sourceCode { overflow: auto; }
@@ -441,52 +440,52 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div id="good-king-markov-and-his-island-kingdom" class="section level2">
 <h2><span class="header-section-number">8.1</span> Good King Markov and His island kingdom</h2>
 <p>In this version of the code, we’ve added <code>set.seed()</code>, which helps make the exact results reproducible.</p>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">set.seed</span>(<span class="dv">8</span>)
-
-num_weeks &lt;-<span class="st"> </span><span class="fl">1e5</span>
-positions &lt;-<span class="st"> </span><span class="kw">rep</span>(<span class="dv">0</span>, num_weeks)
-current   &lt;-<span class="st"> </span><span class="dv">10</span>
-<span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span>num_weeks) {
-  <span class="co"># record current position</span>
-  positions[i] &lt;-<span class="st"> </span>current
-  <span class="co"># flip coin to generate proposal</span>
-  proposal &lt;-<span class="st"> </span>current <span class="op">+</span><span class="st"> </span><span class="kw">sample</span>(<span class="kw">c</span>(<span class="op">-</span><span class="dv">1</span>, <span class="dv">1</span>), <span class="dt">size =</span> <span class="dv">1</span>)
-  <span class="co"># now make sure he loops around the archipelago</span>
-  <span class="cf">if</span> (proposal <span class="op">&lt;</span><span class="st"> </span><span class="dv">1</span>) proposal &lt;-<span class="st"> </span><span class="dv">10</span>
-  <span class="cf">if</span> (proposal <span class="op">&gt;</span><span class="st"> </span><span class="dv">10</span>) proposal &lt;-<span class="st"> </span><span class="dv">1</span>
-  <span class="co"># move?</span>
-  prob_move &lt;-<span class="st"> </span>proposal <span class="op">/</span><span class="st"> </span>current
-  current   &lt;-<span class="st"> </span><span class="kw">ifelse</span>(<span class="kw">runif</span>(<span class="dv">1</span>) <span class="op">&lt;</span><span class="st"> </span>prob_move, proposal, current)
-}</code></pre>
+<div class="sourceCode" id="cb751"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb751-1" data-line-number="1"><span class="kw">set.seed</span>(<span class="dv">8</span>)</a>
+<a class="sourceLine" id="cb751-2" data-line-number="2"></a>
+<a class="sourceLine" id="cb751-3" data-line-number="3">num_weeks &lt;-<span class="st"> </span><span class="fl">1e5</span></a>
+<a class="sourceLine" id="cb751-4" data-line-number="4">positions &lt;-<span class="st"> </span><span class="kw">rep</span>(<span class="dv">0</span>, num_weeks)</a>
+<a class="sourceLine" id="cb751-5" data-line-number="5">current   &lt;-<span class="st"> </span><span class="dv">10</span></a>
+<a class="sourceLine" id="cb751-6" data-line-number="6"><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span>num_weeks) {</a>
+<a class="sourceLine" id="cb751-7" data-line-number="7">  <span class="co"># record current position</span></a>
+<a class="sourceLine" id="cb751-8" data-line-number="8">  positions[i] &lt;-<span class="st"> </span>current</a>
+<a class="sourceLine" id="cb751-9" data-line-number="9">  <span class="co"># flip coin to generate proposal</span></a>
+<a class="sourceLine" id="cb751-10" data-line-number="10">  proposal &lt;-<span class="st"> </span>current <span class="op">+</span><span class="st"> </span><span class="kw">sample</span>(<span class="kw">c</span>(<span class="op">-</span><span class="dv">1</span>, <span class="dv">1</span>), <span class="dt">size =</span> <span class="dv">1</span>)</a>
+<a class="sourceLine" id="cb751-11" data-line-number="11">  <span class="co"># now make sure he loops around the archipelago</span></a>
+<a class="sourceLine" id="cb751-12" data-line-number="12">  <span class="cf">if</span> (proposal <span class="op">&lt;</span><span class="st"> </span><span class="dv">1</span>) proposal &lt;-<span class="st"> </span><span class="dv">10</span></a>
+<a class="sourceLine" id="cb751-13" data-line-number="13">  <span class="cf">if</span> (proposal <span class="op">&gt;</span><span class="st"> </span><span class="dv">10</span>) proposal &lt;-<span class="st"> </span><span class="dv">1</span></a>
+<a class="sourceLine" id="cb751-14" data-line-number="14">  <span class="co"># move?</span></a>
+<a class="sourceLine" id="cb751-15" data-line-number="15">  prob_move &lt;-<span class="st"> </span>proposal <span class="op">/</span><span class="st"> </span>current</a>
+<a class="sourceLine" id="cb751-16" data-line-number="16">  current   &lt;-<span class="st"> </span><span class="kw">ifelse</span>(<span class="kw">runif</span>(<span class="dv">1</span>) <span class="op">&lt;</span><span class="st"> </span>prob_move, proposal, current)</a>
+<a class="sourceLine" id="cb751-17" data-line-number="17">}</a></code></pre></div>
 <p>In this chapter, we’ll borrow a theme, <code>theme_ipsum()</code>, from the <a href="https://cran.r-project.org/web/packages/hrbrthemes/index.html">hrbrthemes package</a>.</p>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="co"># install.packages(&quot;hrbrthemes&quot;, dependencies = T)</span>
-<span class="kw">library</span>(hrbrthemes)</code></pre>
+<div class="sourceCode" id="cb752"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb752-1" data-line-number="1"><span class="co"># install.packages(&quot;hrbrthemes&quot;, dependencies = T)</span></a>
+<a class="sourceLine" id="cb752-2" data-line-number="2"><span class="kw">library</span>(hrbrthemes)</a></code></pre></div>
 <p>Figure 8.2.a.</p>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(tidyverse)
-
-<span class="kw">tibble</span>(<span class="dt">week   =</span> <span class="dv">1</span><span class="op">:</span><span class="fl">1e5</span>,
-       <span class="dt">island =</span> positions) <span class="op">%&gt;%</span>
-
-<span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(<span class="dt">x =</span> week, <span class="dt">y =</span> island)) <span class="op">+</span>
-<span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">shape =</span> <span class="dv">1</span>) <span class="op">+</span>
-<span class="st">  </span><span class="kw">scale_x_continuous</span>(<span class="dt">breaks =</span> <span class="kw">seq</span>(<span class="dt">from =</span> <span class="dv">0</span>, <span class="dt">to =</span> <span class="dv">100</span>, <span class="dt">by =</span> <span class="dv">20</span>)) <span class="op">+</span>
-<span class="st">  </span><span class="kw">scale_y_continuous</span>(<span class="dt">breaks =</span> <span class="kw">seq</span>(<span class="dt">from =</span> <span class="dv">0</span>, <span class="dt">to =</span> <span class="dv">10</span>, <span class="dt">by =</span> <span class="dv">2</span>)) <span class="op">+</span>
-<span class="st">  </span><span class="kw">coord_cartesian</span>(<span class="dt">xlim =</span> <span class="dv">0</span><span class="op">:</span><span class="dv">100</span>,
-                  <span class="dt">ylim =</span> <span class="dv">1</span><span class="op">:</span><span class="dv">10</span>) <span class="op">+</span>
-<span class="st">  </span><span class="kw">labs</span>(<span class="dt">title    =</span> <span class="st">&quot;Behold: The Metropolis algorithm in action!&quot;</span>,
-       <span class="dt">subtitle =</span> <span class="st">&quot;The dots show the king&#39;s path over the first 100 weeks.&quot;</span>) <span class="op">+</span>
-<span class="st">  </span><span class="kw">theme_ipsum</span>()</code></pre>
+<div class="sourceCode" id="cb753"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb753-1" data-line-number="1"><span class="kw">library</span>(tidyverse)</a>
+<a class="sourceLine" id="cb753-2" data-line-number="2"></a>
+<a class="sourceLine" id="cb753-3" data-line-number="3"><span class="kw">tibble</span>(<span class="dt">week   =</span> <span class="dv">1</span><span class="op">:</span><span class="fl">1e5</span>,</a>
+<a class="sourceLine" id="cb753-4" data-line-number="4">       <span class="dt">island =</span> positions) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb753-5" data-line-number="5"></a>
+<a class="sourceLine" id="cb753-6" data-line-number="6"><span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(<span class="dt">x =</span> week, <span class="dt">y =</span> island)) <span class="op">+</span></a>
+<a class="sourceLine" id="cb753-7" data-line-number="7"><span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">shape =</span> <span class="dv">1</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb753-8" data-line-number="8"><span class="st">  </span><span class="kw">scale_x_continuous</span>(<span class="dt">breaks =</span> <span class="kw">seq</span>(<span class="dt">from =</span> <span class="dv">0</span>, <span class="dt">to =</span> <span class="dv">100</span>, <span class="dt">by =</span> <span class="dv">20</span>)) <span class="op">+</span></a>
+<a class="sourceLine" id="cb753-9" data-line-number="9"><span class="st">  </span><span class="kw">scale_y_continuous</span>(<span class="dt">breaks =</span> <span class="kw">seq</span>(<span class="dt">from =</span> <span class="dv">0</span>, <span class="dt">to =</span> <span class="dv">10</span>, <span class="dt">by =</span> <span class="dv">2</span>)) <span class="op">+</span></a>
+<a class="sourceLine" id="cb753-10" data-line-number="10"><span class="st">  </span><span class="kw">coord_cartesian</span>(<span class="dt">xlim =</span> <span class="dv">0</span><span class="op">:</span><span class="dv">100</span>,</a>
+<a class="sourceLine" id="cb753-11" data-line-number="11">                  <span class="dt">ylim =</span> <span class="dv">1</span><span class="op">:</span><span class="dv">10</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb753-12" data-line-number="12"><span class="st">  </span><span class="kw">labs</span>(<span class="dt">title    =</span> <span class="st">&quot;Behold: The Metropolis algorithm in action!&quot;</span>,</a>
+<a class="sourceLine" id="cb753-13" data-line-number="13">       <span class="dt">subtitle =</span> <span class="st">&quot;The dots show the king&#39;s path over the first 100 weeks.&quot;</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb753-14" data-line-number="14"><span class="st">  </span><span class="kw">theme_ipsum</span>()</a></code></pre></div>
 <p><img src="_main_files/figure-html/unnamed-chunk-434-1.png" width="528" /></p>
 <p>Figure 8.2.b.</p>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">tibble</span>(<span class="dt">week   =</span> <span class="dv">1</span><span class="op">:</span><span class="fl">1e5</span>,
-       <span class="dt">island =</span> positions) <span class="op">%&gt;%</span>
-<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">island =</span> <span class="kw">factor</span>(island)) <span class="op">%&gt;%</span>
-
-<span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(<span class="dt">x =</span> island)) <span class="op">+</span>
-<span class="st">  </span><span class="kw">geom_bar</span>() <span class="op">+</span>
-<span class="st">  </span><span class="kw">labs</span>(<span class="dt">title    =</span> <span class="st">&quot;Old Metropolis shines in the long run.&quot;</span>,
-       <span class="dt">subtitle =</span> <span class="st">&quot;Sure enough, the time the king spent on each island was</span><span class="ch">\n</span><span class="st">proportional to its population size.&quot;</span>) <span class="op">+</span>
-<span class="st">  </span><span class="kw">theme_ipsum</span>()</code></pre>
+<div class="sourceCode" id="cb754"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb754-1" data-line-number="1"><span class="kw">tibble</span>(<span class="dt">week   =</span> <span class="dv">1</span><span class="op">:</span><span class="fl">1e5</span>,</a>
+<a class="sourceLine" id="cb754-2" data-line-number="2">       <span class="dt">island =</span> positions) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb754-3" data-line-number="3"><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">island =</span> <span class="kw">factor</span>(island)) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb754-4" data-line-number="4"></a>
+<a class="sourceLine" id="cb754-5" data-line-number="5"><span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(<span class="dt">x =</span> island)) <span class="op">+</span></a>
+<a class="sourceLine" id="cb754-6" data-line-number="6"><span class="st">  </span><span class="kw">geom_bar</span>() <span class="op">+</span></a>
+<a class="sourceLine" id="cb754-7" data-line-number="7"><span class="st">  </span><span class="kw">labs</span>(<span class="dt">title    =</span> <span class="st">&quot;Old Metropolis shines in the long run.&quot;</span>,</a>
+<a class="sourceLine" id="cb754-8" data-line-number="8">       <span class="dt">subtitle =</span> <span class="st">&quot;Sure enough, the time the king spent on each island was</span><span class="ch">\n</span><span class="st">proportional to its population size.&quot;</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb754-9" data-line-number="9"><span class="st">  </span><span class="kw">theme_ipsum</span>()</a></code></pre></div>
 <p><img src="_main_files/figure-html/unnamed-chunk-435-1.png" width="528" /></p>
 </div>
 <div id="markov-chain-monte-carlo-1" class="section level2">
@@ -496,43 +495,43 @@ current   &lt;-<span class="st"> </span><span class="dv">10</span>
 <div id="easy-hmc-map2stan-brm" class="section level2">
 <h2><span class="header-section-number">8.3</span> Easy HMC: <del>map2stan</del> <code>brm()</code></h2>
 <p>Here we load the <code>rugged</code> data.</p>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(rethinking)
-<span class="kw">data</span>(rugged)
-d &lt;-<span class="st"> </span>rugged</code></pre>
+<div class="sourceCode" id="cb755"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb755-1" data-line-number="1"><span class="kw">library</span>(rethinking)</a>
+<a class="sourceLine" id="cb755-2" data-line-number="2"><span class="kw">data</span>(rugged)</a>
+<a class="sourceLine" id="cb755-3" data-line-number="3">d &lt;-<span class="st"> </span>rugged</a></code></pre></div>
 <p>Switch from rethinking to brms.</p>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">detach</span>(package<span class="op">:</span>rethinking)
-<span class="kw">library</span>(brms)
-<span class="kw">rm</span>(rugged)</code></pre>
+<div class="sourceCode" id="cb756"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb756-1" data-line-number="1"><span class="kw">detach</span>(package<span class="op">:</span>rethinking)</a>
+<a class="sourceLine" id="cb756-2" data-line-number="2"><span class="kw">library</span>(brms)</a>
+<a class="sourceLine" id="cb756-3" data-line-number="3"><span class="kw">rm</span>(rugged)</a></code></pre></div>
 <p>It takes just a sec to do a little data manipulation.</p>
-<pre class="sourceCode r"><code class="sourceCode r">d &lt;-<span class="st"> </span>
-<span class="st">  </span>d <span class="op">%&gt;%</span>
-<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">log_gdp =</span> <span class="kw">log</span>(rgdppc_<span class="dv">2000</span>))
-
-dd &lt;-
-<span class="st">  </span>d <span class="op">%&gt;%</span>
-<span class="st">  </span><span class="kw">drop_na</span>(rgdppc_<span class="dv">2000</span>)</code></pre>
+<div class="sourceCode" id="cb757"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb757-1" data-line-number="1">d &lt;-<span class="st"> </span></a>
+<a class="sourceLine" id="cb757-2" data-line-number="2"><span class="st">  </span>d <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb757-3" data-line-number="3"><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">log_gdp =</span> <span class="kw">log</span>(rgdppc_<span class="dv">2000</span>))</a>
+<a class="sourceLine" id="cb757-4" data-line-number="4"></a>
+<a class="sourceLine" id="cb757-5" data-line-number="5">dd &lt;-</a>
+<a class="sourceLine" id="cb757-6" data-line-number="6"><span class="st">  </span>d <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb757-7" data-line-number="7"><span class="st">  </span><span class="kw">drop_na</span>(rgdppc_<span class="dv">2000</span>)</a></code></pre></div>
 <p>In the context of this chapter, it doesn’t make sense to translate McElreath’s m8.1 <code>map()</code> code to <code>brm()</code> code. Below, we’ll just go directly to the <code>brm()</code> variant of his <code>m8.1stan</code>.</p>
 <div id="preparation." class="section level3">
 <h3><span class="header-section-number">8.3.1</span> Preparation.</h3>
 <p>When working with brms, you don’t need to do the data processing McElreath did on pages 248 and 249. If you wanted to, however, here’s how you might do it within the tidyverse.</p>
-<pre class="sourceCode r"><code class="sourceCode r">dd.trim &lt;-
-<span class="st">  </span>dd <span class="op">%&gt;%</span>
-<span class="st">  </span><span class="kw">select</span>(log_gdp, rugged, cont_africa)
-
-<span class="kw">str</span>(dd.trim)</code></pre>
+<div class="sourceCode" id="cb758"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb758-1" data-line-number="1">dd.trim &lt;-</a>
+<a class="sourceLine" id="cb758-2" data-line-number="2"><span class="st">  </span>dd <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb758-3" data-line-number="3"><span class="st">  </span><span class="kw">select</span>(log_gdp, rugged, cont_africa)</a>
+<a class="sourceLine" id="cb758-4" data-line-number="4"></a>
+<a class="sourceLine" id="cb758-5" data-line-number="5"><span class="kw">str</span>(dd.trim)</a></code></pre></div>
 </div>
 <div id="estimation." class="section level3">
 <h3><span class="header-section-number">8.3.2</span> Estimation.</h3>
 <p>Finally, we get to work that sweet HMC.</p>
-<pre class="sourceCode r"><code class="sourceCode r">b8<span class="fl">.1</span> &lt;-
-<span class="st">  </span><span class="kw">brm</span>(<span class="dt">data =</span> dd, <span class="dt">family =</span> gaussian,
-      log_gdp <span class="op">~</span><span class="st"> </span><span class="dv">1</span> <span class="op">+</span><span class="st"> </span>rugged <span class="op">+</span><span class="st"> </span>cont_africa <span class="op">+</span><span class="st"> </span>rugged<span class="op">:</span>cont_africa,
-      <span class="dt">prior =</span> <span class="kw">c</span>(<span class="kw">prior</span>(<span class="kw">normal</span>(<span class="dv">0</span>, <span class="dv">100</span>), <span class="dt">class =</span> Intercept),
-                <span class="kw">prior</span>(<span class="kw">normal</span>(<span class="dv">0</span>, <span class="dv">10</span>), <span class="dt">class =</span> b),
-                <span class="kw">prior</span>(<span class="kw">cauchy</span>(<span class="dv">0</span>, <span class="dv">2</span>), <span class="dt">class =</span> sigma)),
-      <span class="dt">seed =</span> <span class="dv">8</span>)</code></pre>
+<div class="sourceCode" id="cb759"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb759-1" data-line-number="1">b8<span class="fl">.1</span> &lt;-</a>
+<a class="sourceLine" id="cb759-2" data-line-number="2"><span class="st">  </span><span class="kw">brm</span>(<span class="dt">data =</span> dd, <span class="dt">family =</span> gaussian,</a>
+<a class="sourceLine" id="cb759-3" data-line-number="3">      log_gdp <span class="op">~</span><span class="st"> </span><span class="dv">1</span> <span class="op">+</span><span class="st"> </span>rugged <span class="op">+</span><span class="st"> </span>cont_africa <span class="op">+</span><span class="st"> </span>rugged<span class="op">:</span>cont_africa,</a>
+<a class="sourceLine" id="cb759-4" data-line-number="4">      <span class="dt">prior =</span> <span class="kw">c</span>(<span class="kw">prior</span>(<span class="kw">normal</span>(<span class="dv">0</span>, <span class="dv">100</span>), <span class="dt">class =</span> Intercept),</a>
+<a class="sourceLine" id="cb759-5" data-line-number="5">                <span class="kw">prior</span>(<span class="kw">normal</span>(<span class="dv">0</span>, <span class="dv">10</span>), <span class="dt">class =</span> b),</a>
+<a class="sourceLine" id="cb759-6" data-line-number="6">                <span class="kw">prior</span>(<span class="kw">cauchy</span>(<span class="dv">0</span>, <span class="dv">2</span>), <span class="dt">class =</span> sigma)),</a>
+<a class="sourceLine" id="cb759-7" data-line-number="7">      <span class="dt">seed =</span> <span class="dv">8</span>)</a></code></pre></div>
 <p>Now we have officially ditched the uniform distribution for <span class="math inline">\(\sigma\)</span>. We’ll only see it again in special cases for pedagogical purposes. Here’s the posterior:</p>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">print</span>(b8<span class="fl">.1</span>)</code></pre>
+<div class="sourceCode" id="cb760"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb760-1" data-line-number="1"><span class="kw">print</span>(b8<span class="fl">.1</span>)</a></code></pre></div>
 <pre><code>##  Family: gaussian 
 ##   Links: mu = identity; sigma = identity 
 ## Formula: log_gdp ~ 1 + rugged + cont_africa + rugged:cont_africa 
@@ -555,14 +554,14 @@ dd &lt;-
 ## is a crude measure of effective sample size, and Rhat is the potential 
 ## scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
 <p>Do note a couple things: If you look closely at the summary information at the top, you’ll see that the <code>brms::brm()</code> function defaults to <code>chains = 4</code>. If you check the manual, you’ll see it also defaults to <code>cores = 1</code>. You’ll also note it defaults to <code>iter = 2000, warmup = 1000</code>. Also of note, McElreath’s <code>rethinking::precis()</code> returns highest posterior density intervals (HPDIs) when summarizing <code>map2stan()</code> models. Not so with brms. If you want HPDIs, you’ll have to use the convenience functions from the tidybayes package.</p>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(tidybayes)
-
-post &lt;-<span class="st"> </span><span class="kw">posterior_samples</span>(b8<span class="fl">.1</span>)
-
-post <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span><span class="kw">gather</span>() <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span><span class="kw">group_by</span>(key) <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span><span class="kw">mean_hdi</span>(value, <span class="dt">.width =</span> <span class="fl">.89</span>)  <span class="co"># note our rare use of 89% intervals</span></code></pre>
+<div class="sourceCode" id="cb762"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb762-1" data-line-number="1"><span class="kw">library</span>(tidybayes)</a>
+<a class="sourceLine" id="cb762-2" data-line-number="2"></a>
+<a class="sourceLine" id="cb762-3" data-line-number="3">post &lt;-<span class="st"> </span><span class="kw">posterior_samples</span>(b8<span class="fl">.1</span>)</a>
+<a class="sourceLine" id="cb762-4" data-line-number="4"></a>
+<a class="sourceLine" id="cb762-5" data-line-number="5">post <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb762-6" data-line-number="6"><span class="st">  </span><span class="kw">gather</span>() <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb762-7" data-line-number="7"><span class="st">  </span><span class="kw">group_by</span>(key) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb762-8" data-line-number="8"><span class="st">  </span><span class="kw">mean_hdi</span>(value, <span class="dt">.width =</span> <span class="fl">.89</span>)  <span class="co"># note our rare use of 89% intervals</span></a></code></pre></div>
 <pre><code>## # A tibble: 6 x 7
 ##   key                     value   .lower    .upper .width .point .interval
 ##   &lt;chr&gt;                   &lt;dbl&gt;    &lt;dbl&gt;     &lt;dbl&gt;  &lt;dbl&gt; &lt;chr&gt;  &lt;chr&gt;    
@@ -576,11 +575,11 @@ post <span class="op">%&gt;%</span><span class="st"> </span>
 <div id="sampling-again-in-parallel." class="section level3">
 <h3><span class="header-section-number">8.3.3</span> Sampling again, in parallel.</h3>
 <p>Here we sample in parallel by adding <code>cores = 4</code>.</p>
-<pre class="sourceCode r"><code class="sourceCode r">b8<span class="fl">.1</span>_4chains_4cores &lt;-<span class="st"> </span>
-<span class="st">  </span><span class="kw">update</span>(b8<span class="fl">.1</span>, 
-         <span class="dt">cores =</span> <span class="dv">4</span>)</code></pre>
+<div class="sourceCode" id="cb764"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb764-1" data-line-number="1">b8<span class="fl">.1</span>_4chains_4cores &lt;-<span class="st"> </span></a>
+<a class="sourceLine" id="cb764-2" data-line-number="2"><span class="st">  </span><span class="kw">update</span>(b8<span class="fl">.1</span>, </a>
+<a class="sourceLine" id="cb764-3" data-line-number="3">         <span class="dt">cores =</span> <span class="dv">4</span>)</a></code></pre></div>
 <p>This model sampled so fast that it really didn’t matter if we sampled in parallel or not. It will for others.</p>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">print</span>(b8<span class="fl">.1</span>_4chains_4cores)</code></pre>
+<div class="sourceCode" id="cb765"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb765-1" data-line-number="1"><span class="kw">print</span>(b8<span class="fl">.1</span>_4chains_4cores)</a></code></pre></div>
 <pre><code>##  Family: gaussian 
 ##   Links: mu = identity; sigma = identity 
 ## Formula: log_gdp ~ 1 + rugged + cont_africa + rugged:cont_africa 
@@ -590,14 +589,14 @@ post <span class="op">%&gt;%</span><span class="st"> </span>
 ## 
 ## Population-Level Effects: 
 ##                    Estimate Est.Error l-95% CI u-95% CI Eff.Sample Rhat
-## Intercept              9.23      0.14     8.94     9.50       2857 1.00
-## rugged                -0.20      0.08    -0.35    -0.04       2695 1.00
-## cont_africa           -1.95      0.23    -2.39    -1.48       2604 1.00
-## rugged:cont_africa     0.39      0.13     0.12     0.65       2514 1.00
+## Intercept              9.22      0.14     8.94     9.50       2739 1.00
+## rugged                -0.20      0.08    -0.36    -0.05       2534 1.00
+## cont_africa           -1.95      0.23    -2.41    -1.48       2410 1.00
+## rugged:cont_africa     0.39      0.14     0.12     0.65       2215 1.00
 ## 
 ## Family Specific Parameters: 
 ##       Estimate Est.Error l-95% CI u-95% CI Eff.Sample Rhat
-## sigma     0.95      0.05     0.86     1.05       4009 1.00
+## sigma     0.95      0.05     0.86     1.06       3935 1.00
 ## 
 ## Samples were drawn using sampling(NUTS). For each parameter, Eff.Sample 
 ## is a crude measure of effective sample size, and Rhat is the potential 
@@ -606,8 +605,8 @@ post <span class="op">%&gt;%</span><span class="st"> </span>
 <div id="visualization." class="section level3">
 <h3><span class="header-section-number">8.3.4</span> Visualization.</h3>
 <p>Unlike the way rethinking’s <code>extract.samples()</code> yields a list, brms’s <code>posterior_samples()</code> returns a data frame.</p>
-<pre class="sourceCode r"><code class="sourceCode r">post &lt;-<span class="st"> </span><span class="kw">posterior_samples</span>(b8<span class="fl">.1</span>)
-<span class="kw">str</span>(post)</code></pre>
+<div class="sourceCode" id="cb767"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb767-1" data-line-number="1">post &lt;-<span class="st"> </span><span class="kw">posterior_samples</span>(b8<span class="fl">.1</span>)</a>
+<a class="sourceLine" id="cb767-2" data-line-number="2"><span class="kw">str</span>(post)</a></code></pre></div>
 <pre><code>## &#39;data.frame&#39;:    4000 obs. of  6 variables:
 ##  $ b_Intercept         : num  9.27 9.28 9.28 9.23 9.29 ...
 ##  $ b_rugged            : num  -0.255 -0.256 -0.274 -0.162 -0.252 ...
@@ -616,40 +615,40 @@ post <span class="op">%&gt;%</span><span class="st"> </span>
 ##  $ sigma               : num  0.99 0.985 0.932 0.956 0.948 ...
 ##  $ lp__                : num  -247 -247 -247 -247 -247 ...</code></pre>
 <p>As with McElreath’s rethinking, brms allows users to put the <code>post</code> data frame or the brmsfit object directly in <code>pairs()</code>.</p>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">pairs</span>(b8<span class="fl">.1</span>,
-      <span class="dt">off_diag_args =</span> <span class="kw">list</span>(<span class="dt">size =</span> <span class="dv">1</span><span class="op">/</span><span class="dv">5</span>, <span class="dt">alpha =</span> <span class="dv">1</span><span class="op">/</span><span class="dv">5</span>))</code></pre>
+<div class="sourceCode" id="cb769"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb769-1" data-line-number="1"><span class="kw">pairs</span>(b8<span class="fl">.1</span>,</a>
+<a class="sourceLine" id="cb769-2" data-line-number="2">      <span class="dt">off_diag_args =</span> <span class="kw">list</span>(<span class="dt">size =</span> <span class="dv">1</span><span class="op">/</span><span class="dv">5</span>, <span class="dt">alpha =</span> <span class="dv">1</span><span class="op">/</span><span class="dv">5</span>))</a></code></pre></div>
 <p><img src="_main_files/figure-html/unnamed-chunk-444-1.png" width="576" /></p>
 <p>Another nice way to customize your pairs plot is with the <a href="https://cran.r-project.org/web/packages/GGally/index.html">GGally package</a>.</p>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(GGally)</code></pre>
-<pre class="sourceCode r"><code class="sourceCode r">post <span class="op">%&gt;%</span>
-<span class="st">  </span><span class="kw">select</span>(b_Intercept<span class="op">:</span>sigma) <span class="op">%&gt;%</span>
-<span class="st">  </span><span class="kw">ggpairs</span>()</code></pre>
+<div class="sourceCode" id="cb770"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb770-1" data-line-number="1"><span class="kw">library</span>(GGally)</a></code></pre></div>
+<div class="sourceCode" id="cb771"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb771-1" data-line-number="1">post <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb771-2" data-line-number="2"><span class="st">  </span><span class="kw">select</span>(b_Intercept<span class="op">:</span>sigma) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb771-3" data-line-number="3"><span class="st">  </span><span class="kw">ggpairs</span>()</a></code></pre></div>
 <p><img src="_main_files/figure-html/unnamed-chunk-446-1.png" width="768" /></p>
 <p>Since GGally returns a ggplot2 object, you can customize it as you please.</p>
-<pre class="sourceCode r"><code class="sourceCode r">my_diag &lt;-<span class="st"> </span><span class="cf">function</span>(data, mapping, ...){
-  <span class="kw">ggplot</span>(<span class="dt">data =</span> data, <span class="dt">mapping =</span> mapping) <span class="op">+</span><span class="st"> </span>
-<span class="st">    </span><span class="kw">geom_density</span>(<span class="dt">fill =</span> <span class="st">&quot;grey50&quot;</span>)
-}
-
-my_lower &lt;-<span class="st"> </span><span class="cf">function</span>(data, mapping, ...){
-  <span class="kw">ggplot</span>(<span class="dt">data =</span> data, <span class="dt">mapping =</span> mapping) <span class="op">+</span><span class="st"> </span>
-<span class="st">    </span><span class="kw">geom_point</span>(<span class="dt">shape =</span> <span class="dv">1</span>, <span class="dt">size =</span> <span class="dv">1</span><span class="op">/</span><span class="dv">2</span>, <span class="dt">alpha =</span> <span class="dv">1</span><span class="op">/</span><span class="dv">6</span>)
-  }
-
-post <span class="op">%&gt;%</span>
-<span class="st">  </span><span class="kw">select</span>(b_Intercept<span class="op">:</span>sigma) <span class="op">%&gt;%</span>
-
-<span class="st">  </span><span class="kw">ggpairs</span>(<span class="dt">diag  =</span> <span class="kw">list</span>(<span class="dt">continuous =</span> my_diag),
-          <span class="dt">lower =</span> <span class="kw">list</span>(<span class="dt">continuous =</span> my_lower)) <span class="op">+</span>
-<span class="st">  </span><span class="kw">labs</span>(<span class="dt">subtitle =</span> <span class="st">&quot;My custom pairs plot&quot;</span>) <span class="op">+</span>
-<span class="st">  </span><span class="kw">theme_ipsum</span>()</code></pre>
+<div class="sourceCode" id="cb772"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb772-1" data-line-number="1">my_diag &lt;-<span class="st"> </span><span class="cf">function</span>(data, mapping, ...){</a>
+<a class="sourceLine" id="cb772-2" data-line-number="2">  <span class="kw">ggplot</span>(<span class="dt">data =</span> data, <span class="dt">mapping =</span> mapping) <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb772-3" data-line-number="3"><span class="st">    </span><span class="kw">geom_density</span>(<span class="dt">fill =</span> <span class="st">&quot;grey50&quot;</span>)</a>
+<a class="sourceLine" id="cb772-4" data-line-number="4">}</a>
+<a class="sourceLine" id="cb772-5" data-line-number="5"></a>
+<a class="sourceLine" id="cb772-6" data-line-number="6">my_lower &lt;-<span class="st"> </span><span class="cf">function</span>(data, mapping, ...){</a>
+<a class="sourceLine" id="cb772-7" data-line-number="7">  <span class="kw">ggplot</span>(<span class="dt">data =</span> data, <span class="dt">mapping =</span> mapping) <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb772-8" data-line-number="8"><span class="st">    </span><span class="kw">geom_point</span>(<span class="dt">shape =</span> <span class="dv">1</span>, <span class="dt">size =</span> <span class="dv">1</span><span class="op">/</span><span class="dv">2</span>, <span class="dt">alpha =</span> <span class="dv">1</span><span class="op">/</span><span class="dv">6</span>)</a>
+<a class="sourceLine" id="cb772-9" data-line-number="9">  }</a>
+<a class="sourceLine" id="cb772-10" data-line-number="10"></a>
+<a class="sourceLine" id="cb772-11" data-line-number="11">post <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb772-12" data-line-number="12"><span class="st">  </span><span class="kw">select</span>(b_Intercept<span class="op">:</span>sigma) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb772-13" data-line-number="13"></a>
+<a class="sourceLine" id="cb772-14" data-line-number="14"><span class="st">  </span><span class="kw">ggpairs</span>(<span class="dt">diag  =</span> <span class="kw">list</span>(<span class="dt">continuous =</span> my_diag),</a>
+<a class="sourceLine" id="cb772-15" data-line-number="15">          <span class="dt">lower =</span> <span class="kw">list</span>(<span class="dt">continuous =</span> my_lower)) <span class="op">+</span></a>
+<a class="sourceLine" id="cb772-16" data-line-number="16"><span class="st">  </span><span class="kw">labs</span>(<span class="dt">subtitle =</span> <span class="st">&quot;My custom pairs plot&quot;</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb772-17" data-line-number="17"><span class="st">  </span><span class="kw">theme_ipsum</span>()</a></code></pre></div>
 <p><img src="_main_files/figure-html/unnamed-chunk-447-1.png" width="768" /></p>
 <p>For more ideas on customizing a GGally pairs plot, go <a href="http://ggobi.github.io/ggally/#columns_and_mapping">here</a>.</p>
 </div>
 <div id="using-the-samples." class="section level3">
 <h3><span class="header-section-number">8.3.5</span> Using the samples.</h3>
 <p>Older versions of brms allowed users to include information criteria as a part of the model summary by adding <code>loo = T</code> and/or <code>waic = T</code> in the <code>summary()</code> function (e.g., <code>summary(b8.1, loo = T, waic = T)</code>. However, this is no longer the case. E.g.,</p>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">summary</span>(b8<span class="fl">.1</span>, <span class="dt">loo =</span> T, <span class="dt">waic =</span> T)</code></pre>
+<div class="sourceCode" id="cb773"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb773-1" data-line-number="1"><span class="kw">summary</span>(b8<span class="fl">.1</span>, <span class="dt">loo =</span> T, <span class="dt">waic =</span> T)</a></code></pre></div>
 <pre><code>##  Family: gaussian 
 ##   Links: mu = identity; sigma = identity 
 ## Formula: log_gdp ~ 1 + rugged + cont_africa + rugged:cont_africa 
@@ -672,7 +671,7 @@ post <span class="op">%&gt;%</span>
 ## is a crude measure of effective sample size, and Rhat is the potential 
 ## scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
 <p>Although R didn’t bark at us for adding <code>loo = T, waic = T</code>, they didn’t do anything. Nowadays, if you want that information, you’ll have to use the <code>waic()</code> and/or <code>loo()</code> functions.</p>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">waic</span>(b8<span class="fl">.1</span>)</code></pre>
+<div class="sourceCode" id="cb775"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb775-1" data-line-number="1"><span class="kw">waic</span>(b8<span class="fl">.1</span>)</a></code></pre></div>
 <pre><code>## 
 ## Computed from 4000 by 170 log-likelihood matrix
 ## 
@@ -681,7 +680,7 @@ post <span class="op">%&gt;%</span>
 ## p_waic         5.1  0.9
 ## waic         469.3 14.9</code></pre>
 <pre><code>## Warning: 2 (1.2%) p_waic estimates greater than 0.4. We recommend trying loo instead.</code></pre>
-<pre class="sourceCode r"><code class="sourceCode r">(l_b8<span class="fl">.1</span> &lt;-<span class="st"> </span><span class="kw">loo</span>(b8<span class="fl">.1</span>))</code></pre>
+<div class="sourceCode" id="cb778"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb778-1" data-line-number="1">(l_b8<span class="fl">.1</span> &lt;-<span class="st"> </span><span class="kw">loo</span>(b8<span class="fl">.1</span>))</a></code></pre></div>
 <pre><code>## 
 ## Computed from 4000 by 170 log-likelihood matrix
 ## 
@@ -695,9 +694,9 @@ post <span class="op">%&gt;%</span>
 ## All Pareto k estimates are good (k &lt; 0.5).
 ## See help(&#39;pareto-k-diagnostic&#39;) for details.</code></pre>
 <p>And the recommended workflow since brms version 2.8.0 is to save the information criteria information with your <code>brm()</code> fit objects with the <code>add_criterion()</code> function.</p>
-<pre class="sourceCode r"><code class="sourceCode r">b8<span class="fl">.1</span> &lt;-<span class="st"> </span><span class="kw">add_criterion</span>(b8<span class="fl">.1</span>, <span class="kw">c</span>(<span class="st">&quot;waic&quot;</span>, <span class="st">&quot;loo&quot;</span>))</code></pre>
+<div class="sourceCode" id="cb780"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb780-1" data-line-number="1">b8<span class="fl">.1</span> &lt;-<span class="st"> </span><span class="kw">add_criterion</span>(b8<span class="fl">.1</span>, <span class="kw">c</span>(<span class="st">&quot;waic&quot;</span>, <span class="st">&quot;loo&quot;</span>))</a></code></pre></div>
 <p>You retrieve that information like this:</p>
-<pre class="sourceCode r"><code class="sourceCode r">b8<span class="fl">.1</span><span class="op">$</span>waic</code></pre>
+<div class="sourceCode" id="cb781"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb781-1" data-line-number="1">b8<span class="fl">.1</span><span class="op">$</span>waic</a></code></pre></div>
 <pre><code>## 
 ## Computed from 4000 by 170 log-likelihood matrix
 ## 
@@ -706,7 +705,7 @@ post <span class="op">%&gt;%</span>
 ## p_waic         5.1  0.9
 ## waic         469.3 14.9</code></pre>
 <pre><code>## Warning: 2 (1.2%) p_waic estimates greater than 0.4. We recommend trying loo instead.</code></pre>
-<pre class="sourceCode r"><code class="sourceCode r">b8<span class="fl">.1</span><span class="op">$</span>loo</code></pre>
+<div class="sourceCode" id="cb784"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb784-1" data-line-number="1">b8<span class="fl">.1</span><span class="op">$</span>loo</a></code></pre></div>
 <pre><code>## 
 ## Computed from 4000 by 170 log-likelihood matrix
 ## 
@@ -735,33 +734,33 @@ post <span class="op">%&gt;%</span>
 <div id="checking-the-chain." class="section level3">
 <h3><span class="header-section-number">8.3.6</span> Checking the chain.</h3>
 <p>Using <code>plot()</code> for a <code>brm()</code> fit returns both density and trace lots for the parameters.</p>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(b8<span class="fl">.1</span>)</code></pre>
+<div class="sourceCode" id="cb786"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb786-1" data-line-number="1"><span class="kw">plot</span>(b8<span class="fl">.1</span>)</a></code></pre></div>
 <p><img src="_main_files/figure-html/unnamed-chunk-452-1.png" width="768" /></p>
 <p>The bayesplot package allows a little more control. Here, we use <a href="https://cran.r-project.org/web/packages/bayesplot/index.html">bayesplot’s</a> <code>mcmc_trace()</code> to show only trace plots with our custom theme. Note that <code>mcmc_trace()</code> works with data frames, not brmfit objects. There’s a further complication. Recall how we made <code>post</code> (i.e., <code>post &lt;- posterior_samples(b8.1)</code>). Our <code>post</code> data frame carries no information on chains. To retain that information, we’ll need to add an <code>add_chain = T</code> argument to our <code>posterior_samples()</code> function.</p>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(bayesplot)
-
-post &lt;-<span class="st"> </span><span class="kw">posterior_samples</span>(b8<span class="fl">.1</span>, <span class="dt">add_chain =</span> T)
-
-<span class="kw">mcmc_trace</span>(post[, <span class="kw">c</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">5</span>, <span class="dv">7</span>)],  <span class="co"># we need to include column 7 because it contains the chain info </span>
-           <span class="dt">facet_args =</span> <span class="kw">list</span>(<span class="dt">ncol =</span> <span class="dv">3</span>), 
-           <span class="dt">size =</span> <span class="fl">.15</span>) <span class="op">+</span>
-<span class="st">  </span><span class="kw">labs</span>(<span class="dt">title =</span> <span class="st">&quot;My custom trace plots&quot;</span>) <span class="op">+</span>
-<span class="st">  </span><span class="kw">scale_color_ipsum</span>() <span class="op">+</span>
-<span class="st">  </span><span class="kw">theme_ipsum</span>() <span class="op">+</span>
-<span class="st">  </span><span class="kw">theme</span>(<span class="dt">legend.position =</span> <span class="kw">c</span>(.<span class="dv">95</span>, <span class="fl">.2</span>))</code></pre>
+<div class="sourceCode" id="cb787"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb787-1" data-line-number="1"><span class="kw">library</span>(bayesplot)</a>
+<a class="sourceLine" id="cb787-2" data-line-number="2"></a>
+<a class="sourceLine" id="cb787-3" data-line-number="3">post &lt;-<span class="st"> </span><span class="kw">posterior_samples</span>(b8<span class="fl">.1</span>, <span class="dt">add_chain =</span> T)</a>
+<a class="sourceLine" id="cb787-4" data-line-number="4"></a>
+<a class="sourceLine" id="cb787-5" data-line-number="5"><span class="kw">mcmc_trace</span>(post[, <span class="kw">c</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">5</span>, <span class="dv">7</span>)],  <span class="co"># we need to include column 7 because it contains the chain info </span></a>
+<a class="sourceLine" id="cb787-6" data-line-number="6">           <span class="dt">facet_args =</span> <span class="kw">list</span>(<span class="dt">ncol =</span> <span class="dv">3</span>), </a>
+<a class="sourceLine" id="cb787-7" data-line-number="7">           <span class="dt">size =</span> <span class="fl">.15</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb787-8" data-line-number="8"><span class="st">  </span><span class="kw">labs</span>(<span class="dt">title =</span> <span class="st">&quot;My custom trace plots&quot;</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb787-9" data-line-number="9"><span class="st">  </span><span class="kw">scale_color_ipsum</span>() <span class="op">+</span></a>
+<a class="sourceLine" id="cb787-10" data-line-number="10"><span class="st">  </span><span class="kw">theme_ipsum</span>() <span class="op">+</span></a>
+<a class="sourceLine" id="cb787-11" data-line-number="11"><span class="st">  </span><span class="kw">theme</span>(<span class="dt">legend.position =</span> <span class="kw">c</span>(.<span class="dv">95</span>, <span class="fl">.2</span>))</a></code></pre></div>
 <p><img src="_main_files/figure-html/unnamed-chunk-453-1.png" width="672" /></p>
 <p>The bayesplot package offers a variety of diagnostic plots. Here we make autocorrelation plots for all model parameters, one for each HMC chain.</p>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">mcmc_acf</span>(post, 
-         <span class="dt">pars =</span> <span class="kw">c</span>(<span class="st">&quot;b_Intercept&quot;</span>, <span class="st">&quot;b_rugged&quot;</span>, <span class="st">&quot;b_cont_africa&quot;</span>, <span class="st">&quot;b_rugged:cont_africa&quot;</span>, <span class="st">&quot;sigma&quot;</span>),
-         <span class="dt">lags =</span> <span class="dv">5</span>) <span class="op">+</span>
-<span class="st">  </span><span class="kw">scale_color_ipsum</span>() <span class="op">+</span>
-<span class="st">  </span><span class="kw">theme_ipsum</span>()</code></pre>
+<div class="sourceCode" id="cb788"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb788-1" data-line-number="1"><span class="kw">mcmc_acf</span>(post, </a>
+<a class="sourceLine" id="cb788-2" data-line-number="2">         <span class="dt">pars =</span> <span class="kw">c</span>(<span class="st">&quot;b_Intercept&quot;</span>, <span class="st">&quot;b_rugged&quot;</span>, <span class="st">&quot;b_cont_africa&quot;</span>, <span class="st">&quot;b_rugged:cont_africa&quot;</span>, <span class="st">&quot;sigma&quot;</span>),</a>
+<a class="sourceLine" id="cb788-3" data-line-number="3">         <span class="dt">lags =</span> <span class="dv">5</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb788-4" data-line-number="4"><span class="st">  </span><span class="kw">scale_color_ipsum</span>() <span class="op">+</span></a>
+<a class="sourceLine" id="cb788-5" data-line-number="5"><span class="st">  </span><span class="kw">theme_ipsum</span>()</a></code></pre></div>
 <p><img src="_main_files/figure-html/unnamed-chunk-454-1.png" width="768" /></p>
 <p>That’s just what we like to see–nice L-shaped autocorrelation plots. Those are the kinds of shapes you’d expect when you have reasonably large effective samples. Anyway…</p>
 <div id="overthinking-raw-stan-model-code." class="section level4">
 <h4><span class="header-section-number">8.3.6.1</span> Overthinking: Raw Stan model code.</h4>
 <p>The <code>stancode()</code> function works in brms much like it does in rethinking.</p>
-<pre class="sourceCode r"><code class="sourceCode r">brms<span class="op">::</span><span class="kw">stancode</span>(b8<span class="fl">.1</span>)</code></pre>
+<div class="sourceCode" id="cb789"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb789-1" data-line-number="1">brms<span class="op">::</span><span class="kw">stancode</span>(b8<span class="fl">.1</span>)</a></code></pre></div>
 <pre><code>## // generated with brms 2.9.0
 ## functions {
 ## }
@@ -836,30 +835,30 @@ post &lt;-<span class="st"> </span><span class="kw">posterior_samples</span>(b8<
 <div id="taming-a-wild-chain." class="section level3">
 <h3><span class="header-section-number">8.4.3</span> Taming a wild chain.</h3>
 <p>As with rethinking, brms can take data in the form of a list. Recall however, that in order to specify starting values, you need to specify a list of lists with an <code>inits</code> argument rather than with <code>start</code>.</p>
-<pre class="sourceCode r"><code class="sourceCode r">b8<span class="fl">.2</span> &lt;-
-<span class="st">  </span><span class="kw">brm</span>(<span class="dt">data =</span> <span class="kw">list</span>(<span class="dt">y =</span> <span class="kw">c</span>(<span class="op">-</span><span class="dv">1</span>, <span class="dv">1</span>)), 
-      <span class="dt">family =</span> gaussian,
-      y <span class="op">~</span><span class="st"> </span><span class="dv">1</span>,
-      <span class="dt">prior =</span> <span class="kw">c</span>(<span class="kw">prior</span>(<span class="kw">uniform</span>(<span class="op">-</span><span class="fl">1e10</span>, <span class="fl">1e10</span>), <span class="dt">class =</span> Intercept),
-                <span class="kw">prior</span>(<span class="kw">uniform</span>(<span class="dv">0</span>, <span class="fl">1e10</span>), <span class="dt">class =</span> sigma)),
-      <span class="dt">inits =</span> <span class="kw">list</span>(<span class="kw">list</span>(<span class="dt">Intercept =</span> <span class="dv">0</span>, <span class="dt">sigma =</span> <span class="dv">1</span>),
-                   <span class="kw">list</span>(<span class="dt">Intercept =</span> <span class="dv">0</span>, <span class="dt">sigma =</span> <span class="dv">1</span>)),
-      <span class="dt">iter =</span> <span class="dv">4000</span>, <span class="dt">warmup =</span> <span class="dv">1000</span>, <span class="dt">chains =</span> <span class="dv">2</span>,
-      <span class="dt">seed =</span> <span class="dv">8</span>)</code></pre>
+<div class="sourceCode" id="cb791"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb791-1" data-line-number="1">b8<span class="fl">.2</span> &lt;-</a>
+<a class="sourceLine" id="cb791-2" data-line-number="2"><span class="st">  </span><span class="kw">brm</span>(<span class="dt">data =</span> <span class="kw">list</span>(<span class="dt">y =</span> <span class="kw">c</span>(<span class="op">-</span><span class="dv">1</span>, <span class="dv">1</span>)), </a>
+<a class="sourceLine" id="cb791-3" data-line-number="3">      <span class="dt">family =</span> gaussian,</a>
+<a class="sourceLine" id="cb791-4" data-line-number="4">      y <span class="op">~</span><span class="st"> </span><span class="dv">1</span>,</a>
+<a class="sourceLine" id="cb791-5" data-line-number="5">      <span class="dt">prior =</span> <span class="kw">c</span>(<span class="kw">prior</span>(<span class="kw">uniform</span>(<span class="op">-</span><span class="fl">1e10</span>, <span class="fl">1e10</span>), <span class="dt">class =</span> Intercept),</a>
+<a class="sourceLine" id="cb791-6" data-line-number="6">                <span class="kw">prior</span>(<span class="kw">uniform</span>(<span class="dv">0</span>, <span class="fl">1e10</span>), <span class="dt">class =</span> sigma)),</a>
+<a class="sourceLine" id="cb791-7" data-line-number="7">      <span class="dt">inits =</span> <span class="kw">list</span>(<span class="kw">list</span>(<span class="dt">Intercept =</span> <span class="dv">0</span>, <span class="dt">sigma =</span> <span class="dv">1</span>),</a>
+<a class="sourceLine" id="cb791-8" data-line-number="8">                   <span class="kw">list</span>(<span class="dt">Intercept =</span> <span class="dv">0</span>, <span class="dt">sigma =</span> <span class="dv">1</span>)),</a>
+<a class="sourceLine" id="cb791-9" data-line-number="9">      <span class="dt">iter =</span> <span class="dv">4000</span>, <span class="dt">warmup =</span> <span class="dv">1000</span>, <span class="dt">chains =</span> <span class="dv">2</span>,</a>
+<a class="sourceLine" id="cb791-10" data-line-number="10">      <span class="dt">seed =</span> <span class="dv">8</span>)</a></code></pre></div>
 <p>Those were some silly flat priors. Check the damage.</p>
-<pre class="sourceCode r"><code class="sourceCode r">post &lt;-<span class="st"> </span><span class="kw">posterior_samples</span>(b8<span class="fl">.2</span>, <span class="dt">add_chain =</span> T)
-
-<span class="kw">mcmc_trace</span>(post[, <span class="kw">c</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">2</span>, <span class="dv">4</span>)],
-           <span class="dt">size =</span> <span class="fl">.25</span>) <span class="op">+</span>
-<span class="st">  </span><span class="kw">labs</span>(<span class="dt">title    =</span> <span class="st">&quot;My version of Figure 8.5.a.&quot;</span>,
-       <span class="dt">subtitle =</span> <span class="st">&quot;These trace plots do not look like the fuzzy caterpillars we usually hope for.&quot;</span>) <span class="op">+</span>
-<span class="st">  </span><span class="kw">scale_color_ipsum</span>() <span class="op">+</span>
-<span class="st">  </span><span class="kw">theme_ipsum</span>() <span class="op">+</span>
-<span class="st">  </span><span class="kw">theme</span>(<span class="dt">legend.position =</span> <span class="kw">c</span>(.<span class="dv">85</span>, <span class="fl">1.5</span>),
-        <span class="dt">legend.direction =</span> <span class="st">&quot;horizontal&quot;</span>)</code></pre>
+<div class="sourceCode" id="cb792"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb792-1" data-line-number="1">post &lt;-<span class="st"> </span><span class="kw">posterior_samples</span>(b8<span class="fl">.2</span>, <span class="dt">add_chain =</span> T)</a>
+<a class="sourceLine" id="cb792-2" data-line-number="2"></a>
+<a class="sourceLine" id="cb792-3" data-line-number="3"><span class="kw">mcmc_trace</span>(post[, <span class="kw">c</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">2</span>, <span class="dv">4</span>)],</a>
+<a class="sourceLine" id="cb792-4" data-line-number="4">           <span class="dt">size =</span> <span class="fl">.25</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb792-5" data-line-number="5"><span class="st">  </span><span class="kw">labs</span>(<span class="dt">title    =</span> <span class="st">&quot;My version of Figure 8.5.a.&quot;</span>,</a>
+<a class="sourceLine" id="cb792-6" data-line-number="6">       <span class="dt">subtitle =</span> <span class="st">&quot;These trace plots do not look like the fuzzy caterpillars we usually hope for.&quot;</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb792-7" data-line-number="7"><span class="st">  </span><span class="kw">scale_color_ipsum</span>() <span class="op">+</span></a>
+<a class="sourceLine" id="cb792-8" data-line-number="8"><span class="st">  </span><span class="kw">theme_ipsum</span>() <span class="op">+</span></a>
+<a class="sourceLine" id="cb792-9" data-line-number="9"><span class="st">  </span><span class="kw">theme</span>(<span class="dt">legend.position =</span> <span class="kw">c</span>(.<span class="dv">85</span>, <span class="fl">1.5</span>),</a>
+<a class="sourceLine" id="cb792-10" data-line-number="10">        <span class="dt">legend.direction =</span> <span class="st">&quot;horizontal&quot;</span>)</a></code></pre></div>
 <p><img src="_main_files/figure-html/unnamed-chunk-456-1.png" width="624" /></p>
 <p>Let’s peek at the summary.</p>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">print</span>(b8<span class="fl">.2</span>)</code></pre>
+<div class="sourceCode" id="cb793"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb793-1" data-line-number="1"><span class="kw">print</span>(b8<span class="fl">.2</span>)</a></code></pre></div>
 <pre><code>## Warning: There were 1059 divergent transitions after warmup. Increasing adapt_delta above 0.8 may help.
 ## See http://mc-stan.org/misc/warnings.html#divergent-transitions-after-warmup</code></pre>
 <pre><code>##  Family: gaussian 
@@ -881,17 +880,17 @@ post &lt;-<span class="st"> </span><span class="kw">posterior_samples</span>(b8<
 ## is a crude measure of effective sample size, and Rhat is the potential 
 ## scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
 <p>Holy smokes, those parameters are a mess! Plus we got a nasty warning message, too. Watch our reasonable priors save the day.</p>
-<pre class="sourceCode r"><code class="sourceCode r">b8<span class="fl">.3</span> &lt;-
-<span class="st">  </span><span class="kw">brm</span>(<span class="dt">data =</span> <span class="kw">list</span>(<span class="dt">y =</span> <span class="kw">c</span>(<span class="op">-</span><span class="dv">1</span>, <span class="dv">1</span>)), 
-      <span class="dt">family =</span> gaussian,
-      y <span class="op">~</span><span class="st"> </span><span class="dv">1</span>,
-      <span class="dt">prior =</span> <span class="kw">c</span>(<span class="kw">prior</span>(<span class="kw">normal</span>(<span class="dv">0</span>, <span class="dv">10</span>), <span class="dt">class =</span> Intercept),
-                <span class="kw">prior</span>(<span class="kw">cauchy</span>(<span class="dv">0</span>, <span class="dv">1</span>), <span class="dt">class =</span> sigma)),
-      <span class="dt">inits =</span> <span class="kw">list</span>(<span class="kw">list</span>(<span class="dt">Intercept =</span> <span class="dv">0</span>, <span class="dt">sigma =</span> <span class="dv">1</span>),
-                   <span class="kw">list</span>(<span class="dt">Intercept =</span> <span class="dv">0</span>, <span class="dt">sigma =</span> <span class="dv">1</span>)),
-      <span class="dt">iter =</span> <span class="dv">4000</span>, <span class="dt">warmup =</span> <span class="dv">1000</span>, <span class="dt">chains =</span> <span class="dv">2</span>,
-      <span class="dt">seed =</span> <span class="dv">8</span>)</code></pre>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">print</span>(b8<span class="fl">.3</span>)</code></pre>
+<div class="sourceCode" id="cb796"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb796-1" data-line-number="1">b8<span class="fl">.3</span> &lt;-</a>
+<a class="sourceLine" id="cb796-2" data-line-number="2"><span class="st">  </span><span class="kw">brm</span>(<span class="dt">data =</span> <span class="kw">list</span>(<span class="dt">y =</span> <span class="kw">c</span>(<span class="op">-</span><span class="dv">1</span>, <span class="dv">1</span>)), </a>
+<a class="sourceLine" id="cb796-3" data-line-number="3">      <span class="dt">family =</span> gaussian,</a>
+<a class="sourceLine" id="cb796-4" data-line-number="4">      y <span class="op">~</span><span class="st"> </span><span class="dv">1</span>,</a>
+<a class="sourceLine" id="cb796-5" data-line-number="5">      <span class="dt">prior =</span> <span class="kw">c</span>(<span class="kw">prior</span>(<span class="kw">normal</span>(<span class="dv">0</span>, <span class="dv">10</span>), <span class="dt">class =</span> Intercept),</a>
+<a class="sourceLine" id="cb796-6" data-line-number="6">                <span class="kw">prior</span>(<span class="kw">cauchy</span>(<span class="dv">0</span>, <span class="dv">1</span>), <span class="dt">class =</span> sigma)),</a>
+<a class="sourceLine" id="cb796-7" data-line-number="7">      <span class="dt">inits =</span> <span class="kw">list</span>(<span class="kw">list</span>(<span class="dt">Intercept =</span> <span class="dv">0</span>, <span class="dt">sigma =</span> <span class="dv">1</span>),</a>
+<a class="sourceLine" id="cb796-8" data-line-number="8">                   <span class="kw">list</span>(<span class="dt">Intercept =</span> <span class="dv">0</span>, <span class="dt">sigma =</span> <span class="dv">1</span>)),</a>
+<a class="sourceLine" id="cb796-9" data-line-number="9">      <span class="dt">iter =</span> <span class="dv">4000</span>, <span class="dt">warmup =</span> <span class="dv">1000</span>, <span class="dt">chains =</span> <span class="dv">2</span>,</a>
+<a class="sourceLine" id="cb796-10" data-line-number="10">      <span class="dt">seed =</span> <span class="dv">8</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb797"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb797-1" data-line-number="1"><span class="kw">print</span>(b8<span class="fl">.3</span>)</a></code></pre></div>
 <pre><code>##  Family: gaussian 
 ##   Links: mu = identity; sigma = identity 
 ## Formula: y ~ 1 
@@ -911,107 +910,107 @@ post &lt;-<span class="st"> </span><span class="kw">posterior_samples</span>(b8<
 ## is a crude measure of effective sample size, and Rhat is the potential 
 ## scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
 <p>As in the text, no more warning signs and no more silly estimates. The trace plots look great, too.</p>
-<pre class="sourceCode r"><code class="sourceCode r">post &lt;-<span class="st"> </span><span class="kw">posterior_samples</span>(b8<span class="fl">.3</span>, <span class="dt">add_chain =</span> T)
-
-<span class="kw">mcmc_trace</span>(post[, <span class="kw">c</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">2</span>, <span class="dv">4</span>)],
-           <span class="dt">size =</span> <span class="fl">.25</span>) <span class="op">+</span>
-<span class="st">  </span><span class="kw">labs</span>(<span class="dt">title     =</span> <span class="st">&quot;My version of Figure 8.5.b&quot;</span>,
-       <span class="dt">subtitle  =</span> <span class="st">&quot;Oh man. This looks so much better.&quot;</span>) <span class="op">+</span>
-<span class="st">  </span><span class="kw">scale_color_ipsum</span>() <span class="op">+</span>
-<span class="st">  </span><span class="kw">theme_ipsum</span>() <span class="op">+</span>
-<span class="st">  </span><span class="kw">theme</span>(<span class="dt">legend.position =</span> <span class="kw">c</span>(.<span class="dv">85</span>, <span class="fl">1.5</span>),
-        <span class="dt">legend.direction =</span> <span class="st">&quot;horizontal&quot;</span>)</code></pre>
+<div class="sourceCode" id="cb799"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb799-1" data-line-number="1">post &lt;-<span class="st"> </span><span class="kw">posterior_samples</span>(b8<span class="fl">.3</span>, <span class="dt">add_chain =</span> T)</a>
+<a class="sourceLine" id="cb799-2" data-line-number="2"></a>
+<a class="sourceLine" id="cb799-3" data-line-number="3"><span class="kw">mcmc_trace</span>(post[, <span class="kw">c</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">2</span>, <span class="dv">4</span>)],</a>
+<a class="sourceLine" id="cb799-4" data-line-number="4">           <span class="dt">size =</span> <span class="fl">.25</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb799-5" data-line-number="5"><span class="st">  </span><span class="kw">labs</span>(<span class="dt">title     =</span> <span class="st">&quot;My version of Figure 8.5.b&quot;</span>,</a>
+<a class="sourceLine" id="cb799-6" data-line-number="6">       <span class="dt">subtitle  =</span> <span class="st">&quot;Oh man. This looks so much better.&quot;</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb799-7" data-line-number="7"><span class="st">  </span><span class="kw">scale_color_ipsum</span>() <span class="op">+</span></a>
+<a class="sourceLine" id="cb799-8" data-line-number="8"><span class="st">  </span><span class="kw">theme_ipsum</span>() <span class="op">+</span></a>
+<a class="sourceLine" id="cb799-9" data-line-number="9"><span class="st">  </span><span class="kw">theme</span>(<span class="dt">legend.position =</span> <span class="kw">c</span>(.<span class="dv">85</span>, <span class="fl">1.5</span>),</a>
+<a class="sourceLine" id="cb799-10" data-line-number="10">        <span class="dt">legend.direction =</span> <span class="st">&quot;horizontal&quot;</span>)</a></code></pre></div>
 <p><img src="_main_files/figure-html/unnamed-chunk-459-1.png" width="624" /></p>
 <p>Now behold our version of Figure 8.6.a.</p>
-<pre class="sourceCode r"><code class="sourceCode r">post <span class="op">%&gt;%</span>
-<span class="st">  </span><span class="kw">select</span>(b_Intercept) <span class="op">%&gt;%</span>
-<span class="st">  </span>
-<span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(<span class="dt">x =</span> b_Intercept)) <span class="op">+</span>
-<span class="st">  </span><span class="kw">stat_density</span>(<span class="dt">geom =</span> <span class="st">&quot;line&quot;</span>) <span class="op">+</span>
-<span class="st">  </span><span class="kw">geom_line</span>(<span class="dt">data =</span> <span class="kw">data.frame</span>(<span class="dt">x =</span> <span class="kw">seq</span>(<span class="dt">from =</span> <span class="kw">min</span>(post<span class="op">$</span>b_Intercept),
-                                      <span class="dt">to =</span> <span class="kw">max</span>(post<span class="op">$</span>b_Intercept),
-                                      <span class="dt">length.out =</span> <span class="dv">50</span>)),
-            <span class="kw">aes</span>(<span class="dt">x =</span> x, <span class="dt">y =</span> <span class="kw">dnorm</span>(<span class="dt">x =</span> x, <span class="dt">mean =</span> <span class="dv">0</span>, <span class="dt">sd =</span> <span class="dv">10</span>)),
-            <span class="dt">color =</span> <span class="kw">ipsum_pal</span>()(<span class="dv">1</span>), <span class="dt">linetype =</span> <span class="dv">2</span>) <span class="op">+</span>
-<span class="st">  </span><span class="kw">theme_ipsum</span>()</code></pre>
+<div class="sourceCode" id="cb800"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb800-1" data-line-number="1">post <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb800-2" data-line-number="2"><span class="st">  </span><span class="kw">select</span>(b_Intercept) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb800-3" data-line-number="3"><span class="st">  </span></a>
+<a class="sourceLine" id="cb800-4" data-line-number="4"><span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(<span class="dt">x =</span> b_Intercept)) <span class="op">+</span></a>
+<a class="sourceLine" id="cb800-5" data-line-number="5"><span class="st">  </span><span class="kw">stat_density</span>(<span class="dt">geom =</span> <span class="st">&quot;line&quot;</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb800-6" data-line-number="6"><span class="st">  </span><span class="kw">geom_line</span>(<span class="dt">data =</span> <span class="kw">data.frame</span>(<span class="dt">x =</span> <span class="kw">seq</span>(<span class="dt">from =</span> <span class="kw">min</span>(post<span class="op">$</span>b_Intercept),</a>
+<a class="sourceLine" id="cb800-7" data-line-number="7">                                      <span class="dt">to =</span> <span class="kw">max</span>(post<span class="op">$</span>b_Intercept),</a>
+<a class="sourceLine" id="cb800-8" data-line-number="8">                                      <span class="dt">length.out =</span> <span class="dv">50</span>)),</a>
+<a class="sourceLine" id="cb800-9" data-line-number="9">            <span class="kw">aes</span>(<span class="dt">x =</span> x, <span class="dt">y =</span> <span class="kw">dnorm</span>(<span class="dt">x =</span> x, <span class="dt">mean =</span> <span class="dv">0</span>, <span class="dt">sd =</span> <span class="dv">10</span>)),</a>
+<a class="sourceLine" id="cb800-10" data-line-number="10">            <span class="dt">color =</span> <span class="kw">ipsum_pal</span>()(<span class="dv">1</span>), <span class="dt">linetype =</span> <span class="dv">2</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb800-11" data-line-number="11"><span class="st">  </span><span class="kw">theme_ipsum</span>()</a></code></pre></div>
 <p><img src="_main_files/figure-html/unnamed-chunk-460-1.png" width="336" /></p>
 <p>Here’s our version of Figure 8.6.b.</p>
-<pre class="sourceCode r"><code class="sourceCode r">post <span class="op">%&gt;%</span>
-<span class="st">  </span><span class="kw">select</span>(sigma) <span class="op">%&gt;%</span>
-<span class="st">  </span>
-<span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(<span class="dt">x =</span> sigma)) <span class="op">+</span>
-<span class="st">  </span><span class="kw">stat_density</span>(<span class="dt">geom =</span> <span class="st">&quot;line&quot;</span>) <span class="op">+</span>
-<span class="st">  </span><span class="kw">geom_line</span>(<span class="dt">data =</span> <span class="kw">data.frame</span>(<span class="dt">x =</span> <span class="kw">seq</span>(<span class="dt">from =</span> <span class="dv">0</span>,
-                                      <span class="dt">to =</span> <span class="kw">max</span>(post<span class="op">$</span>sigma),
-                                      <span class="dt">length.out =</span> <span class="dv">50</span>)),
-            <span class="kw">aes</span>(<span class="dt">x =</span> x, <span class="dt">y =</span> <span class="kw">dcauchy</span>(<span class="dt">x =</span> x, <span class="dt">location =</span> <span class="dv">0</span>, <span class="dt">scale =</span> <span class="dv">1</span>)<span class="op">*</span><span class="dv">2</span>),
-            <span class="dt">color =</span> <span class="kw">ipsum_pal</span>()(<span class="dv">2</span>)[<span class="dv">2</span>], <span class="dt">linetype =</span> <span class="dv">2</span>) <span class="op">+</span>
-<span class="st">  </span><span class="kw">coord_cartesian</span>(<span class="dt">xlim =</span> <span class="kw">c</span>(<span class="dv">0</span>, <span class="dv">10</span>)) <span class="op">+</span>
-<span class="st">  </span><span class="kw">theme_ipsum</span>()</code></pre>
+<div class="sourceCode" id="cb801"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb801-1" data-line-number="1">post <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb801-2" data-line-number="2"><span class="st">  </span><span class="kw">select</span>(sigma) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb801-3" data-line-number="3"><span class="st">  </span></a>
+<a class="sourceLine" id="cb801-4" data-line-number="4"><span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(<span class="dt">x =</span> sigma)) <span class="op">+</span></a>
+<a class="sourceLine" id="cb801-5" data-line-number="5"><span class="st">  </span><span class="kw">stat_density</span>(<span class="dt">geom =</span> <span class="st">&quot;line&quot;</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb801-6" data-line-number="6"><span class="st">  </span><span class="kw">geom_line</span>(<span class="dt">data =</span> <span class="kw">data.frame</span>(<span class="dt">x =</span> <span class="kw">seq</span>(<span class="dt">from =</span> <span class="dv">0</span>,</a>
+<a class="sourceLine" id="cb801-7" data-line-number="7">                                      <span class="dt">to =</span> <span class="kw">max</span>(post<span class="op">$</span>sigma),</a>
+<a class="sourceLine" id="cb801-8" data-line-number="8">                                      <span class="dt">length.out =</span> <span class="dv">50</span>)),</a>
+<a class="sourceLine" id="cb801-9" data-line-number="9">            <span class="kw">aes</span>(<span class="dt">x =</span> x, <span class="dt">y =</span> <span class="kw">dcauchy</span>(<span class="dt">x =</span> x, <span class="dt">location =</span> <span class="dv">0</span>, <span class="dt">scale =</span> <span class="dv">1</span>)<span class="op">*</span><span class="dv">2</span>),</a>
+<a class="sourceLine" id="cb801-10" data-line-number="10">            <span class="dt">color =</span> <span class="kw">ipsum_pal</span>()(<span class="dv">2</span>)[<span class="dv">2</span>], <span class="dt">linetype =</span> <span class="dv">2</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb801-11" data-line-number="11"><span class="st">  </span><span class="kw">coord_cartesian</span>(<span class="dt">xlim =</span> <span class="kw">c</span>(<span class="dv">0</span>, <span class="dv">10</span>)) <span class="op">+</span></a>
+<a class="sourceLine" id="cb801-12" data-line-number="12"><span class="st">  </span><span class="kw">theme_ipsum</span>()</a></code></pre></div>
 <p><img src="_main_files/figure-html/unnamed-chunk-461-1.png" width="336" /></p>
 <div id="overthinking-cauchy-distribution." class="section level4">
 <h4><span class="header-section-number">8.4.3.1</span> Overthinking: Cauchy distribution.</h4>
 <p>Behold the beautiful Cauchy probability density:</p>
 <p><span class="math display">\[p(x|x_0, \gamma) = \Bigg ( \pi \gamma \Bigg [ 1 + \Big ( \frac{x - x_0}{\gamma} \Big ) ^2 \Bigg ] \Bigg ) ^{-1}\]</span></p>
 <p>The Cauchy has no mean and variance, but <span class="math inline">\(x_0\)</span> is the location and <span class="math inline">\(\gamma\)</span> is the scale. Here’s our version of the simulation. Note our use of the <code>cummean()</code> function.</p>
-<pre class="sourceCode r"><code class="sourceCode r">n &lt;-<span class="st"> </span><span class="fl">1e4</span>
-
-<span class="kw">set.seed</span>(<span class="dv">8</span>)
-<span class="kw">tibble</span>(<span class="dt">y     =</span> <span class="kw">rcauchy</span>(n, <span class="dt">location =</span> <span class="dv">0</span>, <span class="dt">scale =</span> <span class="dv">5</span>),
-       <span class="dt">mu    =</span> <span class="kw">cummean</span>(y),
-       <span class="dt">index =</span> <span class="dv">1</span><span class="op">:</span>n) <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span>
-<span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(<span class="dt">x =</span> index, <span class="dt">y =</span> mu)) <span class="op">+</span>
-<span class="st">  </span><span class="kw">geom_line</span>() <span class="op">+</span>
-<span class="st">  </span><span class="kw">theme_ipsum</span>()</code></pre>
+<div class="sourceCode" id="cb802"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb802-1" data-line-number="1">n &lt;-<span class="st"> </span><span class="fl">1e4</span></a>
+<a class="sourceLine" id="cb802-2" data-line-number="2"></a>
+<a class="sourceLine" id="cb802-3" data-line-number="3"><span class="kw">set.seed</span>(<span class="dv">8</span>)</a>
+<a class="sourceLine" id="cb802-4" data-line-number="4"><span class="kw">tibble</span>(<span class="dt">y     =</span> <span class="kw">rcauchy</span>(n, <span class="dt">location =</span> <span class="dv">0</span>, <span class="dt">scale =</span> <span class="dv">5</span>),</a>
+<a class="sourceLine" id="cb802-5" data-line-number="5">       <span class="dt">mu    =</span> <span class="kw">cummean</span>(y),</a>
+<a class="sourceLine" id="cb802-6" data-line-number="6">       <span class="dt">index =</span> <span class="dv">1</span><span class="op">:</span>n) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb802-7" data-line-number="7"><span class="st">  </span></a>
+<a class="sourceLine" id="cb802-8" data-line-number="8"><span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(<span class="dt">x =</span> index, <span class="dt">y =</span> mu)) <span class="op">+</span></a>
+<a class="sourceLine" id="cb802-9" data-line-number="9"><span class="st">  </span><span class="kw">geom_line</span>() <span class="op">+</span></a>
+<a class="sourceLine" id="cb802-10" data-line-number="10"><span class="st">  </span><span class="kw">theme_ipsum</span>()</a></code></pre></div>
 <p><img src="_main_files/figure-html/unnamed-chunk-462-1.png" width="384" /></p>
 <p>The whole thing is quite remarkible. Just for kicks, here we do it again, this time with eight simulations.</p>
-<pre class="sourceCode r"><code class="sourceCode r">n &lt;-<span class="st"> </span><span class="fl">1e4</span>
-
-<span class="kw">set.seed</span>(<span class="dv">8</span>)
-<span class="kw">tibble</span>(<span class="dt">a =</span> <span class="kw">rcauchy</span>(n, <span class="dt">location =</span> <span class="dv">0</span>, <span class="dt">scale =</span> <span class="dv">5</span>),
-       <span class="dt">b =</span> <span class="kw">rcauchy</span>(n, <span class="dt">location =</span> <span class="dv">0</span>, <span class="dt">scale =</span> <span class="dv">5</span>),
-       <span class="dt">c =</span> <span class="kw">rcauchy</span>(n, <span class="dt">location =</span> <span class="dv">0</span>, <span class="dt">scale =</span> <span class="dv">5</span>),
-       <span class="dt">d =</span> <span class="kw">rcauchy</span>(n, <span class="dt">location =</span> <span class="dv">0</span>, <span class="dt">scale =</span> <span class="dv">5</span>),
-       <span class="dt">e =</span> <span class="kw">rcauchy</span>(n, <span class="dt">location =</span> <span class="dv">0</span>, <span class="dt">scale =</span> <span class="dv">5</span>),
-       <span class="dt">f =</span> <span class="kw">rcauchy</span>(n, <span class="dt">location =</span> <span class="dv">0</span>, <span class="dt">scale =</span> <span class="dv">5</span>),
-       <span class="dt">g =</span> <span class="kw">rcauchy</span>(n, <span class="dt">location =</span> <span class="dv">0</span>, <span class="dt">scale =</span> <span class="dv">5</span>),
-       <span class="dt">h =</span> <span class="kw">rcauchy</span>(n, <span class="dt">location =</span> <span class="dv">0</span>, <span class="dt">scale =</span> <span class="dv">5</span>)) <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span><span class="kw">gather</span>() <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span><span class="kw">group_by</span>(key) <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">mu =</span> <span class="kw">cummean</span>(value)) <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span><span class="kw">ungroup</span>() <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">index =</span> <span class="kw">rep</span>(<span class="dv">1</span><span class="op">:</span>n, <span class="dt">times =</span> <span class="dv">8</span>)) <span class="op">%&gt;%</span><span class="st"> </span>
-
-<span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(<span class="dt">x =</span> index, <span class="dt">y =</span> mu)) <span class="op">+</span>
-<span class="st">  </span><span class="kw">geom_line</span>(<span class="kw">aes</span>(<span class="dt">color =</span> key)) <span class="op">+</span>
-<span class="st">  </span><span class="kw">scale_color_manual</span>(<span class="dt">values =</span> <span class="kw">ipsum_pal</span>()(<span class="dv">8</span>)) <span class="op">+</span>
-<span class="st">  </span><span class="kw">scale_x_continuous</span>(<span class="dt">breaks =</span> <span class="kw">c</span>(<span class="dv">0</span>, <span class="dv">5000</span>, <span class="dv">10000</span>)) <span class="op">+</span>
-<span class="st">  </span><span class="kw">theme_ipsum</span>() <span class="op">+</span>
-<span class="st">  </span><span class="kw">theme</span>(<span class="dt">legend.position =</span> <span class="st">&quot;none&quot;</span>) <span class="op">+</span>
-<span class="st">  </span><span class="kw">facet_wrap</span>(<span class="op">~</span>key, <span class="dt">ncol =</span> <span class="dv">4</span>, <span class="dt">scales =</span> <span class="st">&quot;free&quot;</span>)</code></pre>
+<div class="sourceCode" id="cb803"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb803-1" data-line-number="1">n &lt;-<span class="st"> </span><span class="fl">1e4</span></a>
+<a class="sourceLine" id="cb803-2" data-line-number="2"></a>
+<a class="sourceLine" id="cb803-3" data-line-number="3"><span class="kw">set.seed</span>(<span class="dv">8</span>)</a>
+<a class="sourceLine" id="cb803-4" data-line-number="4"><span class="kw">tibble</span>(<span class="dt">a =</span> <span class="kw">rcauchy</span>(n, <span class="dt">location =</span> <span class="dv">0</span>, <span class="dt">scale =</span> <span class="dv">5</span>),</a>
+<a class="sourceLine" id="cb803-5" data-line-number="5">       <span class="dt">b =</span> <span class="kw">rcauchy</span>(n, <span class="dt">location =</span> <span class="dv">0</span>, <span class="dt">scale =</span> <span class="dv">5</span>),</a>
+<a class="sourceLine" id="cb803-6" data-line-number="6">       <span class="dt">c =</span> <span class="kw">rcauchy</span>(n, <span class="dt">location =</span> <span class="dv">0</span>, <span class="dt">scale =</span> <span class="dv">5</span>),</a>
+<a class="sourceLine" id="cb803-7" data-line-number="7">       <span class="dt">d =</span> <span class="kw">rcauchy</span>(n, <span class="dt">location =</span> <span class="dv">0</span>, <span class="dt">scale =</span> <span class="dv">5</span>),</a>
+<a class="sourceLine" id="cb803-8" data-line-number="8">       <span class="dt">e =</span> <span class="kw">rcauchy</span>(n, <span class="dt">location =</span> <span class="dv">0</span>, <span class="dt">scale =</span> <span class="dv">5</span>),</a>
+<a class="sourceLine" id="cb803-9" data-line-number="9">       <span class="dt">f =</span> <span class="kw">rcauchy</span>(n, <span class="dt">location =</span> <span class="dv">0</span>, <span class="dt">scale =</span> <span class="dv">5</span>),</a>
+<a class="sourceLine" id="cb803-10" data-line-number="10">       <span class="dt">g =</span> <span class="kw">rcauchy</span>(n, <span class="dt">location =</span> <span class="dv">0</span>, <span class="dt">scale =</span> <span class="dv">5</span>),</a>
+<a class="sourceLine" id="cb803-11" data-line-number="11">       <span class="dt">h =</span> <span class="kw">rcauchy</span>(n, <span class="dt">location =</span> <span class="dv">0</span>, <span class="dt">scale =</span> <span class="dv">5</span>)) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb803-12" data-line-number="12"><span class="st">  </span><span class="kw">gather</span>() <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb803-13" data-line-number="13"><span class="st">  </span><span class="kw">group_by</span>(key) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb803-14" data-line-number="14"><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">mu =</span> <span class="kw">cummean</span>(value)) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb803-15" data-line-number="15"><span class="st">  </span><span class="kw">ungroup</span>() <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb803-16" data-line-number="16"><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">index =</span> <span class="kw">rep</span>(<span class="dv">1</span><span class="op">:</span>n, <span class="dt">times =</span> <span class="dv">8</span>)) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb803-17" data-line-number="17"></a>
+<a class="sourceLine" id="cb803-18" data-line-number="18"><span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(<span class="dt">x =</span> index, <span class="dt">y =</span> mu)) <span class="op">+</span></a>
+<a class="sourceLine" id="cb803-19" data-line-number="19"><span class="st">  </span><span class="kw">geom_line</span>(<span class="kw">aes</span>(<span class="dt">color =</span> key)) <span class="op">+</span></a>
+<a class="sourceLine" id="cb803-20" data-line-number="20"><span class="st">  </span><span class="kw">scale_color_manual</span>(<span class="dt">values =</span> <span class="kw">ipsum_pal</span>()(<span class="dv">8</span>)) <span class="op">+</span></a>
+<a class="sourceLine" id="cb803-21" data-line-number="21"><span class="st">  </span><span class="kw">scale_x_continuous</span>(<span class="dt">breaks =</span> <span class="kw">c</span>(<span class="dv">0</span>, <span class="dv">5000</span>, <span class="dv">10000</span>)) <span class="op">+</span></a>
+<a class="sourceLine" id="cb803-22" data-line-number="22"><span class="st">  </span><span class="kw">theme_ipsum</span>() <span class="op">+</span></a>
+<a class="sourceLine" id="cb803-23" data-line-number="23"><span class="st">  </span><span class="kw">theme</span>(<span class="dt">legend.position =</span> <span class="st">&quot;none&quot;</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb803-24" data-line-number="24"><span class="st">  </span><span class="kw">facet_wrap</span>(<span class="op">~</span>key, <span class="dt">ncol =</span> <span class="dv">4</span>, <span class="dt">scales =</span> <span class="st">&quot;free&quot;</span>)</a></code></pre></div>
 <p><img src="_main_files/figure-html/unnamed-chunk-463-1.png" width="960" /></p>
 </div>
 </div>
 <div id="non-identifiable-parameters." class="section level3">
 <h3><span class="header-section-number">8.4.4</span> Non-identifiable parameters.</h3>
 <p>It appears that the <a href="https://github.com/ASKurz/Statistical_Rethinking_with_brms_ggplot2_and_the_tidyverse/issues/3">only way</a> to get a brms version of McElreath’s <code>m8.4</code> and <code>m8.5</code> is to augment the data. In addition to the Gaussian <code>y</code> vector, we’ll add two constants to the data, <code>intercept_1 = 1</code> and <code>intercept_2 = 1</code>.</p>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">set.seed</span>(<span class="dv">8</span>)
-y &lt;-<span class="st"> </span><span class="kw">rnorm</span>(<span class="dv">100</span>, <span class="dt">mean =</span> <span class="dv">0</span>, <span class="dt">sd =</span> <span class="dv">1</span>)</code></pre>
-<pre class="sourceCode r"><code class="sourceCode r">b8<span class="fl">.4</span> &lt;-
-<span class="st">  </span><span class="kw">brm</span>(<span class="dt">data =</span> <span class="kw">list</span>(<span class="dt">y           =</span> y,
-                  <span class="dt">intercept_1 =</span> <span class="dv">1</span>,
-                  <span class="dt">intercept_2 =</span> <span class="dv">1</span>), 
-      <span class="dt">family =</span> gaussian,
-      y <span class="op">~</span><span class="st"> </span><span class="dv">0</span> <span class="op">+</span><span class="st"> </span>intercept_<span class="dv">1</span> <span class="op">+</span><span class="st"> </span>intercept_<span class="dv">2</span>,
-      <span class="dt">prior =</span> <span class="kw">c</span>(<span class="kw">prior</span>(<span class="kw">uniform</span>(<span class="op">-</span><span class="fl">1e10</span>, <span class="fl">1e10</span>), <span class="dt">class =</span> b),
-                <span class="kw">prior</span>(<span class="kw">cauchy</span>(<span class="dv">0</span>, <span class="dv">1</span>), <span class="dt">class =</span> sigma)),
-      <span class="dt">inits =</span> <span class="kw">list</span>(<span class="kw">list</span>(<span class="dt">intercept_1 =</span> <span class="dv">0</span>, <span class="dt">intercept_2 =</span> <span class="dv">0</span>, <span class="dt">sigma =</span> <span class="dv">1</span>),
-                   <span class="kw">list</span>(<span class="dt">intercept_1 =</span> <span class="dv">0</span>, <span class="dt">intercept_2 =</span> <span class="dv">0</span>, <span class="dt">sigma =</span> <span class="dv">1</span>)),
-      <span class="dt">iter =</span> <span class="dv">4000</span>, <span class="dt">warmup =</span> <span class="dv">1000</span>, <span class="dt">chains =</span> <span class="dv">2</span>,
-      <span class="dt">seed =</span> <span class="dv">8</span>)</code></pre>
+<div class="sourceCode" id="cb804"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb804-1" data-line-number="1"><span class="kw">set.seed</span>(<span class="dv">8</span>)</a>
+<a class="sourceLine" id="cb804-2" data-line-number="2">y &lt;-<span class="st"> </span><span class="kw">rnorm</span>(<span class="dv">100</span>, <span class="dt">mean =</span> <span class="dv">0</span>, <span class="dt">sd =</span> <span class="dv">1</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb805"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb805-1" data-line-number="1">b8<span class="fl">.4</span> &lt;-</a>
+<a class="sourceLine" id="cb805-2" data-line-number="2"><span class="st">  </span><span class="kw">brm</span>(<span class="dt">data =</span> <span class="kw">list</span>(<span class="dt">y           =</span> y,</a>
+<a class="sourceLine" id="cb805-3" data-line-number="3">                  <span class="dt">intercept_1 =</span> <span class="dv">1</span>,</a>
+<a class="sourceLine" id="cb805-4" data-line-number="4">                  <span class="dt">intercept_2 =</span> <span class="dv">1</span>), </a>
+<a class="sourceLine" id="cb805-5" data-line-number="5">      <span class="dt">family =</span> gaussian,</a>
+<a class="sourceLine" id="cb805-6" data-line-number="6">      y <span class="op">~</span><span class="st"> </span><span class="dv">0</span> <span class="op">+</span><span class="st"> </span>intercept_<span class="dv">1</span> <span class="op">+</span><span class="st"> </span>intercept_<span class="dv">2</span>,</a>
+<a class="sourceLine" id="cb805-7" data-line-number="7">      <span class="dt">prior =</span> <span class="kw">c</span>(<span class="kw">prior</span>(<span class="kw">uniform</span>(<span class="op">-</span><span class="fl">1e10</span>, <span class="fl">1e10</span>), <span class="dt">class =</span> b),</a>
+<a class="sourceLine" id="cb805-8" data-line-number="8">                <span class="kw">prior</span>(<span class="kw">cauchy</span>(<span class="dv">0</span>, <span class="dv">1</span>), <span class="dt">class =</span> sigma)),</a>
+<a class="sourceLine" id="cb805-9" data-line-number="9">      <span class="dt">inits =</span> <span class="kw">list</span>(<span class="kw">list</span>(<span class="dt">intercept_1 =</span> <span class="dv">0</span>, <span class="dt">intercept_2 =</span> <span class="dv">0</span>, <span class="dt">sigma =</span> <span class="dv">1</span>),</a>
+<a class="sourceLine" id="cb805-10" data-line-number="10">                   <span class="kw">list</span>(<span class="dt">intercept_1 =</span> <span class="dv">0</span>, <span class="dt">intercept_2 =</span> <span class="dv">0</span>, <span class="dt">sigma =</span> <span class="dv">1</span>)),</a>
+<a class="sourceLine" id="cb805-11" data-line-number="11">      <span class="dt">iter =</span> <span class="dv">4000</span>, <span class="dt">warmup =</span> <span class="dv">1000</span>, <span class="dt">chains =</span> <span class="dv">2</span>,</a>
+<a class="sourceLine" id="cb805-12" data-line-number="12">      <span class="dt">seed =</span> <span class="dv">8</span>)</a></code></pre></div>
 <p>Our model results don’t perfectly mirror McElreath’s, but they’re identical in spirit.</p>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">print</span>(b8<span class="fl">.4</span>)</code></pre>
+<div class="sourceCode" id="cb806"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb806-1" data-line-number="1"><span class="kw">print</span>(b8<span class="fl">.4</span>)</a></code></pre></div>
 <pre><code>## Warning: The model has not converged (some Rhats are &gt; 1.1). Do not analyse the results! 
 ## We recommend running more iterations and/or setting stronger priors.</code></pre>
 <pre><code>##  Family: gaussian 
@@ -1034,19 +1033,19 @@ y &lt;-<span class="st"> </span><span class="kw">rnorm</span>(<span class="dv">1
 ## is a crude measure of effective sample size, and Rhat is the potential 
 ## scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
 <p>Note the frightening warning message. Those results are a mess! Let’s try again.</p>
-<pre class="sourceCode r"><code class="sourceCode r">b8<span class="fl">.5</span> &lt;-
-<span class="st">  </span><span class="kw">brm</span>(<span class="dt">data =</span> <span class="kw">list</span>(<span class="dt">y           =</span> y,
-                  <span class="dt">intercept_1 =</span> <span class="dv">1</span>,
-                  <span class="dt">intercept_2 =</span> <span class="dv">1</span>),
-      <span class="dt">family =</span> gaussian,
-      y <span class="op">~</span><span class="st"> </span><span class="dv">0</span> <span class="op">+</span><span class="st"> </span>intercept_<span class="dv">1</span> <span class="op">+</span><span class="st"> </span>intercept_<span class="dv">2</span>,
-      <span class="dt">prior =</span> <span class="kw">c</span>(<span class="kw">prior</span>(<span class="kw">normal</span>(<span class="dv">0</span>, <span class="dv">10</span>), <span class="dt">class =</span> b),
-                <span class="kw">prior</span>(<span class="kw">cauchy</span>(<span class="dv">0</span>, <span class="dv">1</span>), <span class="dt">class =</span> sigma)),
-      <span class="dt">inits =</span> <span class="kw">list</span>(<span class="kw">list</span>(<span class="dt">intercept_1 =</span> <span class="dv">0</span>, <span class="dt">intercept_2 =</span> <span class="dv">0</span>, <span class="dt">sigma =</span> <span class="dv">1</span>),
-                   <span class="kw">list</span>(<span class="dt">intercept_1 =</span> <span class="dv">0</span>, <span class="dt">intercept_2 =</span> <span class="dv">0</span>, <span class="dt">sigma =</span> <span class="dv">1</span>)),
-      <span class="dt">iter =</span> <span class="dv">4000</span>, <span class="dt">warmup =</span> <span class="dv">1000</span>, <span class="dt">chains =</span> <span class="dv">2</span>,
-      <span class="dt">seed =</span> <span class="dv">8</span>)</code></pre>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">print</span>(b8<span class="fl">.5</span>)</code></pre>
+<div class="sourceCode" id="cb809"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb809-1" data-line-number="1">b8<span class="fl">.5</span> &lt;-</a>
+<a class="sourceLine" id="cb809-2" data-line-number="2"><span class="st">  </span><span class="kw">brm</span>(<span class="dt">data =</span> <span class="kw">list</span>(<span class="dt">y           =</span> y,</a>
+<a class="sourceLine" id="cb809-3" data-line-number="3">                  <span class="dt">intercept_1 =</span> <span class="dv">1</span>,</a>
+<a class="sourceLine" id="cb809-4" data-line-number="4">                  <span class="dt">intercept_2 =</span> <span class="dv">1</span>),</a>
+<a class="sourceLine" id="cb809-5" data-line-number="5">      <span class="dt">family =</span> gaussian,</a>
+<a class="sourceLine" id="cb809-6" data-line-number="6">      y <span class="op">~</span><span class="st"> </span><span class="dv">0</span> <span class="op">+</span><span class="st"> </span>intercept_<span class="dv">1</span> <span class="op">+</span><span class="st"> </span>intercept_<span class="dv">2</span>,</a>
+<a class="sourceLine" id="cb809-7" data-line-number="7">      <span class="dt">prior =</span> <span class="kw">c</span>(<span class="kw">prior</span>(<span class="kw">normal</span>(<span class="dv">0</span>, <span class="dv">10</span>), <span class="dt">class =</span> b),</a>
+<a class="sourceLine" id="cb809-8" data-line-number="8">                <span class="kw">prior</span>(<span class="kw">cauchy</span>(<span class="dv">0</span>, <span class="dv">1</span>), <span class="dt">class =</span> sigma)),</a>
+<a class="sourceLine" id="cb809-9" data-line-number="9">      <span class="dt">inits =</span> <span class="kw">list</span>(<span class="kw">list</span>(<span class="dt">intercept_1 =</span> <span class="dv">0</span>, <span class="dt">intercept_2 =</span> <span class="dv">0</span>, <span class="dt">sigma =</span> <span class="dv">1</span>),</a>
+<a class="sourceLine" id="cb809-10" data-line-number="10">                   <span class="kw">list</span>(<span class="dt">intercept_1 =</span> <span class="dv">0</span>, <span class="dt">intercept_2 =</span> <span class="dv">0</span>, <span class="dt">sigma =</span> <span class="dv">1</span>)),</a>
+<a class="sourceLine" id="cb809-11" data-line-number="11">      <span class="dt">iter =</span> <span class="dv">4000</span>, <span class="dt">warmup =</span> <span class="dv">1000</span>, <span class="dt">chains =</span> <span class="dv">2</span>,</a>
+<a class="sourceLine" id="cb809-12" data-line-number="12">      <span class="dt">seed =</span> <span class="dv">8</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb810"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb810-1" data-line-number="1"><span class="kw">print</span>(b8<span class="fl">.5</span>)</a></code></pre></div>
 <pre><code>##  Family: gaussian 
 ##   Links: mu = identity; sigma = identity 
 ## Formula: y ~ 0 + intercept_1 + intercept_2 
@@ -1067,31 +1066,31 @@ y &lt;-<span class="st"> </span><span class="kw">rnorm</span>(<span class="dv">1
 ## is a crude measure of effective sample size, and Rhat is the potential 
 ## scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
 <p>Much better. Now we’ll do the preparatory work for Figure 8.7. Instead of showing the plots, here, we’ll save them as objects, <code>left_column</code> and <code>right_column</code>, in order to combine them below.</p>
-<pre class="sourceCode r"><code class="sourceCode r">post &lt;-<span class="st"> </span><span class="kw">posterior_samples</span>(b8<span class="fl">.4</span>, <span class="dt">add_chain =</span> T)
-
-left_column &lt;-
-<span class="st">  </span><span class="kw">mcmc_trace</span>(post[, <span class="kw">c</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">3</span>, <span class="dv">5</span>)],
-           <span class="dt">size =</span> <span class="fl">.25</span>,
-           <span class="dt">facet_args =</span> <span class="kw">c</span>(<span class="dt">ncol =</span> <span class="dv">1</span>)) <span class="op">+</span>
-<span class="st">  </span><span class="kw">scale_color_ipsum</span>() <span class="op">+</span>
-<span class="st">  </span><span class="kw">theme_ipsum</span>() <span class="op">+</span>
-<span class="st">  </span><span class="kw">theme</span>(<span class="dt">legend.position  =</span> <span class="kw">c</span>(.<span class="dv">85</span>, <span class="fl">1.5</span>),
-        <span class="dt">legend.direction =</span> <span class="st">&quot;horizontal&quot;</span>)
-
-post &lt;-<span class="st"> </span><span class="kw">posterior_samples</span>(b8<span class="fl">.5</span>, <span class="dt">add_chain =</span> T)
-
-right_column &lt;-
-<span class="st">  </span><span class="kw">mcmc_trace</span>(post[, <span class="kw">c</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">3</span>, <span class="dv">5</span>)],
-             <span class="dt">size =</span> <span class="fl">.25</span>,
-             <span class="dt">facet_args =</span> <span class="kw">c</span>(<span class="dt">ncol =</span> <span class="dv">1</span>)) <span class="op">+</span>
-<span class="st">  </span><span class="kw">scale_color_ipsum</span>() <span class="op">+</span>
-<span class="st">  </span><span class="kw">theme_ipsum</span>() <span class="op">+</span>
-<span class="st">  </span><span class="kw">theme</span>(<span class="dt">legend.position  =</span> <span class="kw">c</span>(.<span class="dv">85</span>, <span class="fl">1.5</span>),
-        <span class="dt">legend.direction =</span> <span class="st">&quot;horizontal&quot;</span>)
-
-<span class="kw">library</span>(gridExtra)
-
-<span class="kw">grid.arrange</span>(left_column, right_column, <span class="dt">ncol =</span> <span class="dv">2</span>)</code></pre>
+<div class="sourceCode" id="cb812"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb812-1" data-line-number="1">post &lt;-<span class="st"> </span><span class="kw">posterior_samples</span>(b8<span class="fl">.4</span>, <span class="dt">add_chain =</span> T)</a>
+<a class="sourceLine" id="cb812-2" data-line-number="2"></a>
+<a class="sourceLine" id="cb812-3" data-line-number="3">left_column &lt;-</a>
+<a class="sourceLine" id="cb812-4" data-line-number="4"><span class="st">  </span><span class="kw">mcmc_trace</span>(post[, <span class="kw">c</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">3</span>, <span class="dv">5</span>)],</a>
+<a class="sourceLine" id="cb812-5" data-line-number="5">           <span class="dt">size =</span> <span class="fl">.25</span>,</a>
+<a class="sourceLine" id="cb812-6" data-line-number="6">           <span class="dt">facet_args =</span> <span class="kw">c</span>(<span class="dt">ncol =</span> <span class="dv">1</span>)) <span class="op">+</span></a>
+<a class="sourceLine" id="cb812-7" data-line-number="7"><span class="st">  </span><span class="kw">scale_color_ipsum</span>() <span class="op">+</span></a>
+<a class="sourceLine" id="cb812-8" data-line-number="8"><span class="st">  </span><span class="kw">theme_ipsum</span>() <span class="op">+</span></a>
+<a class="sourceLine" id="cb812-9" data-line-number="9"><span class="st">  </span><span class="kw">theme</span>(<span class="dt">legend.position  =</span> <span class="kw">c</span>(.<span class="dv">85</span>, <span class="fl">1.5</span>),</a>
+<a class="sourceLine" id="cb812-10" data-line-number="10">        <span class="dt">legend.direction =</span> <span class="st">&quot;horizontal&quot;</span>)</a>
+<a class="sourceLine" id="cb812-11" data-line-number="11"></a>
+<a class="sourceLine" id="cb812-12" data-line-number="12">post &lt;-<span class="st"> </span><span class="kw">posterior_samples</span>(b8<span class="fl">.5</span>, <span class="dt">add_chain =</span> T)</a>
+<a class="sourceLine" id="cb812-13" data-line-number="13"></a>
+<a class="sourceLine" id="cb812-14" data-line-number="14">right_column &lt;-</a>
+<a class="sourceLine" id="cb812-15" data-line-number="15"><span class="st">  </span><span class="kw">mcmc_trace</span>(post[, <span class="kw">c</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">3</span>, <span class="dv">5</span>)],</a>
+<a class="sourceLine" id="cb812-16" data-line-number="16">             <span class="dt">size =</span> <span class="fl">.25</span>,</a>
+<a class="sourceLine" id="cb812-17" data-line-number="17">             <span class="dt">facet_args =</span> <span class="kw">c</span>(<span class="dt">ncol =</span> <span class="dv">1</span>)) <span class="op">+</span></a>
+<a class="sourceLine" id="cb812-18" data-line-number="18"><span class="st">  </span><span class="kw">scale_color_ipsum</span>() <span class="op">+</span></a>
+<a class="sourceLine" id="cb812-19" data-line-number="19"><span class="st">  </span><span class="kw">theme_ipsum</span>() <span class="op">+</span></a>
+<a class="sourceLine" id="cb812-20" data-line-number="20"><span class="st">  </span><span class="kw">theme</span>(<span class="dt">legend.position  =</span> <span class="kw">c</span>(.<span class="dv">85</span>, <span class="fl">1.5</span>),</a>
+<a class="sourceLine" id="cb812-21" data-line-number="21">        <span class="dt">legend.direction =</span> <span class="st">&quot;horizontal&quot;</span>)</a>
+<a class="sourceLine" id="cb812-22" data-line-number="22"></a>
+<a class="sourceLine" id="cb812-23" data-line-number="23"><span class="kw">library</span>(gridExtra)</a>
+<a class="sourceLine" id="cb812-24" data-line-number="24"></a>
+<a class="sourceLine" id="cb812-25" data-line-number="25"><span class="kw">grid.arrange</span>(left_column, right_column, <span class="dt">ncol =</span> <span class="dv">2</span>)</a></code></pre></div>
 <p><img src="_main_files/figure-html/unnamed-chunk-467-1.png" width="672" /></p>
 <p>The central message in the text, default to weakly-regularizing priors, holds for brms just as it does in rethinking. For more on the topic, see the <a href="https://github.com/stan-dev/stan/wiki/Prior-Choice-Recommendations">recommendations from the Stan team</a>. If you want to dive deeper, check out <a href="http://andrewgelman.com/2017/09/05/never-total-eclipse-prior/">Dan Simpson’s post on Gelman’s blog</a> and their <a href="https://arxiv.org/abs/1708.07487">corresponding paper with Michael Betancourt</a>.</p>
 </div>
@@ -1102,10 +1101,10 @@ right_column &lt;-
 </div>
 <div id="session-info-7" class="section level2 unnumbered">
 <h2>Session info</h2>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">sessionInfo</span>()</code></pre>
+<div class="sourceCode" id="cb813"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb813-1" data-line-number="1"><span class="kw">sessionInfo</span>()</a></code></pre></div>
 <pre><code>## R version 3.6.0 (2019-04-26)
 ## Platform: x86_64-pc-linux-gnu (64-bit)
-## Running under: Ubuntu 18.04.2 LTS
+## Running under: Ubuntu 18.04.3 LTS
 ## 
 ## Matrix products: default
 ## BLAS:   /opt/R/3.6.0/lib/R/lib/libRblas.so
@@ -1150,20 +1149,19 @@ right_column &lt;-
 ##  [61] cellranger_1.1.0          tools_3.6.0               cli_1.1.0                
 ##  [64] generics_0.0.2            pacman_0.5.1              broom_0.5.2              
 ##  [67] ggridges_0.5.1            evaluate_0.14             yaml_2.2.0               
-##  [70] processx_3.3.1            knitr_1.23                pander_0.6.3             
-##  [73] nlme_3.1-140              mime_0.7                  xml2_1.2.0               
-##  [76] compiler_3.6.0            shinythemes_1.1.2         rstudioapi_0.10          
-##  [79] stringi_1.4.3             highr_0.8                 ps_1.3.0                 
-##  [82] Brobdingnag_1.2-6         gdtools_0.1.8             lattice_0.20-38          
-##  [85] Matrix_1.2-17             markdown_1.0              shinyjs_1.0              
-##  [88] vctrs_0.1.0               pillar_1.4.1              bridgesampling_0.6-0     
-##  [91] httpuv_1.5.1              R6_2.4.0                  bookdown_0.11            
-##  [94] promises_1.0.1            codetools_0.2-16          colourpicker_1.0         
-##  [97] MASS_7.3-51.4             gtools_3.8.1              assertthat_0.2.1         
-## [100] rprojroot_1.3-2           withr_2.1.2               shinystan_2.5.0          
-## [103] hms_0.4.2                 coda_0.19-2               rmarkdown_1.13           
-## [106] shiny_1.3.2               lubridate_1.7.4           base64enc_0.1-3          
-## [109] dygraphs_1.1.1.6</code></pre>
+##  [70] processx_3.3.1            knitr_1.23                nlme_3.1-140             
+##  [73] mime_0.7                  xml2_1.2.0                compiler_3.6.0           
+##  [76] shinythemes_1.1.2         rstudioapi_0.10           stringi_1.4.3            
+##  [79] highr_0.8                 ps_1.3.0                  Brobdingnag_1.2-6        
+##  [82] gdtools_0.1.8             lattice_0.20-38           Matrix_1.2-17            
+##  [85] markdown_1.0              shinyjs_1.0               vctrs_0.1.0              
+##  [88] pillar_1.4.1              bridgesampling_0.6-0      httpuv_1.5.1             
+##  [91] R6_2.4.0                  bookdown_0.12             promises_1.0.1           
+##  [94] codetools_0.2-16          colourpicker_1.0          MASS_7.3-51.4            
+##  [97] gtools_3.8.1              assertthat_0.2.1          rprojroot_1.3-2          
+## [100] withr_2.1.2               shinystan_2.5.0           hms_0.4.2                
+## [103] coda_0.19-2               rmarkdown_1.13            shiny_1.3.2              
+## [106] lubridate_1.7.4           base64enc_0.1-3           dygraphs_1.1.1.6</code></pre>
 
 </div>
 </div>

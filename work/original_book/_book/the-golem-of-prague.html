@@ -6,7 +6,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>1 The Golem of Prague | Statistical Rethinking with brms, ggplot2, and the tidyverse</title>
   <meta name="description" content="This project is an attempt to re-express the code in McElreath’s textbook. His models are re-fit in brms, plots are redone with ggplot2, and the general data wrangling code predominantly follows the tidyverse style." />
-  <meta name="generator" content="bookdown 0.11 and GitBook 2.6.7" />
+  <meta name="generator" content="bookdown 0.12 and GitBook 2.6.7" />
 
   <meta property="og:title" content="1 The Golem of Prague | Statistical Rethinking with brms, ggplot2, and the tidyverse" />
   <meta property="og:type" content="book" />
@@ -24,7 +24,7 @@
 <meta name="author" content="A Solomon Kurz" />
 
 
-<meta name="date" content="2019-06-18" />
+<meta name="date" content="2019-08-16" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -55,7 +55,6 @@ a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
 a.sourceLine:empty { height: 1.2em; }
 .sourceCode { overflow: visible; }
 code.sourceCode { white-space: pre; position: relative; }
-div.sourceCode { margin: 1em 0; }
 pre.sourceCode { margin: 0; }
 @media screen {
 div.sourceCode { overflow: auto; }
@@ -457,10 +456,10 @@ Figure 1.1: Rabbi Loew and Golem by Mikoláš Aleš, 1899
 </div>
 <div id="session-info" class="section level2 unnumbered">
 <h2>Session info</h2>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">sessionInfo</span>()</code></pre>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" data-line-number="1"><span class="kw">sessionInfo</span>()</a></code></pre></div>
 <pre><code>## R version 3.6.0 (2019-04-26)
 ## Platform: x86_64-pc-linux-gnu (64-bit)
-## Running under: Ubuntu 18.04.2 LTS
+## Running under: Ubuntu 18.04.3 LTS
 ## 
 ## Matrix products: default
 ## BLAS:   /opt/R/3.6.0/lib/R/lib/libRblas.so
@@ -478,7 +477,7 @@ Figure 1.1: Rabbi Loew and Golem by Mikoláš Aleš, 1899
 ## [1] stats     graphics  grDevices utils     datasets  methods   base     
 ## 
 ## loaded via a namespace (and not attached):
-##  [1] Rcpp_1.0.1      bookdown_0.11   digest_0.6.19   crayon_1.3.4   
+##  [1] Rcpp_1.0.1      bookdown_0.12   digest_0.6.19   crayon_1.3.4   
 ##  [5] rprojroot_1.3-2 backports_1.1.4 pacman_0.5.1    magrittr_1.5   
 ##  [9] evaluate_0.14   highr_0.8       stringi_1.4.3   rstudioapi_0.10
 ## [13] rmarkdown_1.13  tools_3.6.0     stringr_1.4.0   xfun_0.7       

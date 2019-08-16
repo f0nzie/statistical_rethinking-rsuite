@@ -6,7 +6,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>7 Interactions | Statistical Rethinking with brms, ggplot2, and the tidyverse</title>
   <meta name="description" content="This project is an attempt to re-express the code in McElreath’s textbook. His models are re-fit in brms, plots are redone with ggplot2, and the general data wrangling code predominantly follows the tidyverse style." />
-  <meta name="generator" content="bookdown 0.11 and GitBook 2.6.7" />
+  <meta name="generator" content="bookdown 0.12 and GitBook 2.6.7" />
 
   <meta property="og:title" content="7 Interactions | Statistical Rethinking with brms, ggplot2, and the tidyverse" />
   <meta property="og:type" content="book" />
@@ -24,7 +24,7 @@
 <meta name="author" content="A Solomon Kurz" />
 
 
-<meta name="date" content="2019-06-18" />
+<meta name="date" content="2019-08-16" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -55,7 +55,6 @@ a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
 a.sourceLine:empty { height: 1.2em; }
 .sourceCode { overflow: visible; }
 code.sourceCode { white-space: pre; position: relative; }
-div.sourceCode { margin: 1em 0; }
 pre.sourceCode { margin: 0; }
 @media screen {
 div.sourceCode { overflow: auto; }
@@ -443,152 +442,152 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div id="building-an-interaction." class="section level2">
 <h2><span class="header-section-number">7.1</span> Building an interaction.</h2>
 <p>“Africa is special” (p. 211). Let’s load the <code>rugged</code> data to see one of the reasons why.</p>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(rethinking)
-<span class="kw">data</span>(rugged)
-d &lt;-<span class="st"> </span>rugged</code></pre>
+<div class="sourceCode" id="cb647"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb647-1" data-line-number="1"><span class="kw">library</span>(rethinking)</a>
+<a class="sourceLine" id="cb647-2" data-line-number="2"><span class="kw">data</span>(rugged)</a>
+<a class="sourceLine" id="cb647-3" data-line-number="3">d &lt;-<span class="st"> </span>rugged</a></code></pre></div>
 <p>And here we switch out rethinking for brms.</p>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">detach</span>(package<span class="op">:</span>rethinking, <span class="dt">unload =</span> T)
-<span class="kw">library</span>(brms)
-<span class="kw">rm</span>(rugged)</code></pre>
+<div class="sourceCode" id="cb648"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb648-1" data-line-number="1"><span class="kw">detach</span>(package<span class="op">:</span>rethinking, <span class="dt">unload =</span> T)</a>
+<a class="sourceLine" id="cb648-2" data-line-number="2"><span class="kw">library</span>(brms)</a>
+<a class="sourceLine" id="cb648-3" data-line-number="3"><span class="kw">rm</span>(rugged)</a></code></pre></div>
 <p>We’ll continue to use tidyverse-style syntax to wrangle the data.</p>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(tidyverse)
-
-<span class="co"># make the log version of criterion</span>
-d &lt;-<span class="st"> </span>
-<span class="st">  </span>d <span class="op">%&gt;%</span>
-<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">log_gdp =</span> <span class="kw">log</span>(rgdppc_<span class="dv">2000</span>))
-
-<span class="co"># extract countries with GDP data</span>
-dd &lt;-
-<span class="st">  </span>d <span class="op">%&gt;%</span>
-<span class="st">  </span><span class="kw">filter</span>(<span class="kw">complete.cases</span>(rgdppc_<span class="dv">2000</span>))
-
-<span class="co"># split the data into countries in Africa and not in Africa</span>
-d.A1 &lt;-
-<span class="st">  </span>dd <span class="op">%&gt;%</span>
-<span class="st">  </span><span class="kw">filter</span>(cont_africa <span class="op">==</span><span class="st"> </span><span class="dv">1</span>)
-
-d.A0 &lt;-
-<span class="st">  </span>dd <span class="op">%&gt;%</span>
-<span class="st">  </span><span class="kw">filter</span>(cont_africa <span class="op">==</span><span class="st"> </span><span class="dv">0</span>)</code></pre>
+<div class="sourceCode" id="cb649"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb649-1" data-line-number="1"><span class="kw">library</span>(tidyverse)</a>
+<a class="sourceLine" id="cb649-2" data-line-number="2"></a>
+<a class="sourceLine" id="cb649-3" data-line-number="3"><span class="co"># make the log version of criterion</span></a>
+<a class="sourceLine" id="cb649-4" data-line-number="4">d &lt;-<span class="st"> </span></a>
+<a class="sourceLine" id="cb649-5" data-line-number="5"><span class="st">  </span>d <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb649-6" data-line-number="6"><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">log_gdp =</span> <span class="kw">log</span>(rgdppc_<span class="dv">2000</span>))</a>
+<a class="sourceLine" id="cb649-7" data-line-number="7"></a>
+<a class="sourceLine" id="cb649-8" data-line-number="8"><span class="co"># extract countries with GDP data</span></a>
+<a class="sourceLine" id="cb649-9" data-line-number="9">dd &lt;-</a>
+<a class="sourceLine" id="cb649-10" data-line-number="10"><span class="st">  </span>d <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb649-11" data-line-number="11"><span class="st">  </span><span class="kw">filter</span>(<span class="kw">complete.cases</span>(rgdppc_<span class="dv">2000</span>))</a>
+<a class="sourceLine" id="cb649-12" data-line-number="12"></a>
+<a class="sourceLine" id="cb649-13" data-line-number="13"><span class="co"># split the data into countries in Africa and not in Africa</span></a>
+<a class="sourceLine" id="cb649-14" data-line-number="14">d.A1 &lt;-</a>
+<a class="sourceLine" id="cb649-15" data-line-number="15"><span class="st">  </span>dd <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb649-16" data-line-number="16"><span class="st">  </span><span class="kw">filter</span>(cont_africa <span class="op">==</span><span class="st"> </span><span class="dv">1</span>)</a>
+<a class="sourceLine" id="cb649-17" data-line-number="17"></a>
+<a class="sourceLine" id="cb649-18" data-line-number="18">d.A0 &lt;-</a>
+<a class="sourceLine" id="cb649-19" data-line-number="19"><span class="st">  </span>dd <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb649-20" data-line-number="20"><span class="st">  </span><span class="kw">filter</span>(cont_africa <span class="op">==</span><span class="st"> </span><span class="dv">0</span>)</a></code></pre></div>
 <p>The first two models predicting <code>log_gdp</code> are univariable.</p>
-<pre class="sourceCode r"><code class="sourceCode r">b7<span class="fl">.1</span> &lt;-
-<span class="st">  </span><span class="kw">brm</span>(<span class="dt">data =</span> d.A1, <span class="dt">family =</span> gaussian,
-      log_gdp <span class="op">~</span><span class="st"> </span><span class="dv">1</span> <span class="op">+</span><span class="st"> </span>rugged,
-      <span class="dt">prior =</span> <span class="kw">c</span>(<span class="kw">prior</span>(<span class="kw">normal</span>(<span class="dv">8</span>, <span class="dv">100</span>), <span class="dt">class =</span> Intercept),
-                <span class="kw">prior</span>(<span class="kw">normal</span>(<span class="dv">0</span>, <span class="dv">1</span>), <span class="dt">class =</span> b),
-                <span class="kw">prior</span>(<span class="kw">uniform</span>(<span class="dv">0</span>, <span class="dv">10</span>), <span class="dt">class =</span> sigma)),
-      <span class="dt">iter =</span> <span class="dv">2000</span>, <span class="dt">warmup =</span> <span class="dv">1000</span>, <span class="dt">chains =</span> <span class="dv">4</span>, <span class="dt">cores =</span> <span class="dv">4</span>,
-      <span class="dt">seed =</span> <span class="dv">7</span>)
-
-b7<span class="fl">.2</span> &lt;-
-<span class="st">  </span><span class="kw">update</span>(b7<span class="fl">.1</span>, 
-         <span class="dt">newdata =</span> d.A0)</code></pre>
+<div class="sourceCode" id="cb650"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb650-1" data-line-number="1">b7<span class="fl">.1</span> &lt;-</a>
+<a class="sourceLine" id="cb650-2" data-line-number="2"><span class="st">  </span><span class="kw">brm</span>(<span class="dt">data =</span> d.A1, <span class="dt">family =</span> gaussian,</a>
+<a class="sourceLine" id="cb650-3" data-line-number="3">      log_gdp <span class="op">~</span><span class="st"> </span><span class="dv">1</span> <span class="op">+</span><span class="st"> </span>rugged,</a>
+<a class="sourceLine" id="cb650-4" data-line-number="4">      <span class="dt">prior =</span> <span class="kw">c</span>(<span class="kw">prior</span>(<span class="kw">normal</span>(<span class="dv">8</span>, <span class="dv">100</span>), <span class="dt">class =</span> Intercept),</a>
+<a class="sourceLine" id="cb650-5" data-line-number="5">                <span class="kw">prior</span>(<span class="kw">normal</span>(<span class="dv">0</span>, <span class="dv">1</span>), <span class="dt">class =</span> b),</a>
+<a class="sourceLine" id="cb650-6" data-line-number="6">                <span class="kw">prior</span>(<span class="kw">uniform</span>(<span class="dv">0</span>, <span class="dv">10</span>), <span class="dt">class =</span> sigma)),</a>
+<a class="sourceLine" id="cb650-7" data-line-number="7">      <span class="dt">iter =</span> <span class="dv">2000</span>, <span class="dt">warmup =</span> <span class="dv">1000</span>, <span class="dt">chains =</span> <span class="dv">4</span>, <span class="dt">cores =</span> <span class="dv">4</span>,</a>
+<a class="sourceLine" id="cb650-8" data-line-number="8">      <span class="dt">seed =</span> <span class="dv">7</span>)</a>
+<a class="sourceLine" id="cb650-9" data-line-number="9"></a>
+<a class="sourceLine" id="cb650-10" data-line-number="10">b7<span class="fl">.2</span> &lt;-</a>
+<a class="sourceLine" id="cb650-11" data-line-number="11"><span class="st">  </span><span class="kw">update</span>(b7<span class="fl">.1</span>, </a>
+<a class="sourceLine" id="cb650-12" data-line-number="12">         <span class="dt">newdata =</span> d.A0)</a></code></pre></div>
 <p>In the text, McElreath more or less dared us to figure out how to make Figure 7.2. Here’s the brms-relevant data wrangling.</p>
-<pre class="sourceCode r"><code class="sourceCode r">nd &lt;-<span class="st"> </span>
-<span class="st">  </span><span class="kw">tibble</span>(<span class="dt">rugged =</span> <span class="kw">seq</span>(<span class="dt">from =</span> <span class="dv">0</span>, <span class="dt">to =</span> <span class="fl">6.3</span>, <span class="dt">length.out =</span> <span class="dv">30</span>))
-
-f_b7<span class="fl">.1</span> &lt;-
-<span class="st">  </span><span class="kw">fitted</span>(b7<span class="fl">.1</span>, <span class="dt">newdata =</span> nd) <span class="op">%&gt;%</span>
-<span class="st">  </span><span class="kw">as_tibble</span>() <span class="op">%&gt;%</span>
-<span class="st">  </span><span class="kw">bind_cols</span>(nd)
-
-f_b7<span class="fl">.2</span> &lt;-
-<span class="st">  </span><span class="kw">fitted</span>(b7<span class="fl">.2</span>, <span class="dt">newdata =</span> nd) <span class="op">%&gt;%</span>
-<span class="st">  </span><span class="kw">as_tibble</span>() <span class="op">%&gt;%</span>
-<span class="st">  </span><span class="kw">bind_cols</span>(nd)
-
-<span class="co"># here we&#39;ll put both in a single data object, with `f_b7.1` stacked atop `f_b7.2`</span>
-f &lt;-
-<span class="st">  </span><span class="kw">full_join</span>(f_b7<span class="fl">.1</span>, f_b7<span class="fl">.2</span>) <span class="op">%&gt;%</span>
-<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">cont_africa =</span> <span class="kw">rep</span>(<span class="kw">c</span>(<span class="st">&quot;Africa&quot;</span>, <span class="st">&quot;not Africa&quot;</span>), <span class="dt">each =</span> <span class="dv">30</span>))</code></pre>
+<div class="sourceCode" id="cb651"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb651-1" data-line-number="1">nd &lt;-<span class="st"> </span></a>
+<a class="sourceLine" id="cb651-2" data-line-number="2"><span class="st">  </span><span class="kw">tibble</span>(<span class="dt">rugged =</span> <span class="kw">seq</span>(<span class="dt">from =</span> <span class="dv">0</span>, <span class="dt">to =</span> <span class="fl">6.3</span>, <span class="dt">length.out =</span> <span class="dv">30</span>))</a>
+<a class="sourceLine" id="cb651-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb651-4" data-line-number="4">f_b7<span class="fl">.1</span> &lt;-</a>
+<a class="sourceLine" id="cb651-5" data-line-number="5"><span class="st">  </span><span class="kw">fitted</span>(b7<span class="fl">.1</span>, <span class="dt">newdata =</span> nd) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb651-6" data-line-number="6"><span class="st">  </span><span class="kw">as_tibble</span>() <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb651-7" data-line-number="7"><span class="st">  </span><span class="kw">bind_cols</span>(nd)</a>
+<a class="sourceLine" id="cb651-8" data-line-number="8"></a>
+<a class="sourceLine" id="cb651-9" data-line-number="9">f_b7<span class="fl">.2</span> &lt;-</a>
+<a class="sourceLine" id="cb651-10" data-line-number="10"><span class="st">  </span><span class="kw">fitted</span>(b7<span class="fl">.2</span>, <span class="dt">newdata =</span> nd) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb651-11" data-line-number="11"><span class="st">  </span><span class="kw">as_tibble</span>() <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb651-12" data-line-number="12"><span class="st">  </span><span class="kw">bind_cols</span>(nd)</a>
+<a class="sourceLine" id="cb651-13" data-line-number="13"></a>
+<a class="sourceLine" id="cb651-14" data-line-number="14"><span class="co"># here we&#39;ll put both in a single data object, with `f_b7.1` stacked atop `f_b7.2`</span></a>
+<a class="sourceLine" id="cb651-15" data-line-number="15">f &lt;-</a>
+<a class="sourceLine" id="cb651-16" data-line-number="16"><span class="st">  </span><span class="kw">full_join</span>(f_b7<span class="fl">.1</span>, f_b7<span class="fl">.2</span>) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb651-17" data-line-number="17"><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">cont_africa =</span> <span class="kw">rep</span>(<span class="kw">c</span>(<span class="st">&quot;Africa&quot;</span>, <span class="st">&quot;not Africa&quot;</span>), <span class="dt">each =</span> <span class="dv">30</span>))</a></code></pre></div>
 <p>For this chapter, we’ll take our plot theme from the <a href="https://cran.r-project.org/web/packages/ggthemes/index.html">ggthemes package</a>.</p>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="co"># install.packages(&quot;ggthemes&quot;, dependencies = T)</span>
-<span class="kw">library</span>(ggthemes)</code></pre>
+<div class="sourceCode" id="cb652"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb652-1" data-line-number="1"><span class="co"># install.packages(&quot;ggthemes&quot;, dependencies = T)</span></a>
+<a class="sourceLine" id="cb652-2" data-line-number="2"><span class="kw">library</span>(ggthemes)</a></code></pre></div>
 <p>Here’s the plot code for our version of Figure 7.2.</p>
-<pre class="sourceCode r"><code class="sourceCode r">dd <span class="op">%&gt;%</span>
-<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">cont_africa =</span> <span class="kw">ifelse</span>(cont_africa <span class="op">==</span><span class="st"> </span><span class="dv">1</span>, <span class="st">&quot;Africa&quot;</span>, <span class="st">&quot;not Africa&quot;</span>)) <span class="op">%&gt;%</span>
-<span class="st">  </span>
-<span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(<span class="dt">x =</span> rugged)) <span class="op">+</span>
-<span class="st">  </span><span class="kw">geom_smooth</span>(<span class="dt">data =</span> f,
-              <span class="kw">aes</span>(<span class="dt">y =</span> Estimate, <span class="dt">ymin =</span> Q2<span class="fl">.5</span>, <span class="dt">ymax =</span> Q97<span class="fl">.5</span>,
-                  <span class="dt">fill =</span> cont_africa, <span class="dt">color =</span> cont_africa),
-              <span class="dt">stat =</span> <span class="st">&quot;identity&quot;</span>, 
-              <span class="dt">alpha =</span> <span class="dv">1</span><span class="op">/</span><span class="dv">4</span>, <span class="dt">size =</span> <span class="dv">1</span><span class="op">/</span><span class="dv">2</span>) <span class="op">+</span>
-<span class="st">  </span><span class="kw">geom_point</span>(<span class="kw">aes</span>(<span class="dt">y =</span> log_gdp, <span class="dt">color =</span> cont_africa),
-             <span class="dt">size =</span> <span class="dv">2</span><span class="op">/</span><span class="dv">3</span>) <span class="op">+</span>
-<span class="st">  </span><span class="kw">scale_colour_pander</span>() <span class="op">+</span>
-<span class="st">  </span><span class="kw">scale_fill_pander</span>() <span class="op">+</span>
-<span class="st">  </span><span class="kw">scale_x_continuous</span>(<span class="st">&quot;Terrain Ruggedness Index&quot;</span>, <span class="dt">expand =</span> <span class="kw">c</span>(<span class="dv">0</span>, <span class="dv">0</span>)) <span class="op">+</span>
-<span class="st">  </span><span class="kw">ylab</span>(<span class="st">&quot;log GDP from year 2000&quot;</span>) <span class="op">+</span>
-<span class="st">  </span><span class="kw">theme_pander</span>() <span class="op">+</span><span class="st"> </span>
-<span class="st">  </span><span class="kw">theme</span>(<span class="dt">text =</span> <span class="kw">element_text</span>(<span class="dt">family =</span> <span class="st">&quot;Times&quot;</span>),
-        <span class="dt">legend.position =</span> <span class="st">&quot;none&quot;</span>) <span class="op">+</span>
-<span class="st">  </span><span class="kw">facet_wrap</span>(<span class="op">~</span>cont_africa)</code></pre>
+<div class="sourceCode" id="cb653"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb653-1" data-line-number="1">dd <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb653-2" data-line-number="2"><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">cont_africa =</span> <span class="kw">ifelse</span>(cont_africa <span class="op">==</span><span class="st"> </span><span class="dv">1</span>, <span class="st">&quot;Africa&quot;</span>, <span class="st">&quot;not Africa&quot;</span>)) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb653-3" data-line-number="3"><span class="st">  </span></a>
+<a class="sourceLine" id="cb653-4" data-line-number="4"><span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(<span class="dt">x =</span> rugged)) <span class="op">+</span></a>
+<a class="sourceLine" id="cb653-5" data-line-number="5"><span class="st">  </span><span class="kw">geom_smooth</span>(<span class="dt">data =</span> f,</a>
+<a class="sourceLine" id="cb653-6" data-line-number="6">              <span class="kw">aes</span>(<span class="dt">y =</span> Estimate, <span class="dt">ymin =</span> Q2<span class="fl">.5</span>, <span class="dt">ymax =</span> Q97<span class="fl">.5</span>,</a>
+<a class="sourceLine" id="cb653-7" data-line-number="7">                  <span class="dt">fill =</span> cont_africa, <span class="dt">color =</span> cont_africa),</a>
+<a class="sourceLine" id="cb653-8" data-line-number="8">              <span class="dt">stat =</span> <span class="st">&quot;identity&quot;</span>, </a>
+<a class="sourceLine" id="cb653-9" data-line-number="9">              <span class="dt">alpha =</span> <span class="dv">1</span><span class="op">/</span><span class="dv">4</span>, <span class="dt">size =</span> <span class="dv">1</span><span class="op">/</span><span class="dv">2</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb653-10" data-line-number="10"><span class="st">  </span><span class="kw">geom_point</span>(<span class="kw">aes</span>(<span class="dt">y =</span> log_gdp, <span class="dt">color =</span> cont_africa),</a>
+<a class="sourceLine" id="cb653-11" data-line-number="11">             <span class="dt">size =</span> <span class="dv">2</span><span class="op">/</span><span class="dv">3</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb653-12" data-line-number="12"><span class="st">  </span><span class="kw">scale_colour_pander</span>() <span class="op">+</span></a>
+<a class="sourceLine" id="cb653-13" data-line-number="13"><span class="st">  </span><span class="kw">scale_fill_pander</span>() <span class="op">+</span></a>
+<a class="sourceLine" id="cb653-14" data-line-number="14"><span class="st">  </span><span class="kw">scale_x_continuous</span>(<span class="st">&quot;Terrain Ruggedness Index&quot;</span>, <span class="dt">expand =</span> <span class="kw">c</span>(<span class="dv">0</span>, <span class="dv">0</span>)) <span class="op">+</span></a>
+<a class="sourceLine" id="cb653-15" data-line-number="15"><span class="st">  </span><span class="kw">ylab</span>(<span class="st">&quot;log GDP from year 2000&quot;</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb653-16" data-line-number="16"><span class="st">  </span><span class="kw">theme_pander</span>() <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb653-17" data-line-number="17"><span class="st">  </span><span class="kw">theme</span>(<span class="dt">text =</span> <span class="kw">element_text</span>(<span class="dt">family =</span> <span class="st">&quot;Times&quot;</span>),</a>
+<a class="sourceLine" id="cb653-18" data-line-number="18">        <span class="dt">legend.position =</span> <span class="st">&quot;none&quot;</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb653-19" data-line-number="19"><span class="st">  </span><span class="kw">facet_wrap</span>(<span class="op">~</span>cont_africa)</a></code></pre></div>
 <p><img src="_main_files/figure-html/unnamed-chunk-385-1.png" width="528" /></p>
 <div id="adding-a-dummy-variable-doesnt-work." class="section level3">
 <h3><span class="header-section-number">7.1.1</span> Adding a dummy variable doesn’t work.</h3>
 <p>Here’s our model with all the countries, but without the <code>cont_africa</code> dummy.</p>
-<pre class="sourceCode r"><code class="sourceCode r">b7<span class="fl">.3</span> &lt;-
-<span class="st">  </span><span class="kw">update</span>(b7<span class="fl">.1</span>,
-         <span class="dt">newdata =</span> dd)</code></pre>
+<div class="sourceCode" id="cb654"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb654-1" data-line-number="1">b7<span class="fl">.3</span> &lt;-</a>
+<a class="sourceLine" id="cb654-2" data-line-number="2"><span class="st">  </span><span class="kw">update</span>(b7<span class="fl">.1</span>,</a>
+<a class="sourceLine" id="cb654-3" data-line-number="3">         <span class="dt">newdata =</span> dd)</a></code></pre></div>
 <p>Now we’ll add the dummy.</p>
-<pre class="sourceCode r"><code class="sourceCode r">b7<span class="fl">.4</span> &lt;-
-<span class="st">  </span><span class="kw">update</span>(b7<span class="fl">.3</span>,
-         <span class="dt">newdata =</span> dd,
-         <span class="dt">formula =</span> log_gdp <span class="op">~</span><span class="st"> </span><span class="dv">1</span> <span class="op">+</span><span class="st"> </span>rugged <span class="op">+</span><span class="st"> </span>cont_africa) </code></pre>
+<div class="sourceCode" id="cb655"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb655-1" data-line-number="1">b7<span class="fl">.4</span> &lt;-</a>
+<a class="sourceLine" id="cb655-2" data-line-number="2"><span class="st">  </span><span class="kw">update</span>(b7<span class="fl">.3</span>,</a>
+<a class="sourceLine" id="cb655-3" data-line-number="3">         <span class="dt">newdata =</span> dd,</a>
+<a class="sourceLine" id="cb655-4" data-line-number="4">         <span class="dt">formula =</span> log_gdp <span class="op">~</span><span class="st"> </span><span class="dv">1</span> <span class="op">+</span><span class="st"> </span>rugged <span class="op">+</span><span class="st"> </span>cont_africa) </a></code></pre></div>
 <p>Using the skills from Chapter 6, let’s compute the information criteria for the two models. Note how with the <code>add_criterion()</code> function, you can compute both the LOO and the WAIC at once.</p>
-<pre class="sourceCode r"><code class="sourceCode r">b7<span class="fl">.3</span> &lt;-<span class="st"> </span><span class="kw">add_criterion</span>(b7<span class="fl">.3</span>, <span class="kw">c</span>(<span class="st">&quot;loo&quot;</span>, <span class="st">&quot;waic&quot;</span>))
-b7<span class="fl">.4</span> &lt;-<span class="st"> </span><span class="kw">add_criterion</span>(b7<span class="fl">.4</span>, <span class="kw">c</span>(<span class="st">&quot;loo&quot;</span>, <span class="st">&quot;waic&quot;</span>))</code></pre>
+<div class="sourceCode" id="cb656"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb656-1" data-line-number="1">b7<span class="fl">.3</span> &lt;-<span class="st"> </span><span class="kw">add_criterion</span>(b7<span class="fl">.3</span>, <span class="kw">c</span>(<span class="st">&quot;loo&quot;</span>, <span class="st">&quot;waic&quot;</span>))</a>
+<a class="sourceLine" id="cb656-2" data-line-number="2">b7<span class="fl">.4</span> &lt;-<span class="st"> </span><span class="kw">add_criterion</span>(b7<span class="fl">.4</span>, <span class="kw">c</span>(<span class="st">&quot;loo&quot;</span>, <span class="st">&quot;waic&quot;</span>))</a></code></pre></div>
 <p>Here we’ll compare the models with the <code>loo_compare()</code> function, first by the WAIC and then by the LOO.</p>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">loo_compare</span>(b7<span class="fl">.3</span>, b7<span class="fl">.4</span>,
-            <span class="dt">criterion =</span> <span class="st">&quot;waic&quot;</span>)</code></pre>
+<div class="sourceCode" id="cb657"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb657-1" data-line-number="1"><span class="kw">loo_compare</span>(b7<span class="fl">.3</span>, b7<span class="fl">.4</span>,</a>
+<a class="sourceLine" id="cb657-2" data-line-number="2">            <span class="dt">criterion =</span> <span class="st">&quot;waic&quot;</span>)</a></code></pre></div>
 <pre><code>##      elpd_diff se_diff
 ## b7.4   0.0       0.0  
 ## b7.3 -31.7       7.3</code></pre>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">loo_compare</span>(b7<span class="fl">.3</span>, b7<span class="fl">.4</span>,
-            <span class="dt">criterion =</span> <span class="st">&quot;loo&quot;</span>)</code></pre>
+<div class="sourceCode" id="cb659"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb659-1" data-line-number="1"><span class="kw">loo_compare</span>(b7<span class="fl">.3</span>, b7<span class="fl">.4</span>,</a>
+<a class="sourceLine" id="cb659-2" data-line-number="2">            <span class="dt">criterion =</span> <span class="st">&quot;loo&quot;</span>)</a></code></pre></div>
 <pre><code>##      elpd_diff se_diff
 ## b7.4   0.0       0.0  
 ## b7.3 -31.7       7.3</code></pre>
 <p>Happily, the WAIC and the LOO are in agreement. The model with the dummy, <code>b7.4</code>, fit the data much better. Here are the WAIC model weights.</p>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">model_weights</span>(b7<span class="fl">.3</span>, b7<span class="fl">.4</span>,
-              <span class="dt">weights =</span> <span class="st">&quot;waic&quot;</span>) <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span><span class="kw">round</span>(<span class="dt">digits =</span> <span class="dv">3</span>)</code></pre>
+<div class="sourceCode" id="cb661"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb661-1" data-line-number="1"><span class="kw">model_weights</span>(b7<span class="fl">.3</span>, b7<span class="fl">.4</span>,</a>
+<a class="sourceLine" id="cb661-2" data-line-number="2">              <span class="dt">weights =</span> <span class="st">&quot;waic&quot;</span>) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb661-3" data-line-number="3"><span class="st">  </span><span class="kw">round</span>(<span class="dt">digits =</span> <span class="dv">3</span>)</a></code></pre></div>
 <pre><code>## b7.3 b7.4 
 ##    0    1</code></pre>
 <p>As in the text, almost all the weight went to the multivariable model, <code>b7.4</code>. Before we can plot that model, we need to wrangle a bit.</p>
-<pre class="sourceCode r"><code class="sourceCode r">nd &lt;-<span class="st"> </span>
-<span class="st">  </span><span class="kw">tibble</span>(<span class="dt">rugged      =</span> <span class="kw">seq</span>(<span class="dt">from =</span> <span class="dv">0</span>, <span class="dt">to =</span> <span class="fl">6.3</span>, <span class="dt">length.out =</span> <span class="dv">30</span>) <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">           </span><span class="kw">rep</span>(., <span class="dt">times =</span> <span class="dv">2</span>),
-         <span class="dt">cont_africa =</span> <span class="kw">rep</span>(<span class="dv">0</span><span class="op">:</span><span class="dv">1</span>, <span class="dt">each =</span> <span class="dv">30</span>))
-
-f &lt;-
-<span class="st">  </span><span class="kw">fitted</span>(b7<span class="fl">.4</span>, <span class="dt">newdata =</span> nd) <span class="op">%&gt;%</span>
-<span class="st">  </span><span class="kw">as_tibble</span>() <span class="op">%&gt;%</span>
-<span class="st">  </span><span class="kw">bind_cols</span>(nd) <span class="op">%&gt;%</span>
-<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">cont_africa =</span> <span class="kw">ifelse</span>(cont_africa <span class="op">==</span><span class="st"> </span><span class="dv">1</span>, <span class="st">&quot;Africa&quot;</span>, <span class="st">&quot;not Africa&quot;</span>))</code></pre>
+<div class="sourceCode" id="cb663"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb663-1" data-line-number="1">nd &lt;-<span class="st"> </span></a>
+<a class="sourceLine" id="cb663-2" data-line-number="2"><span class="st">  </span><span class="kw">tibble</span>(<span class="dt">rugged      =</span> <span class="kw">seq</span>(<span class="dt">from =</span> <span class="dv">0</span>, <span class="dt">to =</span> <span class="fl">6.3</span>, <span class="dt">length.out =</span> <span class="dv">30</span>) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb663-3" data-line-number="3"><span class="st">           </span><span class="kw">rep</span>(., <span class="dt">times =</span> <span class="dv">2</span>),</a>
+<a class="sourceLine" id="cb663-4" data-line-number="4">         <span class="dt">cont_africa =</span> <span class="kw">rep</span>(<span class="dv">0</span><span class="op">:</span><span class="dv">1</span>, <span class="dt">each =</span> <span class="dv">30</span>))</a>
+<a class="sourceLine" id="cb663-5" data-line-number="5"></a>
+<a class="sourceLine" id="cb663-6" data-line-number="6">f &lt;-</a>
+<a class="sourceLine" id="cb663-7" data-line-number="7"><span class="st">  </span><span class="kw">fitted</span>(b7<span class="fl">.4</span>, <span class="dt">newdata =</span> nd) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb663-8" data-line-number="8"><span class="st">  </span><span class="kw">as_tibble</span>() <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb663-9" data-line-number="9"><span class="st">  </span><span class="kw">bind_cols</span>(nd) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb663-10" data-line-number="10"><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">cont_africa =</span> <span class="kw">ifelse</span>(cont_africa <span class="op">==</span><span class="st"> </span><span class="dv">1</span>, <span class="st">&quot;Africa&quot;</span>, <span class="st">&quot;not Africa&quot;</span>))</a></code></pre></div>
 <p>Behold our Figure 7.3.</p>
-<pre class="sourceCode r"><code class="sourceCode r">dd <span class="op">%&gt;%</span>
-<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">cont_africa =</span> <span class="kw">ifelse</span>(cont_africa <span class="op">==</span><span class="st"> </span><span class="dv">1</span>, <span class="st">&quot;Africa&quot;</span>, <span class="st">&quot;not Africa&quot;</span>)) <span class="op">%&gt;%</span>
-<span class="st">  </span>
-<span class="kw">ggplot</span>(<span class="kw">aes</span>(<span class="dt">x =</span> rugged)) <span class="op">+</span>
-<span class="st">  </span><span class="kw">geom_smooth</span>(<span class="dt">data =</span> f,
-              <span class="kw">aes</span>(<span class="dt">y =</span> Estimate, <span class="dt">ymin =</span> Q2<span class="fl">.5</span>, <span class="dt">ymax =</span> Q97<span class="fl">.5</span>,
-                  <span class="dt">fill =</span> cont_africa, <span class="dt">color =</span> cont_africa),
-              <span class="dt">stat =</span> <span class="st">&quot;identity&quot;</span>, 
-              <span class="dt">alpha =</span> <span class="dv">1</span><span class="op">/</span><span class="dv">4</span>, <span class="dt">size =</span> <span class="dv">1</span><span class="op">/</span><span class="dv">2</span>) <span class="op">+</span>
-<span class="st">  </span><span class="kw">geom_point</span>(<span class="kw">aes</span>(<span class="dt">y =</span> log_gdp, <span class="dt">color =</span> cont_africa),
-             <span class="dt">size =</span> <span class="dv">2</span><span class="op">/</span><span class="dv">3</span>) <span class="op">+</span>
-<span class="st">  </span><span class="kw">scale_colour_pander</span>() <span class="op">+</span>
-<span class="st">  </span><span class="kw">scale_fill_pander</span>() <span class="op">+</span>
-<span class="st">  </span><span class="kw">scale_x_continuous</span>(<span class="st">&quot;Terrain Ruggedness Index&quot;</span>, <span class="dt">expand =</span> <span class="kw">c</span>(<span class="dv">0</span>, <span class="dv">0</span>)) <span class="op">+</span>
-<span class="st">  </span><span class="kw">ylab</span>(<span class="st">&quot;log GDP from year 2000&quot;</span>) <span class="op">+</span>
-<span class="st">  </span><span class="kw">theme_pander</span>() <span class="op">+</span><span class="st"> </span>
-<span class="st">  </span><span class="kw">theme</span>(<span class="dt">text =</span> <span class="kw">element_text</span>(<span class="dt">family =</span> <span class="st">&quot;Times&quot;</span>),
-        <span class="dt">legend.position  =</span> <span class="kw">c</span>(.<span class="dv">69</span>, <span class="fl">.94</span>),
-        <span class="dt">legend.title     =</span> <span class="kw">element_blank</span>(),
-        <span class="dt">legend.direction =</span> <span class="st">&quot;horizontal&quot;</span>)</code></pre>
+<div class="sourceCode" id="cb664"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb664-1" data-line-number="1">dd <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb664-2" data-line-number="2"><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">cont_africa =</span> <span class="kw">ifelse</span>(cont_africa <span class="op">==</span><span class="st"> </span><span class="dv">1</span>, <span class="st">&quot;Africa&quot;</span>, <span class="st">&quot;not Africa&quot;</span>)) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb664-3" data-line-number="3"><span class="st">  </span></a>
+<a class="sourceLine" id="cb664-4" data-line-number="4"><span class="kw">ggplot</span>(<span class="kw">aes</span>(<span class="dt">x =</span> rugged)) <span class="op">+</span></a>
+<a class="sourceLine" id="cb664-5" data-line-number="5"><span class="st">  </span><span class="kw">geom_smooth</span>(<span class="dt">data =</span> f,</a>
+<a class="sourceLine" id="cb664-6" data-line-number="6">              <span class="kw">aes</span>(<span class="dt">y =</span> Estimate, <span class="dt">ymin =</span> Q2<span class="fl">.5</span>, <span class="dt">ymax =</span> Q97<span class="fl">.5</span>,</a>
+<a class="sourceLine" id="cb664-7" data-line-number="7">                  <span class="dt">fill =</span> cont_africa, <span class="dt">color =</span> cont_africa),</a>
+<a class="sourceLine" id="cb664-8" data-line-number="8">              <span class="dt">stat =</span> <span class="st">&quot;identity&quot;</span>, </a>
+<a class="sourceLine" id="cb664-9" data-line-number="9">              <span class="dt">alpha =</span> <span class="dv">1</span><span class="op">/</span><span class="dv">4</span>, <span class="dt">size =</span> <span class="dv">1</span><span class="op">/</span><span class="dv">2</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb664-10" data-line-number="10"><span class="st">  </span><span class="kw">geom_point</span>(<span class="kw">aes</span>(<span class="dt">y =</span> log_gdp, <span class="dt">color =</span> cont_africa),</a>
+<a class="sourceLine" id="cb664-11" data-line-number="11">             <span class="dt">size =</span> <span class="dv">2</span><span class="op">/</span><span class="dv">3</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb664-12" data-line-number="12"><span class="st">  </span><span class="kw">scale_colour_pander</span>() <span class="op">+</span></a>
+<a class="sourceLine" id="cb664-13" data-line-number="13"><span class="st">  </span><span class="kw">scale_fill_pander</span>() <span class="op">+</span></a>
+<a class="sourceLine" id="cb664-14" data-line-number="14"><span class="st">  </span><span class="kw">scale_x_continuous</span>(<span class="st">&quot;Terrain Ruggedness Index&quot;</span>, <span class="dt">expand =</span> <span class="kw">c</span>(<span class="dv">0</span>, <span class="dv">0</span>)) <span class="op">+</span></a>
+<a class="sourceLine" id="cb664-15" data-line-number="15"><span class="st">  </span><span class="kw">ylab</span>(<span class="st">&quot;log GDP from year 2000&quot;</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb664-16" data-line-number="16"><span class="st">  </span><span class="kw">theme_pander</span>() <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb664-17" data-line-number="17"><span class="st">  </span><span class="kw">theme</span>(<span class="dt">text =</span> <span class="kw">element_text</span>(<span class="dt">family =</span> <span class="st">&quot;Times&quot;</span>),</a>
+<a class="sourceLine" id="cb664-18" data-line-number="18">        <span class="dt">legend.position  =</span> <span class="kw">c</span>(.<span class="dv">69</span>, <span class="fl">.94</span>),</a>
+<a class="sourceLine" id="cb664-19" data-line-number="19">        <span class="dt">legend.title     =</span> <span class="kw">element_blank</span>(),</a>
+<a class="sourceLine" id="cb664-20" data-line-number="20">        <span class="dt">legend.direction =</span> <span class="st">&quot;horizontal&quot;</span>)</a></code></pre></div>
 <p><img src="_main_files/figure-html/unnamed-chunk-389-1.png" width="288" /></p>
 </div>
 <div id="adding-a-linear-interaction-does-work." class="section level3">
@@ -600,31 +599,31 @@ f &lt;-
 \gamma_i &amp; = \beta_1 + \beta_3 \text{cont_africa}_i
 \end{align*}\]</span></p>
 <p>Fit the model.</p>
-<pre class="sourceCode r"><code class="sourceCode r">b7<span class="fl">.5</span> &lt;-
-<span class="st">  </span><span class="kw">update</span>(b7<span class="fl">.4</span>,
-         <span class="dt">formula =</span> log_gdp <span class="op">~</span><span class="st"> </span><span class="dv">1</span> <span class="op">+</span><span class="st"> </span>rugged<span class="op">*</span>cont_africa) </code></pre>
+<div class="sourceCode" id="cb665"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb665-1" data-line-number="1">b7<span class="fl">.5</span> &lt;-</a>
+<a class="sourceLine" id="cb665-2" data-line-number="2"><span class="st">  </span><span class="kw">update</span>(b7<span class="fl">.4</span>,</a>
+<a class="sourceLine" id="cb665-3" data-line-number="3">         <span class="dt">formula =</span> log_gdp <span class="op">~</span><span class="st"> </span><span class="dv">1</span> <span class="op">+</span><span class="st"> </span>rugged<span class="op">*</span>cont_africa) </a></code></pre></div>
 <p>For kicks, we’ll just use the LOO to compare the last three models.</p>
-<pre class="sourceCode r"><code class="sourceCode r">b7<span class="fl">.5</span> &lt;-<span class="st"> </span><span class="kw">add_criterion</span>(b7<span class="fl">.5</span>, <span class="kw">c</span>(<span class="st">&quot;loo&quot;</span>, <span class="st">&quot;waic&quot;</span>))
-
-l &lt;-<span class="st"> </span><span class="kw">loo_compare</span>(b7<span class="fl">.3</span>, b7<span class="fl">.4</span>, b7<span class="fl">.5</span>,
-                 <span class="dt">criterion =</span> <span class="st">&quot;loo&quot;</span>)
-
-<span class="kw">print</span>(l, <span class="dt">simplify =</span> F)</code></pre>
+<div class="sourceCode" id="cb666"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb666-1" data-line-number="1">b7<span class="fl">.5</span> &lt;-<span class="st"> </span><span class="kw">add_criterion</span>(b7<span class="fl">.5</span>, <span class="kw">c</span>(<span class="st">&quot;loo&quot;</span>, <span class="st">&quot;waic&quot;</span>))</a>
+<a class="sourceLine" id="cb666-2" data-line-number="2"></a>
+<a class="sourceLine" id="cb666-3" data-line-number="3">l &lt;-<span class="st"> </span><span class="kw">loo_compare</span>(b7<span class="fl">.3</span>, b7<span class="fl">.4</span>, b7<span class="fl">.5</span>,</a>
+<a class="sourceLine" id="cb666-4" data-line-number="4">                 <span class="dt">criterion =</span> <span class="st">&quot;loo&quot;</span>)</a>
+<a class="sourceLine" id="cb666-5" data-line-number="5"></a>
+<a class="sourceLine" id="cb666-6" data-line-number="6"><span class="kw">print</span>(l, <span class="dt">simplify =</span> F)</a></code></pre></div>
 <pre><code>##      elpd_diff se_diff elpd_loo se_elpd_loo p_loo  se_p_loo looic  se_looic
 ## b7.5    0.0       0.0  -234.7      7.3         5.1    0.9    469.4   14.6  
 ## b7.4   -3.3       3.0  -238.0      7.4         4.2    0.8    476.1   14.8  
 ## b7.3  -35.0       7.3  -269.7      6.5         2.6    0.3    539.5   13.0</code></pre>
 <p>And recall, if we want those LOO difference scores in the traditional metric like McElreath displayed in the text, we can do a quick conversion with algebra and <code>cbind()</code>.</p>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">cbind</span>(<span class="dt">loo_diff =</span> l[, <span class="dv">1</span>] <span class="op">*</span><span class="st"> </span><span class="dv">-2</span>,
-      <span class="dt">se       =</span> l[, <span class="dv">2</span>] <span class="op">*</span><span class="st">  </span><span class="dv">2</span>)</code></pre>
+<div class="sourceCode" id="cb668"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb668-1" data-line-number="1"><span class="kw">cbind</span>(<span class="dt">loo_diff =</span> l[, <span class="dv">1</span>] <span class="op">*</span><span class="st"> </span><span class="dv">-2</span>,</a>
+<a class="sourceLine" id="cb668-2" data-line-number="2">      <span class="dt">se       =</span> l[, <span class="dv">2</span>] <span class="op">*</span><span class="st">  </span><span class="dv">2</span>)</a></code></pre></div>
 <pre><code>##       loo_diff        se
 ## b7.5  0.000000  0.000000
 ## b7.4  6.674292  5.904255
 ## b7.3 70.055805 14.634653</code></pre>
 <p>And we can weight the models based on the LOO rather than the WAIC, too.</p>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">model_weights</span>(b7<span class="fl">.3</span>, b7<span class="fl">.4</span>, b7<span class="fl">.5</span>,
-              <span class="dt">weights =</span> <span class="st">&quot;loo&quot;</span>) <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span><span class="kw">round</span>(<span class="dt">digits =</span> <span class="dv">3</span>)</code></pre>
+<div class="sourceCode" id="cb670"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb670-1" data-line-number="1"><span class="kw">model_weights</span>(b7<span class="fl">.3</span>, b7<span class="fl">.4</span>, b7<span class="fl">.5</span>,</a>
+<a class="sourceLine" id="cb670-2" data-line-number="2">              <span class="dt">weights =</span> <span class="st">&quot;loo&quot;</span>) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb670-3" data-line-number="3"><span class="st">  </span><span class="kw">round</span>(<span class="dt">digits =</span> <span class="dv">3</span>)</a></code></pre></div>
 <pre><code>##  b7.3  b7.4  b7.5 
 ## 0.000 0.034 0.966</code></pre>
 <div id="overthinking-conventional-form-of-interaction." class="section level4">
@@ -635,14 +634,14 @@ l &lt;-<span class="st"> </span><span class="kw">loo_compare</span>(b7<span clas
 \mu_i &amp; = \alpha + \beta_1 \text{rugged}_i + \beta_2 \text{cont_africa}_i + \beta_3 \text{rugged}_i \times \text{cont_africa}_i
 \end{align*}\]</span></p>
 <p>Instead of the <code>y ~ 1 + x1*x2</code> approach, which will work fine with <code>brm()</code>, you can use this more explicit syntax.</p>
-<pre class="sourceCode r"><code class="sourceCode r">b7<span class="fl">.5</span>b &lt;-
-<span class="st">  </span><span class="kw">update</span>(b7<span class="fl">.5</span>,
-         <span class="dt">formula =</span> log_gdp <span class="op">~</span><span class="st"> </span><span class="dv">1</span> <span class="op">+</span><span class="st"> </span>rugged <span class="op">+</span><span class="st"> </span>cont_africa <span class="op">+</span><span class="st"> </span>rugged<span class="op">:</span>cont_africa) </code></pre>
+<div class="sourceCode" id="cb672"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb672-1" data-line-number="1">b7<span class="fl">.5</span>b &lt;-</a>
+<a class="sourceLine" id="cb672-2" data-line-number="2"><span class="st">  </span><span class="kw">update</span>(b7<span class="fl">.5</span>,</a>
+<a class="sourceLine" id="cb672-3" data-line-number="3">         <span class="dt">formula =</span> log_gdp <span class="op">~</span><span class="st"> </span><span class="dv">1</span> <span class="op">+</span><span class="st"> </span>rugged <span class="op">+</span><span class="st"> </span>cont_africa <span class="op">+</span><span class="st"> </span>rugged<span class="op">:</span>cont_africa) </a></code></pre></div>
 <p>From here on, I will default to this style of syntax for interactions.</p>
 <p>Since this is the same model, it yields the same information criteria estimates within simulation error. Here we’ll confirm that with the LOO.</p>
-<pre class="sourceCode r"><code class="sourceCode r">b7<span class="fl">.5</span>b &lt;-<span class="st"> </span><span class="kw">add_criterion</span>(b7<span class="fl">.5</span>b, <span class="kw">c</span>(<span class="st">&quot;loo&quot;</span>, <span class="st">&quot;waic&quot;</span>))
-
-b7<span class="fl">.5</span><span class="op">$</span>loo</code></pre>
+<div class="sourceCode" id="cb673"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb673-1" data-line-number="1">b7<span class="fl">.5</span>b &lt;-<span class="st"> </span><span class="kw">add_criterion</span>(b7<span class="fl">.5</span>b, <span class="kw">c</span>(<span class="st">&quot;loo&quot;</span>, <span class="st">&quot;waic&quot;</span>))</a>
+<a class="sourceLine" id="cb673-2" data-line-number="2"></a>
+<a class="sourceLine" id="cb673-3" data-line-number="3">b7<span class="fl">.5</span><span class="op">$</span>loo</a></code></pre></div>
 <pre><code>## 
 ## Computed from 4000 by 170 log-likelihood matrix
 ## 
@@ -655,7 +654,7 @@ b7<span class="fl">.5</span><span class="op">$</span>loo</code></pre>
 ## 
 ## All Pareto k estimates are good (k &lt; 0.5).
 ## See help(&#39;pareto-k-diagnostic&#39;) for details.</code></pre>
-<pre class="sourceCode r"><code class="sourceCode r">b7<span class="fl">.5</span>b<span class="op">$</span>loo</code></pre>
+<div class="sourceCode" id="cb675"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb675-1" data-line-number="1">b7<span class="fl">.5</span>b<span class="op">$</span>loo</a></code></pre></div>
 <pre><code>## 
 ## Computed from 4000 by 170 log-likelihood matrix
 ## 
@@ -673,31 +672,31 @@ b7<span class="fl">.5</span><span class="op">$</span>loo</code></pre>
 <div id="plotting-the-interaction." class="section level3">
 <h3><span class="header-section-number">7.1.3</span> Plotting the interaction.</h3>
 <p>Here’s our prep work for the figure.</p>
-<pre class="sourceCode r"><code class="sourceCode r">f &lt;-
-<span class="st">  </span><span class="kw">fitted</span>(b7<span class="fl">.5</span>, <span class="dt">newdata =</span> nd) <span class="op">%&gt;%</span><span class="st">  </span><span class="co"># we can use the same `nd` data from last time</span>
-<span class="st">  </span><span class="kw">as_tibble</span>() <span class="op">%&gt;%</span>
-<span class="st">  </span><span class="kw">bind_cols</span>(nd) <span class="op">%&gt;%</span>
-<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">cont_africa =</span> <span class="kw">ifelse</span>(cont_africa <span class="op">==</span><span class="st"> </span><span class="dv">1</span>, <span class="st">&quot;Africa&quot;</span>, <span class="st">&quot;not Africa&quot;</span>))</code></pre>
+<div class="sourceCode" id="cb677"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb677-1" data-line-number="1">f &lt;-</a>
+<a class="sourceLine" id="cb677-2" data-line-number="2"><span class="st">  </span><span class="kw">fitted</span>(b7<span class="fl">.5</span>, <span class="dt">newdata =</span> nd) <span class="op">%&gt;%</span><span class="st">  </span><span class="co"># we can use the same `nd` data from last time</span></a>
+<a class="sourceLine" id="cb677-3" data-line-number="3"><span class="st">  </span><span class="kw">as_tibble</span>() <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb677-4" data-line-number="4"><span class="st">  </span><span class="kw">bind_cols</span>(nd) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb677-5" data-line-number="5"><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">cont_africa =</span> <span class="kw">ifelse</span>(cont_africa <span class="op">==</span><span class="st"> </span><span class="dv">1</span>, <span class="st">&quot;Africa&quot;</span>, <span class="st">&quot;not Africa&quot;</span>))</a></code></pre></div>
 <p>And here’s the code for our version of Figure 7.4.</p>
-<pre class="sourceCode r"><code class="sourceCode r">dd <span class="op">%&gt;%</span>
-<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">cont_africa =</span> <span class="kw">ifelse</span>(cont_africa <span class="op">==</span><span class="st"> </span><span class="dv">1</span>, <span class="st">&quot;Africa&quot;</span>, <span class="st">&quot;not Africa&quot;</span>)) <span class="op">%&gt;%</span>
-<span class="st">  </span>
-<span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(<span class="dt">x =</span> rugged, <span class="dt">color =</span> cont_africa)) <span class="op">+</span>
-<span class="st">  </span><span class="kw">geom_smooth</span>(<span class="dt">data =</span> f,
-              <span class="kw">aes</span>(<span class="dt">y =</span> Estimate, <span class="dt">ymin =</span> Q2<span class="fl">.5</span>, <span class="dt">ymax =</span> Q97<span class="fl">.5</span>,
-                  <span class="dt">fill =</span> cont_africa),
-              <span class="dt">stat =</span> <span class="st">&quot;identity&quot;</span>, 
-              <span class="dt">alpha =</span> <span class="dv">1</span><span class="op">/</span><span class="dv">4</span>, <span class="dt">size =</span> <span class="dv">1</span><span class="op">/</span><span class="dv">2</span>) <span class="op">+</span>
-<span class="st">  </span><span class="kw">geom_point</span>(<span class="kw">aes</span>(<span class="dt">y =</span> log_gdp),
-             <span class="dt">size =</span> <span class="dv">2</span><span class="op">/</span><span class="dv">3</span>) <span class="op">+</span>
-<span class="st">  </span><span class="kw">scale_colour_pander</span>() <span class="op">+</span>
-<span class="st">  </span><span class="kw">scale_fill_pander</span>() <span class="op">+</span>
-<span class="st">  </span><span class="kw">scale_x_continuous</span>(<span class="st">&quot;Terrain Ruggedness Index&quot;</span>, <span class="dt">expand =</span> <span class="kw">c</span>(<span class="dv">0</span>, <span class="dv">0</span>)) <span class="op">+</span>
-<span class="st">  </span><span class="kw">ylab</span>(<span class="st">&quot;log GDP from year 2000&quot;</span>) <span class="op">+</span>
-<span class="st">  </span><span class="kw">theme_pander</span>() <span class="op">+</span><span class="st"> </span>
-<span class="st">  </span><span class="kw">theme</span>(<span class="dt">text =</span> <span class="kw">element_text</span>(<span class="dt">family =</span> <span class="st">&quot;Times&quot;</span>),
-        <span class="dt">legend.position =</span> <span class="st">&quot;none&quot;</span>) <span class="op">+</span>
-<span class="st">  </span><span class="kw">facet_wrap</span>(<span class="op">~</span>cont_africa)</code></pre>
+<div class="sourceCode" id="cb678"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb678-1" data-line-number="1">dd <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb678-2" data-line-number="2"><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">cont_africa =</span> <span class="kw">ifelse</span>(cont_africa <span class="op">==</span><span class="st"> </span><span class="dv">1</span>, <span class="st">&quot;Africa&quot;</span>, <span class="st">&quot;not Africa&quot;</span>)) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb678-3" data-line-number="3"><span class="st">  </span></a>
+<a class="sourceLine" id="cb678-4" data-line-number="4"><span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(<span class="dt">x =</span> rugged, <span class="dt">color =</span> cont_africa)) <span class="op">+</span></a>
+<a class="sourceLine" id="cb678-5" data-line-number="5"><span class="st">  </span><span class="kw">geom_smooth</span>(<span class="dt">data =</span> f,</a>
+<a class="sourceLine" id="cb678-6" data-line-number="6">              <span class="kw">aes</span>(<span class="dt">y =</span> Estimate, <span class="dt">ymin =</span> Q2<span class="fl">.5</span>, <span class="dt">ymax =</span> Q97<span class="fl">.5</span>,</a>
+<a class="sourceLine" id="cb678-7" data-line-number="7">                  <span class="dt">fill =</span> cont_africa),</a>
+<a class="sourceLine" id="cb678-8" data-line-number="8">              <span class="dt">stat =</span> <span class="st">&quot;identity&quot;</span>, </a>
+<a class="sourceLine" id="cb678-9" data-line-number="9">              <span class="dt">alpha =</span> <span class="dv">1</span><span class="op">/</span><span class="dv">4</span>, <span class="dt">size =</span> <span class="dv">1</span><span class="op">/</span><span class="dv">2</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb678-10" data-line-number="10"><span class="st">  </span><span class="kw">geom_point</span>(<span class="kw">aes</span>(<span class="dt">y =</span> log_gdp),</a>
+<a class="sourceLine" id="cb678-11" data-line-number="11">             <span class="dt">size =</span> <span class="dv">2</span><span class="op">/</span><span class="dv">3</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb678-12" data-line-number="12"><span class="st">  </span><span class="kw">scale_colour_pander</span>() <span class="op">+</span></a>
+<a class="sourceLine" id="cb678-13" data-line-number="13"><span class="st">  </span><span class="kw">scale_fill_pander</span>() <span class="op">+</span></a>
+<a class="sourceLine" id="cb678-14" data-line-number="14"><span class="st">  </span><span class="kw">scale_x_continuous</span>(<span class="st">&quot;Terrain Ruggedness Index&quot;</span>, <span class="dt">expand =</span> <span class="kw">c</span>(<span class="dv">0</span>, <span class="dv">0</span>)) <span class="op">+</span></a>
+<a class="sourceLine" id="cb678-15" data-line-number="15"><span class="st">  </span><span class="kw">ylab</span>(<span class="st">&quot;log GDP from year 2000&quot;</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb678-16" data-line-number="16"><span class="st">  </span><span class="kw">theme_pander</span>() <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb678-17" data-line-number="17"><span class="st">  </span><span class="kw">theme</span>(<span class="dt">text =</span> <span class="kw">element_text</span>(<span class="dt">family =</span> <span class="st">&quot;Times&quot;</span>),</a>
+<a class="sourceLine" id="cb678-18" data-line-number="18">        <span class="dt">legend.position =</span> <span class="st">&quot;none&quot;</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb678-19" data-line-number="19"><span class="st">  </span><span class="kw">facet_wrap</span>(<span class="op">~</span>cont_africa)</a></code></pre></div>
 <p><img src="_main_files/figure-html/unnamed-chunk-393-1.png" width="528" /></p>
 </div>
 <div id="interpreting-an-interaction-estimate." class="section level3">
@@ -712,7 +711,7 @@ b7<span class="fl">.5</span><span class="op">$</span>loo</code></pre>
 <p>Interaction models ruin this paradise. (p. 220)</p>
 </blockquote>
 <p>Return the parameter estimates.</p>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">posterior_summary</span>(b7<span class="fl">.5</span>)</code></pre>
+<div class="sourceCode" id="cb679"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb679-1" data-line-number="1"><span class="kw">posterior_summary</span>(b7<span class="fl">.5</span>)</a></code></pre></div>
 <pre><code>##                          Estimate  Est.Error         Q2.5         Q97.5
 ## b_Intercept             9.1765514 0.13773700    8.9087500    9.45017377
 ## b_rugged               -0.1822513 0.07563480   -0.3318009   -0.03747218
@@ -721,11 +720,11 @@ b7<span class="fl">.5</span><span class="op">$</span>loo</code></pre>
 ## sigma                   0.9507567 0.05189272    0.8559998    1.06107066
 ## lp__                 -244.4128796 1.55408891 -248.2955370 -242.29336575</code></pre>
 <p>“Since <span class="math inline">\(\gamma\)</span> (gamma) doesn’t appear in this table—it wasn’t estimated—we have to compute it ourselves” (p. 221). Like in the text, we’ll do so first by working with the point estimates.</p>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="co"># within Africa</span>
-<span class="kw">fixef</span>(b7<span class="fl">.5</span>)[<span class="dv">2</span>, <span class="dv">1</span>] <span class="op">+</span><span class="st"> </span><span class="kw">fixef</span>(b7<span class="fl">.5</span>)[<span class="dv">4</span>, <span class="dv">1</span>] <span class="op">*</span><span class="st"> </span><span class="dv">1</span></code></pre>
+<div class="sourceCode" id="cb681"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb681-1" data-line-number="1"><span class="co"># within Africa</span></a>
+<a class="sourceLine" id="cb681-2" data-line-number="2"><span class="kw">fixef</span>(b7<span class="fl">.5</span>)[<span class="dv">2</span>, <span class="dv">1</span>] <span class="op">+</span><span class="st"> </span><span class="kw">fixef</span>(b7<span class="fl">.5</span>)[<span class="dv">4</span>, <span class="dv">1</span>] <span class="op">*</span><span class="st"> </span><span class="dv">1</span></a></code></pre></div>
 <pre><code>## [1] 0.1634002</code></pre>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="co"># outside Africa</span>
-<span class="kw">fixef</span>(b7<span class="fl">.5</span>)[<span class="dv">2</span>, <span class="dv">1</span>] <span class="op">+</span><span class="st"> </span><span class="kw">fixef</span>(b7<span class="fl">.5</span>)[<span class="dv">4</span>, <span class="dv">1</span>] <span class="op">*</span><span class="st"> </span><span class="dv">0</span></code></pre>
+<div class="sourceCode" id="cb683"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb683-1" data-line-number="1"><span class="co"># outside Africa</span></a>
+<a class="sourceLine" id="cb683-2" data-line-number="2"><span class="kw">fixef</span>(b7<span class="fl">.5</span>)[<span class="dv">2</span>, <span class="dv">1</span>] <span class="op">+</span><span class="st"> </span><span class="kw">fixef</span>(b7<span class="fl">.5</span>)[<span class="dv">4</span>, <span class="dv">1</span>] <span class="op">*</span><span class="st"> </span><span class="dv">0</span></a></code></pre></div>
 <pre><code>## [1] -0.1822513</code></pre>
 </div>
 <div id="incorporating-uncertainty." class="section level4">
@@ -734,43 +733,43 @@ b7<span class="fl">.5</span><span class="op">$</span>loo</code></pre>
 <p>To get some idea of the uncertainty around those <span class="math inline">\(\gamma\)</span> values, we’ll need to use the whole posterior. Since <span class="math inline">\(\gamma\)</span> depends upon parameters, and those parameters have a posterior distribution, <span class="math inline">\(\gamma\)</span> must also have a posterior distribution. Read the previous sentence again a few times. It’s one of the most important concepts in processing Bayesian model fits. Anything calculated using parameters has a distribution. (p. 212)</p>
 </blockquote>
 <p>Like McElreath, we’ll avoid integral calcus in favor of working with the <code>posterior_samples()</code>.</p>
-<pre class="sourceCode r"><code class="sourceCode r">post &lt;-<span class="st"> </span><span class="kw">posterior_samples</span>(b7<span class="fl">.5</span>) 
-
-post <span class="op">%&gt;%</span>
-<span class="st">  </span><span class="kw">transmute</span>(<span class="dt">gamma_Africa    =</span> b_rugged <span class="op">+</span><span class="st"> `</span><span class="dt">b_rugged:cont_africa</span><span class="st">`</span>,
-            <span class="dt">gamma_notAfrica =</span> b_rugged) <span class="op">%&gt;%</span>
-<span class="st">  </span><span class="kw">gather</span>(key, value) <span class="op">%&gt;%</span>
-<span class="st">  </span><span class="kw">group_by</span>(key) <span class="op">%&gt;%</span>
-<span class="st">  </span><span class="kw">summarise</span>(<span class="dt">mean =</span> <span class="kw">mean</span>(value))</code></pre>
+<div class="sourceCode" id="cb685"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb685-1" data-line-number="1">post &lt;-<span class="st"> </span><span class="kw">posterior_samples</span>(b7<span class="fl">.5</span>) </a>
+<a class="sourceLine" id="cb685-2" data-line-number="2"></a>
+<a class="sourceLine" id="cb685-3" data-line-number="3">post <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb685-4" data-line-number="4"><span class="st">  </span><span class="kw">transmute</span>(<span class="dt">gamma_Africa    =</span> b_rugged <span class="op">+</span><span class="st"> `</span><span class="dt">b_rugged:cont_africa</span><span class="st">`</span>,</a>
+<a class="sourceLine" id="cb685-5" data-line-number="5">            <span class="dt">gamma_notAfrica =</span> b_rugged) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb685-6" data-line-number="6"><span class="st">  </span><span class="kw">gather</span>(key, value) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb685-7" data-line-number="7"><span class="st">  </span><span class="kw">group_by</span>(key) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb685-8" data-line-number="8"><span class="st">  </span><span class="kw">summarise</span>(<span class="dt">mean =</span> <span class="kw">mean</span>(value))</a></code></pre></div>
 <pre><code>## # A tibble: 2 x 2
 ##   key               mean
 ##   &lt;chr&gt;            &lt;dbl&gt;
 ## 1 gamma_Africa     0.163
 ## 2 gamma_notAfrica -0.182</code></pre>
 <p>And here is our version of Figure 7.5.</p>
-<pre class="sourceCode r"><code class="sourceCode r">post <span class="op">%&gt;%</span>
-<span class="st">  </span><span class="kw">transmute</span>(<span class="dt">gamma_Africa    =</span> b_rugged <span class="op">+</span><span class="st"> `</span><span class="dt">b_rugged:cont_africa</span><span class="st">`</span>,
-            <span class="dt">gamma_notAfrica =</span> b_rugged) <span class="op">%&gt;%</span>
-<span class="st">  </span><span class="kw">gather</span>(key, value) <span class="op">%&gt;%</span>
-<span class="st">  </span>
-<span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(<span class="dt">x =</span> value, <span class="dt">group =</span> key, <span class="dt">color =</span> key, <span class="dt">fill =</span> key)) <span class="op">+</span>
-<span class="st">  </span><span class="kw">geom_density</span>(<span class="dt">alpha =</span> <span class="dv">1</span><span class="op">/</span><span class="dv">4</span>) <span class="op">+</span>
-<span class="st">  </span><span class="kw">scale_colour_pander</span>() <span class="op">+</span>
-<span class="st">  </span><span class="kw">scale_fill_pander</span>() <span class="op">+</span>
-<span class="st">  </span><span class="kw">scale_x_continuous</span>(<span class="kw">expression</span>(gamma), <span class="dt">expand =</span> <span class="kw">c</span>(<span class="dv">0</span>, <span class="dv">0</span>)) <span class="op">+</span>
-<span class="st">  </span><span class="kw">scale_y_continuous</span>(<span class="ot">NULL</span>, <span class="dt">breaks =</span> <span class="ot">NULL</span>) <span class="op">+</span>
-<span class="st">  </span><span class="kw">ggtitle</span>(<span class="st">&quot;Terraine Ruggedness slopes&quot;</span>,
-          <span class="dt">subtitle =</span> <span class="st">&quot;Blue = African nations, Green = others&quot;</span>) <span class="op">+</span>
-<span class="st">  </span><span class="kw">theme_pander</span>() <span class="op">+</span><span class="st"> </span>
-<span class="st">  </span><span class="kw">theme</span>(<span class="dt">text =</span> <span class="kw">element_text</span>(<span class="dt">family =</span> <span class="st">&quot;Times&quot;</span>),
-        <span class="dt">legend.position =</span> <span class="st">&quot;none&quot;</span>)</code></pre>
+<div class="sourceCode" id="cb687"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb687-1" data-line-number="1">post <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb687-2" data-line-number="2"><span class="st">  </span><span class="kw">transmute</span>(<span class="dt">gamma_Africa    =</span> b_rugged <span class="op">+</span><span class="st"> `</span><span class="dt">b_rugged:cont_africa</span><span class="st">`</span>,</a>
+<a class="sourceLine" id="cb687-3" data-line-number="3">            <span class="dt">gamma_notAfrica =</span> b_rugged) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb687-4" data-line-number="4"><span class="st">  </span><span class="kw">gather</span>(key, value) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb687-5" data-line-number="5"><span class="st">  </span></a>
+<a class="sourceLine" id="cb687-6" data-line-number="6"><span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(<span class="dt">x =</span> value, <span class="dt">group =</span> key, <span class="dt">color =</span> key, <span class="dt">fill =</span> key)) <span class="op">+</span></a>
+<a class="sourceLine" id="cb687-7" data-line-number="7"><span class="st">  </span><span class="kw">geom_density</span>(<span class="dt">alpha =</span> <span class="dv">1</span><span class="op">/</span><span class="dv">4</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb687-8" data-line-number="8"><span class="st">  </span><span class="kw">scale_colour_pander</span>() <span class="op">+</span></a>
+<a class="sourceLine" id="cb687-9" data-line-number="9"><span class="st">  </span><span class="kw">scale_fill_pander</span>() <span class="op">+</span></a>
+<a class="sourceLine" id="cb687-10" data-line-number="10"><span class="st">  </span><span class="kw">scale_x_continuous</span>(<span class="kw">expression</span>(gamma), <span class="dt">expand =</span> <span class="kw">c</span>(<span class="dv">0</span>, <span class="dv">0</span>)) <span class="op">+</span></a>
+<a class="sourceLine" id="cb687-11" data-line-number="11"><span class="st">  </span><span class="kw">scale_y_continuous</span>(<span class="ot">NULL</span>, <span class="dt">breaks =</span> <span class="ot">NULL</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb687-12" data-line-number="12"><span class="st">  </span><span class="kw">ggtitle</span>(<span class="st">&quot;Terraine Ruggedness slopes&quot;</span>,</a>
+<a class="sourceLine" id="cb687-13" data-line-number="13">          <span class="dt">subtitle =</span> <span class="st">&quot;Blue = African nations, Green = others&quot;</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb687-14" data-line-number="14"><span class="st">  </span><span class="kw">theme_pander</span>() <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb687-15" data-line-number="15"><span class="st">  </span><span class="kw">theme</span>(<span class="dt">text =</span> <span class="kw">element_text</span>(<span class="dt">family =</span> <span class="st">&quot;Times&quot;</span>),</a>
+<a class="sourceLine" id="cb687-16" data-line-number="16">        <span class="dt">legend.position =</span> <span class="st">&quot;none&quot;</span>)</a></code></pre></div>
 <p><img src="_main_files/figure-html/unnamed-chunk-397-1.png" width="288" /></p>
 <p>What proportion of these differences is below zero?</p>
-<pre class="sourceCode r"><code class="sourceCode r">post <span class="op">%&gt;%</span>
-<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">gamma_Africa    =</span> b_rugged <span class="op">+</span><span class="st"> `</span><span class="dt">b_rugged:cont_africa</span><span class="st">`</span>,
-         <span class="dt">gamma_notAfrica =</span> b_rugged) <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">diff            =</span> gamma_Africa <span class="op">-</span>gamma_notAfrica) <span class="op">%&gt;%</span>
-<span class="st">  </span><span class="kw">summarise</span>(<span class="dt">Proportion_of_the_difference_below_0 =</span> <span class="kw">sum</span>(diff <span class="op">&lt;</span><span class="st"> </span><span class="dv">0</span>) <span class="op">/</span><span class="st"> </span><span class="kw">length</span>(diff))</code></pre>
+<div class="sourceCode" id="cb688"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb688-1" data-line-number="1">post <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb688-2" data-line-number="2"><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">gamma_Africa    =</span> b_rugged <span class="op">+</span><span class="st"> `</span><span class="dt">b_rugged:cont_africa</span><span class="st">`</span>,</a>
+<a class="sourceLine" id="cb688-3" data-line-number="3">         <span class="dt">gamma_notAfrica =</span> b_rugged) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb688-4" data-line-number="4"><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">diff            =</span> gamma_Africa <span class="op">-</span>gamma_notAfrica) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb688-5" data-line-number="5"><span class="st">  </span><span class="kw">summarise</span>(<span class="dt">Proportion_of_the_difference_below_0 =</span> <span class="kw">sum</span>(diff <span class="op">&lt;</span><span class="st"> </span><span class="dv">0</span>) <span class="op">/</span><span class="st"> </span><span class="kw">length</span>(diff))</a></code></pre></div>
 <pre><code>##   Proportion_of_the_difference_below_0
 ## 1                                0.003</code></pre>
 </div>
@@ -808,42 +807,42 @@ post <span class="op">%&gt;%</span>
 <div id="africa-depends-upon-ruggedness." class="section level3">
 <h3><span class="header-section-number">7.2.2</span> Africa depends upon ruggedness.</h3>
 <p>Here is our version of McElreath’s Figure 7.6.</p>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="co"># new predictor data for `fitted()`</span>
-nd &lt;-<span class="st"> </span>
-<span class="st">  </span><span class="kw">tibble</span>(<span class="dt">rugged      =</span> <span class="kw">rep</span>(<span class="kw">range</span>(dd<span class="op">$</span>rugged), <span class="dt">times =</span> <span class="dv">2</span>),
-         <span class="dt">cont_africa =</span> <span class="kw">rep</span>(<span class="dv">0</span><span class="op">:</span><span class="dv">1</span>,              <span class="dt">each =</span> <span class="dv">2</span>))
-
-<span class="co"># `fitted()`</span>
-f &lt;-
-<span class="st">  </span><span class="kw">fitted</span>(b7<span class="fl">.5</span>, <span class="dt">newdata =</span> nd) <span class="op">%&gt;%</span>
-<span class="st">  </span><span class="kw">as_tibble</span>() <span class="op">%&gt;%</span>
-<span class="st">  </span><span class="kw">bind_cols</span>(nd) <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">ox =</span> <span class="kw">rep</span>(<span class="kw">c</span>(<span class="op">-</span><span class="fl">0.05</span>, <span class="fl">0.05</span>), <span class="dt">times =</span> <span class="dv">2</span>))
-
-<span class="co"># augment the `dd` data a bit</span>
-dd <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">ox          =</span> <span class="kw">ifelse</span>(rugged <span class="op">&gt;</span><span class="st"> </span><span class="kw">median</span>(rugged), <span class="fl">0.05</span>, <span class="fl">-0.05</span>),
-         <span class="dt">cont_africa =</span> cont_africa <span class="op">+</span><span class="st"> </span>ox) <span class="op">%&gt;%</span>
-<span class="st">  </span><span class="kw">select</span>(cont_africa, <span class="kw">everything</span>()) <span class="op">%&gt;%</span>
-<span class="st">  </span>
-<span class="st">  </span><span class="co"># plot</span>
-<span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(<span class="dt">x =</span> cont_africa, <span class="dt">color =</span> <span class="kw">factor</span>(ox))) <span class="op">+</span>
-<span class="st">  </span><span class="kw">geom_smooth</span>(<span class="dt">data =</span> f,
-              <span class="kw">aes</span>(<span class="dt">y =</span> Estimate, <span class="dt">ymin =</span> Q2<span class="fl">.5</span>, <span class="dt">ymax =</span> Q97<span class="fl">.5</span>,
-                  <span class="dt">fill =</span> <span class="kw">factor</span>(ox), <span class="dt">linetype =</span> <span class="kw">factor</span>(ox)),
-              <span class="dt">stat =</span> <span class="st">&quot;identity&quot;</span>, 
-              <span class="dt">alpha =</span> <span class="dv">1</span><span class="op">/</span><span class="dv">4</span>, <span class="dt">size =</span> <span class="dv">1</span><span class="op">/</span><span class="dv">2</span>) <span class="op">+</span>
-<span class="st">  </span><span class="kw">geom_point</span>(<span class="kw">aes</span>(<span class="dt">y =</span> log_gdp),
-             <span class="dt">alpha =</span> <span class="dv">1</span><span class="op">/</span><span class="dv">2</span>, <span class="dt">shape =</span> <span class="dv">1</span>) <span class="op">+</span>
-<span class="st">  </span><span class="kw">scale_colour_pander</span>() <span class="op">+</span>
-<span class="st">  </span><span class="kw">scale_fill_pander</span>() <span class="op">+</span>
-<span class="st">  </span><span class="kw">scale_x_continuous</span>(<span class="st">&quot;Continent&quot;</span>, <span class="dt">breaks =</span> <span class="dv">0</span><span class="op">:</span><span class="dv">1</span>, 
-                     <span class="dt">labels =</span> <span class="kw">c</span>(<span class="st">&quot;other&quot;</span>, <span class="st">&quot;Africa&quot;</span>)) <span class="op">+</span>
-<span class="st">  </span><span class="kw">coord_cartesian</span>(<span class="dt">xlim =</span> <span class="kw">c</span>(<span class="op">-</span>.<span class="dv">2</span>, <span class="fl">1.2</span>)) <span class="op">+</span>
-<span class="st">  </span><span class="kw">ylab</span>(<span class="st">&quot;log GDP from year 2000&quot;</span>) <span class="op">+</span>
-<span class="st">  </span><span class="kw">theme_pander</span>() <span class="op">+</span>
-<span class="st">  </span><span class="kw">theme</span>(<span class="dt">text =</span> <span class="kw">element_text</span>(<span class="dt">family =</span> <span class="st">&quot;Times&quot;</span>),
-        <span class="dt">legend.position =</span> <span class="st">&quot;none&quot;</span>)</code></pre>
+<div class="sourceCode" id="cb690"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb690-1" data-line-number="1"><span class="co"># new predictor data for `fitted()`</span></a>
+<a class="sourceLine" id="cb690-2" data-line-number="2">nd &lt;-<span class="st"> </span></a>
+<a class="sourceLine" id="cb690-3" data-line-number="3"><span class="st">  </span><span class="kw">tibble</span>(<span class="dt">rugged      =</span> <span class="kw">rep</span>(<span class="kw">range</span>(dd<span class="op">$</span>rugged), <span class="dt">times =</span> <span class="dv">2</span>),</a>
+<a class="sourceLine" id="cb690-4" data-line-number="4">         <span class="dt">cont_africa =</span> <span class="kw">rep</span>(<span class="dv">0</span><span class="op">:</span><span class="dv">1</span>,              <span class="dt">each =</span> <span class="dv">2</span>))</a>
+<a class="sourceLine" id="cb690-5" data-line-number="5"></a>
+<a class="sourceLine" id="cb690-6" data-line-number="6"><span class="co"># `fitted()`</span></a>
+<a class="sourceLine" id="cb690-7" data-line-number="7">f &lt;-</a>
+<a class="sourceLine" id="cb690-8" data-line-number="8"><span class="st">  </span><span class="kw">fitted</span>(b7<span class="fl">.5</span>, <span class="dt">newdata =</span> nd) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb690-9" data-line-number="9"><span class="st">  </span><span class="kw">as_tibble</span>() <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb690-10" data-line-number="10"><span class="st">  </span><span class="kw">bind_cols</span>(nd) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb690-11" data-line-number="11"><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">ox =</span> <span class="kw">rep</span>(<span class="kw">c</span>(<span class="op">-</span><span class="fl">0.05</span>, <span class="fl">0.05</span>), <span class="dt">times =</span> <span class="dv">2</span>))</a>
+<a class="sourceLine" id="cb690-12" data-line-number="12"></a>
+<a class="sourceLine" id="cb690-13" data-line-number="13"><span class="co"># augment the `dd` data a bit</span></a>
+<a class="sourceLine" id="cb690-14" data-line-number="14">dd <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb690-15" data-line-number="15"><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">ox          =</span> <span class="kw">ifelse</span>(rugged <span class="op">&gt;</span><span class="st"> </span><span class="kw">median</span>(rugged), <span class="fl">0.05</span>, <span class="fl">-0.05</span>),</a>
+<a class="sourceLine" id="cb690-16" data-line-number="16">         <span class="dt">cont_africa =</span> cont_africa <span class="op">+</span><span class="st"> </span>ox) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb690-17" data-line-number="17"><span class="st">  </span><span class="kw">select</span>(cont_africa, <span class="kw">everything</span>()) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb690-18" data-line-number="18"><span class="st">  </span></a>
+<a class="sourceLine" id="cb690-19" data-line-number="19"><span class="st">  </span><span class="co"># plot</span></a>
+<a class="sourceLine" id="cb690-20" data-line-number="20"><span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(<span class="dt">x =</span> cont_africa, <span class="dt">color =</span> <span class="kw">factor</span>(ox))) <span class="op">+</span></a>
+<a class="sourceLine" id="cb690-21" data-line-number="21"><span class="st">  </span><span class="kw">geom_smooth</span>(<span class="dt">data =</span> f,</a>
+<a class="sourceLine" id="cb690-22" data-line-number="22">              <span class="kw">aes</span>(<span class="dt">y =</span> Estimate, <span class="dt">ymin =</span> Q2<span class="fl">.5</span>, <span class="dt">ymax =</span> Q97<span class="fl">.5</span>,</a>
+<a class="sourceLine" id="cb690-23" data-line-number="23">                  <span class="dt">fill =</span> <span class="kw">factor</span>(ox), <span class="dt">linetype =</span> <span class="kw">factor</span>(ox)),</a>
+<a class="sourceLine" id="cb690-24" data-line-number="24">              <span class="dt">stat =</span> <span class="st">&quot;identity&quot;</span>, </a>
+<a class="sourceLine" id="cb690-25" data-line-number="25">              <span class="dt">alpha =</span> <span class="dv">1</span><span class="op">/</span><span class="dv">4</span>, <span class="dt">size =</span> <span class="dv">1</span><span class="op">/</span><span class="dv">2</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb690-26" data-line-number="26"><span class="st">  </span><span class="kw">geom_point</span>(<span class="kw">aes</span>(<span class="dt">y =</span> log_gdp),</a>
+<a class="sourceLine" id="cb690-27" data-line-number="27">             <span class="dt">alpha =</span> <span class="dv">1</span><span class="op">/</span><span class="dv">2</span>, <span class="dt">shape =</span> <span class="dv">1</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb690-28" data-line-number="28"><span class="st">  </span><span class="kw">scale_colour_pander</span>() <span class="op">+</span></a>
+<a class="sourceLine" id="cb690-29" data-line-number="29"><span class="st">  </span><span class="kw">scale_fill_pander</span>() <span class="op">+</span></a>
+<a class="sourceLine" id="cb690-30" data-line-number="30"><span class="st">  </span><span class="kw">scale_x_continuous</span>(<span class="st">&quot;Continent&quot;</span>, <span class="dt">breaks =</span> <span class="dv">0</span><span class="op">:</span><span class="dv">1</span>, </a>
+<a class="sourceLine" id="cb690-31" data-line-number="31">                     <span class="dt">labels =</span> <span class="kw">c</span>(<span class="st">&quot;other&quot;</span>, <span class="st">&quot;Africa&quot;</span>)) <span class="op">+</span></a>
+<a class="sourceLine" id="cb690-32" data-line-number="32"><span class="st">  </span><span class="kw">coord_cartesian</span>(<span class="dt">xlim =</span> <span class="kw">c</span>(<span class="op">-</span>.<span class="dv">2</span>, <span class="fl">1.2</span>)) <span class="op">+</span></a>
+<a class="sourceLine" id="cb690-33" data-line-number="33"><span class="st">  </span><span class="kw">ylab</span>(<span class="st">&quot;log GDP from year 2000&quot;</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb690-34" data-line-number="34"><span class="st">  </span><span class="kw">theme_pander</span>() <span class="op">+</span></a>
+<a class="sourceLine" id="cb690-35" data-line-number="35"><span class="st">  </span><span class="kw">theme</span>(<span class="dt">text =</span> <span class="kw">element_text</span>(<span class="dt">family =</span> <span class="st">&quot;Times&quot;</span>),</a>
+<a class="sourceLine" id="cb690-36" data-line-number="36">        <span class="dt">legend.position =</span> <span class="st">&quot;none&quot;</span>)</a></code></pre></div>
 <p><img src="_main_files/figure-html/unnamed-chunk-399-1.png" width="288" /></p>
 </div>
 </div>
@@ -853,10 +852,10 @@ dd <span class="op">%&gt;%</span><span class="st"> </span>
 <div id="the-data.-1" class="section level3">
 <h3><span class="header-section-number">7.3.1</span> The data.</h3>
 <p>Look at the <code>tulips</code>.</p>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(rethinking)
-<span class="kw">data</span>(tulips)
-d &lt;-<span class="st"> </span>tulips
-<span class="kw">str</span>(d)</code></pre>
+<div class="sourceCode" id="cb691"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb691-1" data-line-number="1"><span class="kw">library</span>(rethinking)</a>
+<a class="sourceLine" id="cb691-2" data-line-number="2"><span class="kw">data</span>(tulips)</a>
+<a class="sourceLine" id="cb691-3" data-line-number="3">d &lt;-<span class="st"> </span>tulips</a>
+<a class="sourceLine" id="cb691-4" data-line-number="4"><span class="kw">str</span>(d)</a></code></pre></div>
 <pre><code>## &#39;data.frame&#39;:    27 obs. of  4 variables:
 ##  $ bed   : Factor w/ 3 levels &quot;a&quot;,&quot;b&quot;,&quot;c&quot;: 1 1 1 1 1 1 1 1 1 2 ...
 ##  $ water : int  1 1 1 2 2 2 3 3 3 1 ...
@@ -885,49 +884,49 @@ d &lt;-<span class="st"> </span>tulips
 \sigma  &amp; \sim \text{Uniform} (0, 100)
 \end{align*}\]</span></p>
 <p>Load brms.</p>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">detach</span>(package<span class="op">:</span>rethinking, <span class="dt">unload =</span> T)
-<span class="kw">library</span>(brms)
-<span class="kw">rm</span>(tulips)</code></pre>
+<div class="sourceCode" id="cb693"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb693-1" data-line-number="1"><span class="kw">detach</span>(package<span class="op">:</span>rethinking, <span class="dt">unload =</span> T)</a>
+<a class="sourceLine" id="cb693-2" data-line-number="2"><span class="kw">library</span>(brms)</a>
+<a class="sourceLine" id="cb693-3" data-line-number="3"><span class="kw">rm</span>(tulips)</a></code></pre></div>
 <p>Here we continue with McElreath’s very-flat priors for the multivariable and interaction models.</p>
-<pre class="sourceCode r"><code class="sourceCode r">b7<span class="fl">.6</span> &lt;-
-<span class="st">  </span><span class="kw">brm</span>(<span class="dt">data =</span> d, <span class="dt">family =</span> gaussian,
-      blooms <span class="op">~</span><span class="st"> </span><span class="dv">1</span> <span class="op">+</span><span class="st"> </span>water <span class="op">+</span><span class="st"> </span>shade,
-      <span class="dt">prior =</span> <span class="kw">c</span>(<span class="kw">prior</span>(<span class="kw">normal</span>(<span class="dv">0</span>, <span class="dv">100</span>), <span class="dt">class =</span> Intercept),
-                <span class="kw">prior</span>(<span class="kw">normal</span>(<span class="dv">0</span>, <span class="dv">100</span>), <span class="dt">class =</span> b),
-                <span class="kw">prior</span>(<span class="kw">uniform</span>(<span class="dv">0</span>, <span class="dv">100</span>), <span class="dt">class =</span> sigma)),
-      <span class="dt">iter =</span> <span class="dv">2000</span>, <span class="dt">warmup =</span> <span class="dv">1000</span>, <span class="dt">cores =</span> <span class="dv">4</span>, <span class="dt">chains =</span> <span class="dv">4</span>,
-      <span class="dt">seed =</span> <span class="dv">7</span>)</code></pre>
+<div class="sourceCode" id="cb694"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb694-1" data-line-number="1">b7<span class="fl">.6</span> &lt;-</a>
+<a class="sourceLine" id="cb694-2" data-line-number="2"><span class="st">  </span><span class="kw">brm</span>(<span class="dt">data =</span> d, <span class="dt">family =</span> gaussian,</a>
+<a class="sourceLine" id="cb694-3" data-line-number="3">      blooms <span class="op">~</span><span class="st"> </span><span class="dv">1</span> <span class="op">+</span><span class="st"> </span>water <span class="op">+</span><span class="st"> </span>shade,</a>
+<a class="sourceLine" id="cb694-4" data-line-number="4">      <span class="dt">prior =</span> <span class="kw">c</span>(<span class="kw">prior</span>(<span class="kw">normal</span>(<span class="dv">0</span>, <span class="dv">100</span>), <span class="dt">class =</span> Intercept),</a>
+<a class="sourceLine" id="cb694-5" data-line-number="5">                <span class="kw">prior</span>(<span class="kw">normal</span>(<span class="dv">0</span>, <span class="dv">100</span>), <span class="dt">class =</span> b),</a>
+<a class="sourceLine" id="cb694-6" data-line-number="6">                <span class="kw">prior</span>(<span class="kw">uniform</span>(<span class="dv">0</span>, <span class="dv">100</span>), <span class="dt">class =</span> sigma)),</a>
+<a class="sourceLine" id="cb694-7" data-line-number="7">      <span class="dt">iter =</span> <span class="dv">2000</span>, <span class="dt">warmup =</span> <span class="dv">1000</span>, <span class="dt">cores =</span> <span class="dv">4</span>, <span class="dt">chains =</span> <span class="dv">4</span>,</a>
+<a class="sourceLine" id="cb694-8" data-line-number="8">      <span class="dt">seed =</span> <span class="dv">7</span>)</a></code></pre></div>
 <pre><code>## Warning: There were 58 divergent transitions after warmup. Increasing adapt_delta above 0.8 may help. See
 ## http://mc-stan.org/misc/warnings.html#divergent-transitions-after-warmup</code></pre>
 <pre><code>## Warning: Examine the pairs() plot to diagnose sampling problems</code></pre>
-<pre class="sourceCode r"><code class="sourceCode r">b7<span class="fl">.7</span> &lt;-<span class="st"> </span>
-<span class="st">  </span><span class="kw">update</span>(b7<span class="fl">.6</span>, 
-         <span class="dt">formula =</span> blooms <span class="op">~</span><span class="st"> </span><span class="dv">1</span> <span class="op">+</span><span class="st"> </span>water <span class="op">+</span><span class="st"> </span>shade <span class="op">+</span><span class="st"> </span>water<span class="op">:</span>shade)</code></pre>
+<div class="sourceCode" id="cb697"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb697-1" data-line-number="1">b7<span class="fl">.7</span> &lt;-<span class="st"> </span></a>
+<a class="sourceLine" id="cb697-2" data-line-number="2"><span class="st">  </span><span class="kw">update</span>(b7<span class="fl">.6</span>, </a>
+<a class="sourceLine" id="cb697-3" data-line-number="3">         <span class="dt">formula =</span> blooms <span class="op">~</span><span class="st"> </span><span class="dv">1</span> <span class="op">+</span><span class="st"> </span>water <span class="op">+</span><span class="st"> </span>shade <span class="op">+</span><span class="st"> </span>water<span class="op">:</span>shade)</a></code></pre></div>
 <pre><code>## Warning: There were 10 divergent transitions after warmup. Increasing adapt_delta above 0.8 may help. See
 ## http://mc-stan.org/misc/warnings.html#divergent-transitions-after-warmup
 
 ## Warning: Examine the pairs() plot to diagnose sampling problems</code></pre>
 <p>Much like in the text, these models yielded divergent transitions. Here, we’ll try to combat them by following Stan’s advice and “[increase] adapt_delta above 0.8.” While we’re at it, we’ll put better priors on <span class="math inline">\(\sigma\)</span>.</p>
-<pre class="sourceCode r"><code class="sourceCode r">b7<span class="fl">.6</span> &lt;-
-<span class="st">  </span><span class="kw">update</span>(b7<span class="fl">.6</span>,
-         <span class="dt">prior =</span> <span class="kw">c</span>(<span class="kw">prior</span>(<span class="kw">normal</span>(<span class="dv">0</span>, <span class="dv">100</span>), <span class="dt">class =</span> Intercept),
-                   <span class="kw">prior</span>(<span class="kw">normal</span>(<span class="dv">0</span>, <span class="dv">100</span>), <span class="dt">class =</span> b),
-                   <span class="kw">prior</span>(<span class="kw">cauchy</span>(<span class="dv">0</span>, <span class="dv">10</span>), <span class="dt">class =</span> sigma)),
-         <span class="dt">control =</span> <span class="kw">list</span>(<span class="dt">adapt_delta =</span> <span class="fl">0.9</span>),
-         <span class="dt">seed =</span> <span class="dv">7</span>)
-
-b7<span class="fl">.7</span> &lt;-<span class="st"> </span>
-<span class="st">  </span><span class="kw">update</span>(b7<span class="fl">.6</span>, 
-         <span class="dt">formula =</span> blooms <span class="op">~</span><span class="st"> </span><span class="dv">1</span> <span class="op">+</span><span class="st"> </span>water <span class="op">+</span><span class="st"> </span>shade <span class="op">+</span><span class="st"> </span>water<span class="op">:</span>shade)</code></pre>
+<div class="sourceCode" id="cb699"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb699-1" data-line-number="1">b7<span class="fl">.6</span> &lt;-</a>
+<a class="sourceLine" id="cb699-2" data-line-number="2"><span class="st">  </span><span class="kw">update</span>(b7<span class="fl">.6</span>,</a>
+<a class="sourceLine" id="cb699-3" data-line-number="3">         <span class="dt">prior =</span> <span class="kw">c</span>(<span class="kw">prior</span>(<span class="kw">normal</span>(<span class="dv">0</span>, <span class="dv">100</span>), <span class="dt">class =</span> Intercept),</a>
+<a class="sourceLine" id="cb699-4" data-line-number="4">                   <span class="kw">prior</span>(<span class="kw">normal</span>(<span class="dv">0</span>, <span class="dv">100</span>), <span class="dt">class =</span> b),</a>
+<a class="sourceLine" id="cb699-5" data-line-number="5">                   <span class="kw">prior</span>(<span class="kw">cauchy</span>(<span class="dv">0</span>, <span class="dv">10</span>), <span class="dt">class =</span> sigma)),</a>
+<a class="sourceLine" id="cb699-6" data-line-number="6">         <span class="dt">control =</span> <span class="kw">list</span>(<span class="dt">adapt_delta =</span> <span class="fl">0.9</span>),</a>
+<a class="sourceLine" id="cb699-7" data-line-number="7">         <span class="dt">seed =</span> <span class="dv">7</span>)</a>
+<a class="sourceLine" id="cb699-8" data-line-number="8"></a>
+<a class="sourceLine" id="cb699-9" data-line-number="9">b7<span class="fl">.7</span> &lt;-<span class="st"> </span></a>
+<a class="sourceLine" id="cb699-10" data-line-number="10"><span class="st">  </span><span class="kw">update</span>(b7<span class="fl">.6</span>, </a>
+<a class="sourceLine" id="cb699-11" data-line-number="11">         <span class="dt">formula =</span> blooms <span class="op">~</span><span class="st"> </span><span class="dv">1</span> <span class="op">+</span><span class="st"> </span>water <span class="op">+</span><span class="st"> </span>shade <span class="op">+</span><span class="st"> </span>water<span class="op">:</span>shade)</a></code></pre></div>
 <p>Increasing <code>adapt_delta</code> did the trick. Instead of <code>coeftab()</code>, we can also use <code>posterior_summary()</code>, which gets us most of the way there.</p>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">posterior_summary</span>(b7<span class="fl">.6</span>) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">round</span>(<span class="dt">digits =</span> <span class="dv">2</span>)</code></pre>
+<div class="sourceCode" id="cb700"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb700-1" data-line-number="1"><span class="kw">posterior_summary</span>(b7<span class="fl">.6</span>) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">round</span>(<span class="dt">digits =</span> <span class="dv">2</span>)</a></code></pre></div>
 <pre><code>##             Estimate Est.Error    Q2.5   Q97.5
 ## b_Intercept    60.67     42.67  -21.92  144.77
 ## b_water        74.11     14.44   45.62  101.89
 ## b_shade       -40.86     14.45  -69.63  -11.82
 ## sigma          61.33      8.79   47.30   81.84
 ## lp__         -169.73      1.50 -173.48 -167.87</code></pre>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">posterior_summary</span>(b7<span class="fl">.7</span>) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">round</span>(<span class="dt">digits =</span> <span class="dv">2</span>)</code></pre>
+<div class="sourceCode" id="cb702"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb702-1" data-line-number="1"><span class="kw">posterior_summary</span>(b7<span class="fl">.7</span>) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">round</span>(<span class="dt">digits =</span> <span class="dv">2</span>)</a></code></pre></div>
 <pre><code>##               Estimate Est.Error    Q2.5   Q97.5
 ## b_Intercept    -108.67     63.10 -227.37   19.41
 ## b_water         160.46     29.23  102.67  215.15
@@ -937,23 +936,23 @@ b7<span class="fl">.7</span> &lt;-<span class="st"> </span>
 ## lp__           -170.65      1.72 -175.03 -168.40</code></pre>
 <p>This is an example where HMC yielded point estimates notably different from MAP. However, look at the size of those posterior standard deviations (i.e., ‘Est.Error’ column)! The MAP estimates are well within a fraction of those <span class="math inline">\(SD\)</span>s.</p>
 <p>Anyway, let’s look at WAIC.</p>
-<pre class="sourceCode r"><code class="sourceCode r">b7<span class="fl">.6</span> &lt;-<span class="st"> </span><span class="kw">add_criterion</span>(b7<span class="fl">.6</span>, <span class="st">&quot;waic&quot;</span>)
-b7<span class="fl">.7</span> &lt;-<span class="st"> </span><span class="kw">add_criterion</span>(b7<span class="fl">.7</span>, <span class="st">&quot;waic&quot;</span>)
-
-w &lt;-<span class="st"> </span><span class="kw">loo_compare</span>(b7<span class="fl">.6</span>, b7<span class="fl">.7</span>, <span class="dt">criterion =</span> <span class="st">&quot;waic&quot;</span>)
-
-<span class="kw">print</span>(w, <span class="dt">simplify =</span> F)</code></pre>
+<div class="sourceCode" id="cb704"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb704-1" data-line-number="1">b7<span class="fl">.6</span> &lt;-<span class="st"> </span><span class="kw">add_criterion</span>(b7<span class="fl">.6</span>, <span class="st">&quot;waic&quot;</span>)</a>
+<a class="sourceLine" id="cb704-2" data-line-number="2">b7<span class="fl">.7</span> &lt;-<span class="st"> </span><span class="kw">add_criterion</span>(b7<span class="fl">.7</span>, <span class="st">&quot;waic&quot;</span>)</a>
+<a class="sourceLine" id="cb704-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb704-4" data-line-number="4">w &lt;-<span class="st"> </span><span class="kw">loo_compare</span>(b7<span class="fl">.6</span>, b7<span class="fl">.7</span>, <span class="dt">criterion =</span> <span class="st">&quot;waic&quot;</span>)</a>
+<a class="sourceLine" id="cb704-5" data-line-number="5"></a>
+<a class="sourceLine" id="cb704-6" data-line-number="6"><span class="kw">print</span>(w, <span class="dt">simplify =</span> F)</a></code></pre></div>
 <pre><code>##      elpd_diff se_diff elpd_waic se_elpd_waic p_waic se_p_waic waic   se_waic
 ## b7.7    0.0       0.0  -146.8       4.0          4.6    1.2     293.5    8.0 
 ## b7.6   -5.2       2.7  -151.9       3.8          4.0    1.0     303.9    7.6</code></pre>
 <p>Here we use our <code>cbind()</code> trick to convert the difference from the <span class="math inline">\(\text{elpd}\)</span> metric to the more traditional WAIC metric.</p>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">cbind</span>(<span class="dt">waic_diff =</span> w[, <span class="dv">1</span>] <span class="op">*</span><span class="st"> </span><span class="dv">-2</span>,
-      <span class="dt">se        =</span> w[, <span class="dv">2</span>] <span class="op">*</span><span class="st">  </span><span class="dv">2</span>)</code></pre>
+<div class="sourceCode" id="cb706"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb706-1" data-line-number="1"><span class="kw">cbind</span>(<span class="dt">waic_diff =</span> w[, <span class="dv">1</span>] <span class="op">*</span><span class="st"> </span><span class="dv">-2</span>,</a>
+<a class="sourceLine" id="cb706-2" data-line-number="2">      <span class="dt">se        =</span> w[, <span class="dv">2</span>] <span class="op">*</span><span class="st">  </span><span class="dv">2</span>)</a></code></pre></div>
 <pre><code>##      waic_diff       se
 ## b7.7   0.00000 0.000000
 ## b7.6  10.34799 5.347043</code></pre>
 <p>Why not compute the WAIC weights?</p>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">model_weights</span>(b7<span class="fl">.6</span>, b7<span class="fl">.7</span>, <span class="dt">weights =</span> <span class="st">&quot;waic&quot;</span>)</code></pre>
+<div class="sourceCode" id="cb708"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb708-1" data-line-number="1"><span class="kw">model_weights</span>(b7<span class="fl">.6</span>, b7<span class="fl">.7</span>, <span class="dt">weights =</span> <span class="st">&quot;waic&quot;</span>)</a></code></pre></div>
 <pre><code>##       b7.6       b7.7 
 ## 0.00563003 0.99436997</code></pre>
 <p>As in the text, almost all the weight went to the interaction model, <code>b7.7</code>.</p>
@@ -964,33 +963,33 @@ w &lt;-<span class="st"> </span><span class="kw">loo_compare</span>(b7<span clas
 <p>To <em>center</em> a variable means to create a new variable that contains the same information as the original, but has a new mean of zero. For example, to make centered versions of <code>shade</code> and <code>water</code>, just subtract the mean of the original from each value. (p. 230, <em>emphasis</em> in the original)</p>
 </blockquote>
 <p>Here’s a tidyverse way to center the predictors.</p>
-<pre class="sourceCode r"><code class="sourceCode r">d &lt;-
-<span class="st">  </span>d <span class="op">%&gt;%</span>
-<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">shade_c =</span> shade <span class="op">-</span><span class="st"> </span><span class="kw">mean</span>(shade),
-         <span class="dt">water_c =</span> water <span class="op">-</span><span class="st"> </span><span class="kw">mean</span>(water))</code></pre>
+<div class="sourceCode" id="cb710"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb710-1" data-line-number="1">d &lt;-</a>
+<a class="sourceLine" id="cb710-2" data-line-number="2"><span class="st">  </span>d <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb710-3" data-line-number="3"><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">shade_c =</span> shade <span class="op">-</span><span class="st"> </span><span class="kw">mean</span>(shade),</a>
+<a class="sourceLine" id="cb710-4" data-line-number="4">         <span class="dt">water_c =</span> water <span class="op">-</span><span class="st"> </span><span class="kw">mean</span>(water))</a></code></pre></div>
 <p>Now refit the models with our shiny new centered predictors.</p>
-<pre class="sourceCode r"><code class="sourceCode r">b7<span class="fl">.8</span> &lt;-
-<span class="st">  </span><span class="kw">brm</span>(<span class="dt">data =</span> d, <span class="dt">family =</span> gaussian,
-      blooms <span class="op">~</span><span class="st"> </span><span class="dv">1</span> <span class="op">+</span><span class="st"> </span>water_c <span class="op">+</span><span class="st"> </span>shade_c,
-      <span class="dt">prior =</span> <span class="kw">c</span>(<span class="kw">prior</span>(<span class="kw">normal</span>(<span class="dv">130</span>, <span class="dv">100</span>), <span class="dt">class =</span> Intercept),
-                <span class="kw">prior</span>(<span class="kw">normal</span>(<span class="dv">0</span>, <span class="dv">100</span>), <span class="dt">class =</span> b),
-                <span class="kw">prior</span>(<span class="kw">cauchy</span>(<span class="dv">0</span>, <span class="dv">10</span>), <span class="dt">class =</span> sigma)),
-      <span class="dt">iter =</span> <span class="dv">2000</span>, <span class="dt">warmup =</span> <span class="dv">1000</span>, <span class="dt">chains =</span> <span class="dv">4</span>, <span class="dt">cores =</span> <span class="dv">4</span>,
-      <span class="dt">control =</span> <span class="kw">list</span>(<span class="dt">adapt_delta =</span> <span class="fl">0.9</span>),
-      <span class="dt">seed =</span> <span class="dv">7</span>)
-
-b7<span class="fl">.9</span> &lt;-<span class="st"> </span>
-<span class="st">  </span><span class="kw">update</span>(b7<span class="fl">.8</span>, 
-         <span class="dt">formula =</span> blooms <span class="op">~</span><span class="st"> </span><span class="dv">1</span> <span class="op">+</span><span class="st"> </span>water_c <span class="op">+</span><span class="st"> </span>shade_c <span class="op">+</span><span class="st"> </span>water_c<span class="op">:</span>shade_c)</code></pre>
+<div class="sourceCode" id="cb711"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb711-1" data-line-number="1">b7<span class="fl">.8</span> &lt;-</a>
+<a class="sourceLine" id="cb711-2" data-line-number="2"><span class="st">  </span><span class="kw">brm</span>(<span class="dt">data =</span> d, <span class="dt">family =</span> gaussian,</a>
+<a class="sourceLine" id="cb711-3" data-line-number="3">      blooms <span class="op">~</span><span class="st"> </span><span class="dv">1</span> <span class="op">+</span><span class="st"> </span>water_c <span class="op">+</span><span class="st"> </span>shade_c,</a>
+<a class="sourceLine" id="cb711-4" data-line-number="4">      <span class="dt">prior =</span> <span class="kw">c</span>(<span class="kw">prior</span>(<span class="kw">normal</span>(<span class="dv">130</span>, <span class="dv">100</span>), <span class="dt">class =</span> Intercept),</a>
+<a class="sourceLine" id="cb711-5" data-line-number="5">                <span class="kw">prior</span>(<span class="kw">normal</span>(<span class="dv">0</span>, <span class="dv">100</span>), <span class="dt">class =</span> b),</a>
+<a class="sourceLine" id="cb711-6" data-line-number="6">                <span class="kw">prior</span>(<span class="kw">cauchy</span>(<span class="dv">0</span>, <span class="dv">10</span>), <span class="dt">class =</span> sigma)),</a>
+<a class="sourceLine" id="cb711-7" data-line-number="7">      <span class="dt">iter =</span> <span class="dv">2000</span>, <span class="dt">warmup =</span> <span class="dv">1000</span>, <span class="dt">chains =</span> <span class="dv">4</span>, <span class="dt">cores =</span> <span class="dv">4</span>,</a>
+<a class="sourceLine" id="cb711-8" data-line-number="8">      <span class="dt">control =</span> <span class="kw">list</span>(<span class="dt">adapt_delta =</span> <span class="fl">0.9</span>),</a>
+<a class="sourceLine" id="cb711-9" data-line-number="9">      <span class="dt">seed =</span> <span class="dv">7</span>)</a>
+<a class="sourceLine" id="cb711-10" data-line-number="10"></a>
+<a class="sourceLine" id="cb711-11" data-line-number="11">b7<span class="fl">.9</span> &lt;-<span class="st"> </span></a>
+<a class="sourceLine" id="cb711-12" data-line-number="12"><span class="st">  </span><span class="kw">update</span>(b7<span class="fl">.8</span>, </a>
+<a class="sourceLine" id="cb711-13" data-line-number="13">         <span class="dt">formula =</span> blooms <span class="op">~</span><span class="st"> </span><span class="dv">1</span> <span class="op">+</span><span class="st"> </span>water_c <span class="op">+</span><span class="st"> </span>shade_c <span class="op">+</span><span class="st"> </span>water_c<span class="op">:</span>shade_c)</a></code></pre></div>
 <p>Check out the results.</p>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">posterior_summary</span>(b7<span class="fl">.8</span>) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">round</span>(<span class="dt">digits =</span> <span class="dv">2</span>)</code></pre>
+<div class="sourceCode" id="cb712"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb712-1" data-line-number="1"><span class="kw">posterior_summary</span>(b7<span class="fl">.8</span>) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">round</span>(<span class="dt">digits =</span> <span class="dv">2</span>)</a></code></pre></div>
 <pre><code>##             Estimate Est.Error    Q2.5   Q97.5
 ## b_Intercept   128.99     11.36  106.27  150.68
 ## b_water_c      73.92     14.13   45.80  101.82
 ## b_shade_c     -40.85     14.14  -68.35  -12.70
 ## sigma          61.13      9.06   46.57   81.27
 ## lp__         -168.87      1.46 -172.54 -167.07</code></pre>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">posterior_summary</span>(b7<span class="fl">.9</span>) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">round</span>(<span class="dt">digits =</span> <span class="dv">2</span>)</code></pre>
+<div class="sourceCode" id="cb714"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb714-1" data-line-number="1"><span class="kw">posterior_summary</span>(b7<span class="fl">.9</span>) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">round</span>(<span class="dt">digits =</span> <span class="dv">2</span>)</a></code></pre></div>
 <pre><code>##                   Estimate Est.Error    Q2.5   Q97.5
 ## b_Intercept         129.01      9.67  109.18  148.36
 ## b_water_c            74.86     11.52   51.56   96.85
@@ -999,14 +998,14 @@ b7<span class="fl">.9</span> &lt;-<span class="st"> </span>
 ## sigma                49.51      7.57   37.63   66.67
 ## lp__               -168.54      1.74 -172.83 -166.26</code></pre>
 <p>And okay fine, if you really want a <code>coeftab()</code>-like summary, here’s a way to do it.</p>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">tibble</span>(<span class="dt">model  =</span> <span class="kw">str_c</span>(<span class="st">&quot;b7.&quot;</span>, <span class="dv">8</span><span class="op">:</span><span class="dv">9</span>)) <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">fit  =</span> purrr<span class="op">::</span><span class="kw">map</span>(model, get)) <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">tidy =</span> purrr<span class="op">::</span><span class="kw">map</span>(fit, broom<span class="op">::</span>tidy)) <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span><span class="kw">unnest</span>(tidy) <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span><span class="kw">filter</span>(term <span class="op">!=</span><span class="st"> &quot;lp__&quot;</span>) <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span><span class="kw">select</span>(term, estimate, model) <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span><span class="kw">spread</span>(<span class="dt">key =</span> model, <span class="dt">value =</span> estimate) <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span><span class="kw">mutate_if</span>(is.double, round, <span class="dt">digits =</span> <span class="dv">2</span>)</code></pre>
+<div class="sourceCode" id="cb716"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb716-1" data-line-number="1"><span class="kw">tibble</span>(<span class="dt">model  =</span> <span class="kw">str_c</span>(<span class="st">&quot;b7.&quot;</span>, <span class="dv">8</span><span class="op">:</span><span class="dv">9</span>)) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb716-2" data-line-number="2"><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">fit  =</span> purrr<span class="op">::</span><span class="kw">map</span>(model, get)) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb716-3" data-line-number="3"><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">tidy =</span> purrr<span class="op">::</span><span class="kw">map</span>(fit, broom<span class="op">::</span>tidy)) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb716-4" data-line-number="4"><span class="st">  </span><span class="kw">unnest</span>(tidy) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb716-5" data-line-number="5"><span class="st">  </span><span class="kw">filter</span>(term <span class="op">!=</span><span class="st"> &quot;lp__&quot;</span>) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb716-6" data-line-number="6"><span class="st">  </span><span class="kw">select</span>(term, estimate, model) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb716-7" data-line-number="7"><span class="st">  </span><span class="kw">spread</span>(<span class="dt">key =</span> model, <span class="dt">value =</span> estimate) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb716-8" data-line-number="8"><span class="st">  </span><span class="kw">mutate_if</span>(is.double, round, <span class="dt">digits =</span> <span class="dv">2</span>)</a></code></pre></div>
 <pre><code>## # A tibble: 5 x 3
 ##   term               b7.8  b7.9
 ##   &lt;chr&gt;             &lt;dbl&gt; &lt;dbl&gt;
@@ -1032,15 +1031,15 @@ b7<span class="fl">.9</span> &lt;-<span class="st"> </span>
 </blockquote>
 <p><span class="math display">\[\mu_i | \text{shade}_{i = 2}, \text{water}_{i = 2} = -107.1 + 159.9 (2) + 44.0 (2) -43.2 (2 \times 2)\]</span></p>
 <p>With our brms workflow, we use <code>fixef()</code> to compute the predictions.</p>
-<pre class="sourceCode r"><code class="sourceCode r">k &lt;-<span class="st"> </span><span class="kw">fixef</span>(b7<span class="fl">.7</span>)
-k[<span class="dv">1</span>] <span class="op">+</span><span class="st"> </span>k[<span class="dv">2</span>] <span class="op">*</span><span class="st"> </span><span class="dv">2</span> <span class="op">+</span><span class="st"> </span>k[<span class="dv">3</span>] <span class="op">*</span><span class="st"> </span><span class="dv">2</span> <span class="op">+</span><span class="st"> </span>k[<span class="dv">4</span>] <span class="op">*</span><span class="st"> </span><span class="dv">2</span> <span class="op">*</span><span class="st"> </span><span class="dv">2</span></code></pre>
+<div class="sourceCode" id="cb718"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb718-1" data-line-number="1">k &lt;-<span class="st"> </span><span class="kw">fixef</span>(b7<span class="fl">.7</span>)</a>
+<a class="sourceLine" id="cb718-2" data-line-number="2">k[<span class="dv">1</span>] <span class="op">+</span><span class="st"> </span>k[<span class="dv">2</span>] <span class="op">*</span><span class="st"> </span><span class="dv">2</span> <span class="op">+</span><span class="st"> </span>k[<span class="dv">3</span>] <span class="op">*</span><span class="st"> </span><span class="dv">2</span> <span class="op">+</span><span class="st"> </span>k[<span class="dv">4</span>] <span class="op">*</span><span class="st"> </span><span class="dv">2</span> <span class="op">*</span><span class="st"> </span><span class="dv">2</span></a></code></pre></div>
 <pre><code>## [1] 127.5887</code></pre>
 <p>Even though or HMC parameters differ a bit from the MAP estimates McElreath reported in the text, the value they predicted matches quite closely with the one in the text. Same thing for the next one.</p>
-<pre class="sourceCode r"><code class="sourceCode r">k &lt;-<span class="st"> </span><span class="kw">fixef</span>(b7<span class="fl">.9</span>)
-k[<span class="dv">1</span>] <span class="op">+</span><span class="st"> </span>k[<span class="dv">2</span>] <span class="op">*</span><span class="st"> </span><span class="dv">0</span> <span class="op">+</span><span class="st"> </span>k[<span class="dv">3</span>] <span class="op">*</span><span class="st"> </span><span class="dv">0</span> <span class="op">+</span><span class="st"> </span>k[<span class="dv">4</span>] <span class="op">*</span><span class="st"> </span><span class="dv">0</span> <span class="op">*</span><span class="st"> </span><span class="dv">0</span></code></pre>
+<div class="sourceCode" id="cb720"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb720-1" data-line-number="1">k &lt;-<span class="st"> </span><span class="kw">fixef</span>(b7<span class="fl">.9</span>)</a>
+<a class="sourceLine" id="cb720-2" data-line-number="2">k[<span class="dv">1</span>] <span class="op">+</span><span class="st"> </span>k[<span class="dv">2</span>] <span class="op">*</span><span class="st"> </span><span class="dv">0</span> <span class="op">+</span><span class="st"> </span>k[<span class="dv">3</span>] <span class="op">*</span><span class="st"> </span><span class="dv">0</span> <span class="op">+</span><span class="st"> </span>k[<span class="dv">4</span>] <span class="op">*</span><span class="st"> </span><span class="dv">0</span> <span class="op">*</span><span class="st"> </span><span class="dv">0</span></a></code></pre></div>
 <pre><code>## [1] 129.0097</code></pre>
 <p>Here are the coefficient summaries for the centered model.</p>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">print</span>(b7<span class="fl">.9</span>)</code></pre>
+<div class="sourceCode" id="cb722"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb722-1" data-line-number="1"><span class="kw">print</span>(b7<span class="fl">.9</span>)</a></code></pre></div>
 <pre><code>##  Family: gaussian 
 ##   Links: mu = identity; sigma = identity 
 ## Formula: blooms ~ water_c + shade_c + water_c:shade_c 
@@ -1067,74 +1066,74 @@ k[<span class="dv">1</span>] <span class="op">+</span><span class="st"> </span>k
 <div id="plotting-implied-predictions." class="section level3">
 <h3><span class="header-section-number">7.3.4</span> Plotting implied predictions.</h3>
 <p>Now we’re ready for the bottom row of Figure 7.7. Here’s our variation on McElreath’s tryptych loop code, adjusted for brms and ggplot2.</p>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="co"># loop over values of `water_c` and plot predictions</span>
-shade_seq &lt;-<span class="st"> </span><span class="dv">-1</span><span class="op">:</span><span class="dv">1</span>
-
-<span class="cf">for</span>(w <span class="cf">in</span> <span class="dv">-1</span><span class="op">:</span><span class="dv">1</span>){
-  <span class="co"># define the subset of the original data</span>
-  dt &lt;-<span class="st"> </span>d[d<span class="op">$</span>water_c <span class="op">==</span><span class="st"> </span>w, ]
-  <span class="co"># defining our new data</span>
-  nd &lt;-<span class="st"> </span><span class="kw">tibble</span>(<span class="dt">water_c =</span> w, <span class="dt">shade_c =</span> shade_seq)
-  <span class="co"># use our sampling skills, like before</span>
-  f &lt;-<span class="st"> </span>
-<span class="st">    </span><span class="kw">fitted</span>(b7<span class="fl">.9</span>, <span class="dt">newdata =</span> nd) <span class="op">%&gt;%</span>
-<span class="st">    </span><span class="kw">as_tibble</span>() <span class="op">%&gt;%</span>
-<span class="st">    </span><span class="kw">bind_cols</span>(nd)
-  
-  <span class="co"># specify our custom plot</span>
-  fig &lt;-<span class="st"> </span>
-<span class="st">    </span><span class="kw">ggplot</span>() <span class="op">+</span>
-<span class="st">    </span><span class="kw">geom_smooth</span>(<span class="dt">data =</span> f,
-                <span class="kw">aes</span>(<span class="dt">x =</span> shade_c, <span class="dt">y =</span> Estimate, <span class="dt">ymin =</span> Q2<span class="fl">.5</span>, <span class="dt">ymax =</span> Q97<span class="fl">.5</span>),
-                <span class="dt">stat =</span> <span class="st">&quot;identity&quot;</span>, 
-                <span class="dt">fill =</span> <span class="st">&quot;#CC79A7&quot;</span>, <span class="dt">color =</span> <span class="st">&quot;#CC79A7&quot;</span>, <span class="dt">alpha =</span> <span class="dv">1</span><span class="op">/</span><span class="dv">5</span>, <span class="dt">size =</span> <span class="dv">1</span><span class="op">/</span><span class="dv">2</span>) <span class="op">+</span>
-<span class="st">    </span><span class="kw">geom_point</span>(<span class="dt">data =</span> dt, 
-               <span class="kw">aes</span>(<span class="dt">x =</span> shade_c, <span class="dt">y =</span> blooms),
-               <span class="dt">shape =</span> <span class="dv">1</span>, <span class="dt">color =</span> <span class="st">&quot;#CC79A7&quot;</span>) <span class="op">+</span>
-<span class="st">    </span><span class="kw">coord_cartesian</span>(<span class="dt">xlim =</span> <span class="kw">range</span>(d<span class="op">$</span>shade_c), 
-                    <span class="dt">ylim =</span> <span class="kw">range</span>(d<span class="op">$</span>blooms)) <span class="op">+</span>
-<span class="st">    </span><span class="kw">scale_x_continuous</span>(<span class="st">&quot;Shade (centered)&quot;</span>, <span class="dt">breaks =</span> <span class="kw">c</span>(<span class="op">-</span><span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">1</span>)) <span class="op">+</span>
-<span class="st">    </span><span class="kw">labs</span>(<span class="st">&quot;Blooms&quot;</span>, 
-         <span class="dt">title =</span> <span class="kw">paste</span>(<span class="st">&quot;Water (centered) =&quot;</span>, w)) <span class="op">+</span>
-<span class="st">    </span><span class="kw">theme_pander</span>() <span class="op">+</span><span class="st"> </span>
-<span class="st">    </span><span class="kw">theme</span>(<span class="dt">text =</span> <span class="kw">element_text</span>(<span class="dt">family =</span> <span class="st">&quot;Times&quot;</span>))
-  
-  <span class="co"># plot that joint</span>
-  <span class="kw">plot</span>(fig)
-}</code></pre>
+<div class="sourceCode" id="cb724"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb724-1" data-line-number="1"><span class="co"># loop over values of `water_c` and plot predictions</span></a>
+<a class="sourceLine" id="cb724-2" data-line-number="2">shade_seq &lt;-<span class="st"> </span><span class="dv">-1</span><span class="op">:</span><span class="dv">1</span></a>
+<a class="sourceLine" id="cb724-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb724-4" data-line-number="4"><span class="cf">for</span>(w <span class="cf">in</span> <span class="dv">-1</span><span class="op">:</span><span class="dv">1</span>){</a>
+<a class="sourceLine" id="cb724-5" data-line-number="5">  <span class="co"># define the subset of the original data</span></a>
+<a class="sourceLine" id="cb724-6" data-line-number="6">  dt &lt;-<span class="st"> </span>d[d<span class="op">$</span>water_c <span class="op">==</span><span class="st"> </span>w, ]</a>
+<a class="sourceLine" id="cb724-7" data-line-number="7">  <span class="co"># defining our new data</span></a>
+<a class="sourceLine" id="cb724-8" data-line-number="8">  nd &lt;-<span class="st"> </span><span class="kw">tibble</span>(<span class="dt">water_c =</span> w, <span class="dt">shade_c =</span> shade_seq)</a>
+<a class="sourceLine" id="cb724-9" data-line-number="9">  <span class="co"># use our sampling skills, like before</span></a>
+<a class="sourceLine" id="cb724-10" data-line-number="10">  f &lt;-<span class="st"> </span></a>
+<a class="sourceLine" id="cb724-11" data-line-number="11"><span class="st">    </span><span class="kw">fitted</span>(b7<span class="fl">.9</span>, <span class="dt">newdata =</span> nd) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb724-12" data-line-number="12"><span class="st">    </span><span class="kw">as_tibble</span>() <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb724-13" data-line-number="13"><span class="st">    </span><span class="kw">bind_cols</span>(nd)</a>
+<a class="sourceLine" id="cb724-14" data-line-number="14">  </a>
+<a class="sourceLine" id="cb724-15" data-line-number="15">  <span class="co"># specify our custom plot</span></a>
+<a class="sourceLine" id="cb724-16" data-line-number="16">  fig &lt;-<span class="st"> </span></a>
+<a class="sourceLine" id="cb724-17" data-line-number="17"><span class="st">    </span><span class="kw">ggplot</span>() <span class="op">+</span></a>
+<a class="sourceLine" id="cb724-18" data-line-number="18"><span class="st">    </span><span class="kw">geom_smooth</span>(<span class="dt">data =</span> f,</a>
+<a class="sourceLine" id="cb724-19" data-line-number="19">                <span class="kw">aes</span>(<span class="dt">x =</span> shade_c, <span class="dt">y =</span> Estimate, <span class="dt">ymin =</span> Q2<span class="fl">.5</span>, <span class="dt">ymax =</span> Q97<span class="fl">.5</span>),</a>
+<a class="sourceLine" id="cb724-20" data-line-number="20">                <span class="dt">stat =</span> <span class="st">&quot;identity&quot;</span>, </a>
+<a class="sourceLine" id="cb724-21" data-line-number="21">                <span class="dt">fill =</span> <span class="st">&quot;#CC79A7&quot;</span>, <span class="dt">color =</span> <span class="st">&quot;#CC79A7&quot;</span>, <span class="dt">alpha =</span> <span class="dv">1</span><span class="op">/</span><span class="dv">5</span>, <span class="dt">size =</span> <span class="dv">1</span><span class="op">/</span><span class="dv">2</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb724-22" data-line-number="22"><span class="st">    </span><span class="kw">geom_point</span>(<span class="dt">data =</span> dt, </a>
+<a class="sourceLine" id="cb724-23" data-line-number="23">               <span class="kw">aes</span>(<span class="dt">x =</span> shade_c, <span class="dt">y =</span> blooms),</a>
+<a class="sourceLine" id="cb724-24" data-line-number="24">               <span class="dt">shape =</span> <span class="dv">1</span>, <span class="dt">color =</span> <span class="st">&quot;#CC79A7&quot;</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb724-25" data-line-number="25"><span class="st">    </span><span class="kw">coord_cartesian</span>(<span class="dt">xlim =</span> <span class="kw">range</span>(d<span class="op">$</span>shade_c), </a>
+<a class="sourceLine" id="cb724-26" data-line-number="26">                    <span class="dt">ylim =</span> <span class="kw">range</span>(d<span class="op">$</span>blooms)) <span class="op">+</span></a>
+<a class="sourceLine" id="cb724-27" data-line-number="27"><span class="st">    </span><span class="kw">scale_x_continuous</span>(<span class="st">&quot;Shade (centered)&quot;</span>, <span class="dt">breaks =</span> <span class="kw">c</span>(<span class="op">-</span><span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">1</span>)) <span class="op">+</span></a>
+<a class="sourceLine" id="cb724-28" data-line-number="28"><span class="st">    </span><span class="kw">labs</span>(<span class="st">&quot;Blooms&quot;</span>, </a>
+<a class="sourceLine" id="cb724-29" data-line-number="29">         <span class="dt">title =</span> <span class="kw">paste</span>(<span class="st">&quot;Water (centered) =&quot;</span>, w)) <span class="op">+</span></a>
+<a class="sourceLine" id="cb724-30" data-line-number="30"><span class="st">    </span><span class="kw">theme_pander</span>() <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb724-31" data-line-number="31"><span class="st">    </span><span class="kw">theme</span>(<span class="dt">text =</span> <span class="kw">element_text</span>(<span class="dt">family =</span> <span class="st">&quot;Times&quot;</span>))</a>
+<a class="sourceLine" id="cb724-32" data-line-number="32">  </a>
+<a class="sourceLine" id="cb724-33" data-line-number="33">  <span class="co"># plot that joint</span></a>
+<a class="sourceLine" id="cb724-34" data-line-number="34">  <span class="kw">plot</span>(fig)</a>
+<a class="sourceLine" id="cb724-35" data-line-number="35">}</a></code></pre></div>
 <p><img src="_main_files/figure-html/unnamed-chunk-411-1.png" width="217.92" /><img src="_main_files/figure-html/unnamed-chunk-411-2.png" width="217.92" /><img src="_main_files/figure-html/unnamed-chunk-411-3.png" width="217.92" /></p>
 <p>But we don’t necessarily need a loop. We can achieve all of McElreath’s Figure 7.7 with <code>fitted()</code>, some data wrangling, and a little help from <code>ggplot2::facet_grid()</code>.</p>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="co"># `fitted()` for model b7.8</span>
-<span class="kw">fitted</span>(b7<span class="fl">.8</span>) <span class="op">%&gt;%</span>
-<span class="st">  </span><span class="kw">as_tibble</span>() <span class="op">%&gt;%</span>
-<span class="st">  </span><span class="co"># add `fitted()` for model b7.9</span>
-<span class="st">  </span><span class="kw">bind_rows</span>(
-    <span class="kw">fitted</span>(b7<span class="fl">.9</span>) <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">      </span><span class="kw">as_tibble</span>()
-  ) <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span><span class="co"># we&#39;ll want to index the models</span>
-<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">fit  =</span> <span class="kw">rep</span>(<span class="kw">c</span>(<span class="st">&quot;b7.8&quot;</span>, <span class="st">&quot;b7.9&quot;</span>), <span class="dt">each =</span> <span class="dv">27</span>)) <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span><span class="co"># here we add the data, `d`</span>
-<span class="st">  </span><span class="kw">bind_cols</span>(<span class="kw">bind_rows</span>(d, d)) <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span><span class="co"># these will come in handy for `ggplot2::facet_grid()`</span>
-<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">x_grid =</span> <span class="kw">paste</span>(<span class="st">&quot;water_c =&quot;</span>, water_c),
-         <span class="dt">y_grid =</span> <span class="kw">paste</span>(<span class="st">&quot;model: &quot;</span>, fit)) <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span>
-<span class="st">  </span><span class="co"># plot!</span>
-<span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(<span class="dt">x =</span> shade_c)) <span class="op">+</span>
-<span class="st">  </span><span class="kw">geom_smooth</span>(<span class="kw">aes</span>(<span class="dt">y =</span> Estimate, <span class="dt">ymin =</span> Q2<span class="fl">.5</span>, <span class="dt">ymax =</span> Q97<span class="fl">.5</span>),
-              <span class="dt">stat =</span> <span class="st">&quot;identity&quot;</span>, 
-              <span class="dt">fill =</span> <span class="st">&quot;#CC79A7&quot;</span>, <span class="dt">color =</span> <span class="st">&quot;#CC79A7&quot;</span>, <span class="dt">alpha =</span> <span class="dv">1</span><span class="op">/</span><span class="dv">5</span>, <span class="dt">size =</span> <span class="dv">1</span><span class="op">/</span><span class="dv">2</span>) <span class="op">+</span>
-<span class="st">  </span><span class="kw">geom_point</span>(<span class="kw">aes</span>(<span class="dt">y =</span> blooms, <span class="dt">group =</span> x_grid), 
-             <span class="dt">shape =</span> <span class="dv">1</span>, <span class="dt">color =</span> <span class="st">&quot;#CC79A7&quot;</span>) <span class="op">+</span>
-<span class="st">  </span><span class="kw">coord_cartesian</span>(<span class="dt">xlim =</span> <span class="kw">range</span>(d<span class="op">$</span>shade_c), 
-                  <span class="dt">ylim =</span> <span class="kw">range</span>(d<span class="op">$</span>blooms)) <span class="op">+</span>
-<span class="st">  </span><span class="kw">scale_x_continuous</span>(<span class="st">&quot;Shade (centered)&quot;</span>, <span class="dt">breaks =</span> <span class="kw">c</span>(<span class="op">-</span><span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">1</span>)) <span class="op">+</span>
-<span class="st">  </span><span class="kw">ylab</span>(<span class="st">&quot;Blooms&quot;</span>) <span class="op">+</span>
-<span class="st">  </span><span class="kw">theme_pander</span>() <span class="op">+</span><span class="st"> </span>
-<span class="st">  </span><span class="kw">theme</span>(<span class="dt">text             =</span> <span class="kw">element_text</span>(<span class="dt">family =</span> <span class="st">&quot;Times&quot;</span>),
-        <span class="dt">panel.background =</span> <span class="kw">element_rect</span>(<span class="dt">color =</span> <span class="st">&quot;black&quot;</span>)) <span class="op">+</span>
-<span class="st">  </span><span class="kw">facet_grid</span>(y_grid <span class="op">~</span><span class="st"> </span>x_grid)</code></pre>
+<div class="sourceCode" id="cb725"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb725-1" data-line-number="1"><span class="co"># `fitted()` for model b7.8</span></a>
+<a class="sourceLine" id="cb725-2" data-line-number="2"><span class="kw">fitted</span>(b7<span class="fl">.8</span>) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb725-3" data-line-number="3"><span class="st">  </span><span class="kw">as_tibble</span>() <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb725-4" data-line-number="4"><span class="st">  </span><span class="co"># add `fitted()` for model b7.9</span></a>
+<a class="sourceLine" id="cb725-5" data-line-number="5"><span class="st">  </span><span class="kw">bind_rows</span>(</a>
+<a class="sourceLine" id="cb725-6" data-line-number="6">    <span class="kw">fitted</span>(b7<span class="fl">.9</span>) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb725-7" data-line-number="7"><span class="st">      </span><span class="kw">as_tibble</span>()</a>
+<a class="sourceLine" id="cb725-8" data-line-number="8">  ) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb725-9" data-line-number="9"><span class="st">  </span><span class="co"># we&#39;ll want to index the models</span></a>
+<a class="sourceLine" id="cb725-10" data-line-number="10"><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">fit  =</span> <span class="kw">rep</span>(<span class="kw">c</span>(<span class="st">&quot;b7.8&quot;</span>, <span class="st">&quot;b7.9&quot;</span>), <span class="dt">each =</span> <span class="dv">27</span>)) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb725-11" data-line-number="11"><span class="st">  </span><span class="co"># here we add the data, `d`</span></a>
+<a class="sourceLine" id="cb725-12" data-line-number="12"><span class="st">  </span><span class="kw">bind_cols</span>(<span class="kw">bind_rows</span>(d, d)) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb725-13" data-line-number="13"><span class="st">  </span><span class="co"># these will come in handy for `ggplot2::facet_grid()`</span></a>
+<a class="sourceLine" id="cb725-14" data-line-number="14"><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">x_grid =</span> <span class="kw">paste</span>(<span class="st">&quot;water_c =&quot;</span>, water_c),</a>
+<a class="sourceLine" id="cb725-15" data-line-number="15">         <span class="dt">y_grid =</span> <span class="kw">paste</span>(<span class="st">&quot;model: &quot;</span>, fit)) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb725-16" data-line-number="16"><span class="st">  </span></a>
+<a class="sourceLine" id="cb725-17" data-line-number="17"><span class="st">  </span><span class="co"># plot!</span></a>
+<a class="sourceLine" id="cb725-18" data-line-number="18"><span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(<span class="dt">x =</span> shade_c)) <span class="op">+</span></a>
+<a class="sourceLine" id="cb725-19" data-line-number="19"><span class="st">  </span><span class="kw">geom_smooth</span>(<span class="kw">aes</span>(<span class="dt">y =</span> Estimate, <span class="dt">ymin =</span> Q2<span class="fl">.5</span>, <span class="dt">ymax =</span> Q97<span class="fl">.5</span>),</a>
+<a class="sourceLine" id="cb725-20" data-line-number="20">              <span class="dt">stat =</span> <span class="st">&quot;identity&quot;</span>, </a>
+<a class="sourceLine" id="cb725-21" data-line-number="21">              <span class="dt">fill =</span> <span class="st">&quot;#CC79A7&quot;</span>, <span class="dt">color =</span> <span class="st">&quot;#CC79A7&quot;</span>, <span class="dt">alpha =</span> <span class="dv">1</span><span class="op">/</span><span class="dv">5</span>, <span class="dt">size =</span> <span class="dv">1</span><span class="op">/</span><span class="dv">2</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb725-22" data-line-number="22"><span class="st">  </span><span class="kw">geom_point</span>(<span class="kw">aes</span>(<span class="dt">y =</span> blooms, <span class="dt">group =</span> x_grid), </a>
+<a class="sourceLine" id="cb725-23" data-line-number="23">             <span class="dt">shape =</span> <span class="dv">1</span>, <span class="dt">color =</span> <span class="st">&quot;#CC79A7&quot;</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb725-24" data-line-number="24"><span class="st">  </span><span class="kw">coord_cartesian</span>(<span class="dt">xlim =</span> <span class="kw">range</span>(d<span class="op">$</span>shade_c), </a>
+<a class="sourceLine" id="cb725-25" data-line-number="25">                  <span class="dt">ylim =</span> <span class="kw">range</span>(d<span class="op">$</span>blooms)) <span class="op">+</span></a>
+<a class="sourceLine" id="cb725-26" data-line-number="26"><span class="st">  </span><span class="kw">scale_x_continuous</span>(<span class="st">&quot;Shade (centered)&quot;</span>, <span class="dt">breaks =</span> <span class="kw">c</span>(<span class="op">-</span><span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">1</span>)) <span class="op">+</span></a>
+<a class="sourceLine" id="cb725-27" data-line-number="27"><span class="st">  </span><span class="kw">ylab</span>(<span class="st">&quot;Blooms&quot;</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb725-28" data-line-number="28"><span class="st">  </span><span class="kw">theme_pander</span>() <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb725-29" data-line-number="29"><span class="st">  </span><span class="kw">theme</span>(<span class="dt">text             =</span> <span class="kw">element_text</span>(<span class="dt">family =</span> <span class="st">&quot;Times&quot;</span>),</a>
+<a class="sourceLine" id="cb725-30" data-line-number="30">        <span class="dt">panel.background =</span> <span class="kw">element_rect</span>(<span class="dt">color =</span> <span class="st">&quot;black&quot;</span>)) <span class="op">+</span></a>
+<a class="sourceLine" id="cb725-31" data-line-number="31"><span class="st">  </span><span class="kw">facet_grid</span>(y_grid <span class="op">~</span><span class="st"> </span>x_grid)</a></code></pre></div>
 <p><img src="_main_files/figure-html/unnamed-chunk-412-1.png" width="624" /></p>
 </div>
 </div>
@@ -1145,85 +1144,85 @@ shade_seq &lt;-<span class="st"> </span><span class="dv">-1</span><span class="o
 <div id="summary-bonus-marginal_effects" class="section level2">
 <h2><span class="header-section-number">7.5</span> <del>Summary</del> Bonus: <code>marginal_effects()</code></h2>
 <p>The brms package includes the <code>marginal_effects()</code> function as a convenient way to look at simple effects and two-way interactions. Recall the simple univariable model, <code>b7.3</code>:</p>
-<pre class="sourceCode r"><code class="sourceCode r">b7<span class="fl">.3</span><span class="op">$</span>formula</code></pre>
+<div class="sourceCode" id="cb726"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb726-1" data-line-number="1">b7<span class="fl">.3</span><span class="op">$</span>formula</a></code></pre></div>
 <pre><code>## log_gdp ~ 1 + rugged</code></pre>
 <p>We can look at the regression line and its percentile-based intervals like so:</p>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">marginal_effects</span>(b7<span class="fl">.3</span>)</code></pre>
+<div class="sourceCode" id="cb728"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb728-1" data-line-number="1"><span class="kw">marginal_effects</span>(b7<span class="fl">.3</span>)</a></code></pre></div>
 <p><img src="_main_files/figure-html/unnamed-chunk-414-1.png" width="336" /></p>
 <p>If we nest <code>marginal_effects()</code> within <code>plot()</code> with a <code>points = T</code> argument, we can add the original data to the figure.</p>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(<span class="kw">marginal_effects</span>(b7<span class="fl">.3</span>), <span class="dt">points =</span> T)</code></pre>
+<div class="sourceCode" id="cb729"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb729-1" data-line-number="1"><span class="kw">plot</span>(<span class="kw">marginal_effects</span>(b7<span class="fl">.3</span>), <span class="dt">points =</span> T)</a></code></pre></div>
 <p><img src="_main_files/figure-html/unnamed-chunk-415-1.png" width="336" /></p>
 <p>We can further customize the plot. For example, we can replace the intervals with a spaghetti plot. While we’re at it, we can use <code>point_args</code> to adjust the <code>geom_jitter()</code> parameters.</p>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(<span class="kw">marginal_effects</span>(b7<span class="fl">.3</span>,
-                      <span class="dt">spaghetti =</span> T, <span class="dt">nsamples =</span> <span class="dv">200</span>),
-     <span class="dt">points =</span> T,
-     <span class="dt">point_args =</span> <span class="kw">c</span>(<span class="dt">alpha =</span> <span class="dv">1</span><span class="op">/</span><span class="dv">2</span>, <span class="dt">size =</span> <span class="dv">1</span>))</code></pre>
+<div class="sourceCode" id="cb730"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb730-1" data-line-number="1"><span class="kw">plot</span>(<span class="kw">marginal_effects</span>(b7<span class="fl">.3</span>,</a>
+<a class="sourceLine" id="cb730-2" data-line-number="2">                      <span class="dt">spaghetti =</span> T, <span class="dt">nsamples =</span> <span class="dv">200</span>),</a>
+<a class="sourceLine" id="cb730-3" data-line-number="3">     <span class="dt">points =</span> T,</a>
+<a class="sourceLine" id="cb730-4" data-line-number="4">     <span class="dt">point_args =</span> <span class="kw">c</span>(<span class="dt">alpha =</span> <span class="dv">1</span><span class="op">/</span><span class="dv">2</span>, <span class="dt">size =</span> <span class="dv">1</span>))</a></code></pre></div>
 <p><img src="_main_files/figure-html/unnamed-chunk-416-1.png" width="336" /></p>
 <p>With multiple predictors, things get more complicated. Consider our multivariable, non-interaction model, <code>b7.4</code>.</p>
-<pre class="sourceCode r"><code class="sourceCode r">b7<span class="fl">.4</span><span class="op">$</span>formula</code></pre>
+<div class="sourceCode" id="cb731"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb731-1" data-line-number="1">b7<span class="fl">.4</span><span class="op">$</span>formula</a></code></pre></div>
 <pre><code>## log_gdp ~ rugged + cont_africa</code></pre>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">marginal_effects</span>(b7<span class="fl">.4</span>)</code></pre>
+<div class="sourceCode" id="cb733"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb733-1" data-line-number="1"><span class="kw">marginal_effects</span>(b7<span class="fl">.4</span>)</a></code></pre></div>
 <p><img src="_main_files/figure-html/unnamed-chunk-417-1.png" width="336" /><img src="_main_files/figure-html/unnamed-chunk-417-2.png" width="336" /></p>
 <p>We got one plot for each predictor, controlling the other predictor at zero. Note how the plot for <code>cont_africa</code> treated it as a continuous variable. This is because the variable was saved as an integer in the original data set:</p>
-<pre class="sourceCode r"><code class="sourceCode r">b7<span class="fl">.4</span><span class="op">$</span>data <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span><span class="kw">glimpse</span>()</code></pre>
+<div class="sourceCode" id="cb734"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb734-1" data-line-number="1">b7<span class="fl">.4</span><span class="op">$</span>data <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb734-2" data-line-number="2"><span class="st">  </span><span class="kw">glimpse</span>()</a></code></pre></div>
 <pre><code>## Observations: 170
 ## Variables: 3
 ## $ log_gdp     &lt;dbl&gt; 7.492609, 8.216929, 9.933263, 9.407032, 7.792343, 9.212541, 10.143191, 10.274…
 ## $ rugged      &lt;dbl&gt; 0.858, 3.427, 0.769, 0.775, 2.688, 0.006, 0.143, 3.513, 1.672, 1.780, 0.388, …
 ## $ cont_africa &lt;int&gt; 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0,…</code></pre>
 <p>One way to fix that is to adjust the data set and refit the model.</p>
-<pre class="sourceCode r"><code class="sourceCode r">d_factor &lt;-
-<span class="st">  </span>b7<span class="fl">.4</span><span class="op">$</span>data <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">cont_africa =</span> <span class="kw">factor</span>(cont_africa))
-
-b7<span class="fl">.4</span>_factor &lt;-<span class="st"> </span><span class="kw">update</span>(b7<span class="fl">.4</span>, <span class="dt">newdata =</span> d_factor)</code></pre>
+<div class="sourceCode" id="cb736"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb736-1" data-line-number="1">d_factor &lt;-</a>
+<a class="sourceLine" id="cb736-2" data-line-number="2"><span class="st">  </span>b7<span class="fl">.4</span><span class="op">$</span>data <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb736-3" data-line-number="3"><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">cont_africa =</span> <span class="kw">factor</span>(cont_africa))</a>
+<a class="sourceLine" id="cb736-4" data-line-number="4"></a>
+<a class="sourceLine" id="cb736-5" data-line-number="5">b7<span class="fl">.4</span>_factor &lt;-<span class="st"> </span><span class="kw">update</span>(b7<span class="fl">.4</span>, <span class="dt">newdata =</span> d_factor)</a></code></pre></div>
 <p>Using the <code>update()</code> syntax often speeds up the re-fitting process.</p>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">marginal_effects</span>(b7<span class="fl">.4</span>_factor)</code></pre>
+<div class="sourceCode" id="cb737"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb737-1" data-line-number="1"><span class="kw">marginal_effects</span>(b7<span class="fl">.4</span>_factor)</a></code></pre></div>
 <p><img src="_main_files/figure-html/unnamed-chunk-420-1.png" width="336" /><img src="_main_files/figure-html/unnamed-chunk-420-2.png" width="336" /></p>
 <p>Now our second marginal plot more clearly expresses the <code>cont_africa</code> predictor as categorical.</p>
 <p>Things get more complicated with the interaction model, <code>b7.5</code>.</p>
-<pre class="sourceCode r"><code class="sourceCode r">b7<span class="fl">.5</span><span class="op">$</span>formula</code></pre>
+<div class="sourceCode" id="cb738"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb738-1" data-line-number="1">b7<span class="fl">.5</span><span class="op">$</span>formula</a></code></pre></div>
 <pre><code>## log_gdp ~ rugged + cont_africa + rugged:cont_africa</code></pre>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">marginal_effects</span>(b7<span class="fl">.5</span>)</code></pre>
+<div class="sourceCode" id="cb740"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb740-1" data-line-number="1"><span class="kw">marginal_effects</span>(b7<span class="fl">.5</span>)</a></code></pre></div>
 <p><img src="_main_files/figure-html/unnamed-chunk-421-1.png" width="336" /><img src="_main_files/figure-html/unnamed-chunk-421-2.png" width="336" /><img src="_main_files/figure-html/unnamed-chunk-421-3.png" width="336" /></p>
 <p>The <code>marginal_effects()</code> function defaults to expressing interactions such that the first variable in the term–in this case, <code>rugged</code>–is on the x axis and the second variable in the term–<code>cont_africa</code>, treated as an integer–is depicted in three lines corresponding its mean and its mean +/- one standard deviation. This is great for continuous variables, but incoherent for categorical ones. The fix is, you guessed it, to refit the model after adjusting the data.</p>
-<pre class="sourceCode r"><code class="sourceCode r">d_factor &lt;-
-<span class="st">  </span>b7<span class="fl">.5</span><span class="op">$</span>data <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">cont_africa =</span> <span class="kw">factor</span>(cont_africa))
-
-b7<span class="fl">.5</span>_factor &lt;-<span class="st"> </span><span class="kw">update</span>(b7<span class="fl">.5</span>, <span class="dt">newdata =</span> d_factor)</code></pre>
+<div class="sourceCode" id="cb741"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb741-1" data-line-number="1">d_factor &lt;-</a>
+<a class="sourceLine" id="cb741-2" data-line-number="2"><span class="st">  </span>b7<span class="fl">.5</span><span class="op">$</span>data <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb741-3" data-line-number="3"><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">cont_africa =</span> <span class="kw">factor</span>(cont_africa))</a>
+<a class="sourceLine" id="cb741-4" data-line-number="4"></a>
+<a class="sourceLine" id="cb741-5" data-line-number="5">b7<span class="fl">.5</span>_factor &lt;-<span class="st"> </span><span class="kw">update</span>(b7<span class="fl">.5</span>, <span class="dt">newdata =</span> d_factor)</a></code></pre></div>
 <p>Just for kicks, we’ll use <code>probs = c(.25, .75)</code> to return <a href="http://andrewgelman.com/2016/11/05/why-i-prefer-50-to-95-intervals/">50% intervals</a>, rather than the conventional 95%.</p>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">marginal_effects</span>(b7<span class="fl">.5</span>_factor,
-                 <span class="dt">probs =</span> <span class="kw">c</span>(.<span class="dv">25</span>, <span class="fl">.75</span>))</code></pre>
+<div class="sourceCode" id="cb742"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb742-1" data-line-number="1"><span class="kw">marginal_effects</span>(b7<span class="fl">.5</span>_factor,</a>
+<a class="sourceLine" id="cb742-2" data-line-number="2">                 <span class="dt">probs =</span> <span class="kw">c</span>(.<span class="dv">25</span>, <span class="fl">.75</span>))</a></code></pre></div>
 <p><img src="_main_files/figure-html/unnamed-chunk-423-1.png" width="384" /><img src="_main_files/figure-html/unnamed-chunk-423-2.png" width="384" /><img src="_main_files/figure-html/unnamed-chunk-423-3.png" width="384" /></p>
 <p>With the <code>effects</code> argument, we can just return the interaction effect, which is where all the action’s at. While we’re at it, we’ll use <code>plot()</code> to change some of the settings.</p>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(<span class="kw">marginal_effects</span>(b7<span class="fl">.5</span>_factor,
-                      <span class="dt">effects =</span> <span class="st">&quot;rugged:cont_africa&quot;</span>, 
-                      <span class="dt">spaghetti =</span> T, <span class="dt">nsamples =</span> <span class="dv">150</span>),
-     <span class="dt">points =</span> T,
-     <span class="dt">point_args =</span> <span class="kw">c</span>(<span class="dt">alpha =</span> <span class="dv">2</span><span class="op">/</span><span class="dv">3</span>, <span class="dt">size =</span> <span class="dv">1</span>), <span class="dt">mean =</span> F)</code></pre>
+<div class="sourceCode" id="cb743"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb743-1" data-line-number="1"><span class="kw">plot</span>(<span class="kw">marginal_effects</span>(b7<span class="fl">.5</span>_factor,</a>
+<a class="sourceLine" id="cb743-2" data-line-number="2">                      <span class="dt">effects =</span> <span class="st">&quot;rugged:cont_africa&quot;</span>, </a>
+<a class="sourceLine" id="cb743-3" data-line-number="3">                      <span class="dt">spaghetti =</span> T, <span class="dt">nsamples =</span> <span class="dv">150</span>),</a>
+<a class="sourceLine" id="cb743-4" data-line-number="4">     <span class="dt">points =</span> T,</a>
+<a class="sourceLine" id="cb743-5" data-line-number="5">     <span class="dt">point_args =</span> <span class="kw">c</span>(<span class="dt">alpha =</span> <span class="dv">2</span><span class="op">/</span><span class="dv">3</span>, <span class="dt">size =</span> <span class="dv">1</span>), <span class="dt">mean =</span> F)</a></code></pre></div>
 <p><img src="_main_files/figure-html/unnamed-chunk-424-1.png" width="384" /></p>
 <p>Note, the ordering of the variables matters for the interaction term. Consider our interaction model for the tulips data.</p>
-<pre class="sourceCode r"><code class="sourceCode r">b7<span class="fl">.9</span><span class="op">$</span>formula</code></pre>
+<div class="sourceCode" id="cb744"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb744-1" data-line-number="1">b7<span class="fl">.9</span><span class="op">$</span>formula</a></code></pre></div>
 <pre><code>## blooms ~ water_c + shade_c + water_c:shade_c</code></pre>
 <p>The plot tells a slightly different story, depending on whether you specify <code>effects = &quot;shade_c:water_c&quot;</code> or <code>effects = &quot;water_c:shade_c&quot;</code>.</p>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(<span class="kw">marginal_effects</span>(b7<span class="fl">.9</span>, 
-                      <span class="dt">effects =</span> <span class="st">&quot;shade_c:water_c&quot;</span>),
-     <span class="dt">points =</span> T)</code></pre>
+<div class="sourceCode" id="cb746"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb746-1" data-line-number="1"><span class="kw">plot</span>(<span class="kw">marginal_effects</span>(b7<span class="fl">.9</span>, </a>
+<a class="sourceLine" id="cb746-2" data-line-number="2">                      <span class="dt">effects =</span> <span class="st">&quot;shade_c:water_c&quot;</span>),</a>
+<a class="sourceLine" id="cb746-3" data-line-number="3">     <span class="dt">points =</span> T)</a></code></pre></div>
 <p><img src="_main_files/figure-html/unnamed-chunk-426-1.png" width="384" /></p>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(<span class="kw">marginal_effects</span>(b7<span class="fl">.9</span>, 
-                      <span class="dt">effects =</span> <span class="st">&quot;water_c:shade_c&quot;</span>),
-     <span class="dt">points =</span> T)</code></pre>
+<div class="sourceCode" id="cb747"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb747-1" data-line-number="1"><span class="kw">plot</span>(<span class="kw">marginal_effects</span>(b7<span class="fl">.9</span>, </a>
+<a class="sourceLine" id="cb747-2" data-line-number="2">                      <span class="dt">effects =</span> <span class="st">&quot;water_c:shade_c&quot;</span>),</a>
+<a class="sourceLine" id="cb747-3" data-line-number="3">     <span class="dt">points =</span> T)</a></code></pre></div>
 <p><img src="_main_files/figure-html/unnamed-chunk-426-2.png" width="384" /></p>
 <p>One might want to evaluate the effects of the second term in the interaction–<code>water_c</code>, in this case–at values other than the mean and the mean +/- one standard deviation. When we reproduced the bottom row of Figure 7.7, we expressed the interaction based on values -1, 0, and 1 for <code>water_c</code>. We can do that, here, by using the <code>int_conditions</code> argument. It expects a list, so we’ll put our desired <code>water_c</code> values in just that.</p>
-<pre class="sourceCode r"><code class="sourceCode r">ic &lt;-<span class="st"> </span>
-<span class="st">  </span><span class="kw">list</span>(<span class="dt">water.c =</span> <span class="kw">c</span>(<span class="op">-</span><span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">1</span>))
-
-<span class="kw">plot</span>(<span class="kw">marginal_effects</span>(b7<span class="fl">.9</span>, 
-                      <span class="dt">effects =</span> <span class="st">&quot;shade_c:water_c&quot;</span>,
-                      <span class="dt">int_conditions =</span> ic),
-     <span class="dt">points =</span> T)</code></pre>
+<div class="sourceCode" id="cb748"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb748-1" data-line-number="1">ic &lt;-<span class="st"> </span></a>
+<a class="sourceLine" id="cb748-2" data-line-number="2"><span class="st">  </span><span class="kw">list</span>(<span class="dt">water.c =</span> <span class="kw">c</span>(<span class="op">-</span><span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">1</span>))</a>
+<a class="sourceLine" id="cb748-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb748-4" data-line-number="4"><span class="kw">plot</span>(<span class="kw">marginal_effects</span>(b7<span class="fl">.9</span>, </a>
+<a class="sourceLine" id="cb748-5" data-line-number="5">                      <span class="dt">effects =</span> <span class="st">&quot;shade_c:water_c&quot;</span>,</a>
+<a class="sourceLine" id="cb748-6" data-line-number="6">                      <span class="dt">int_conditions =</span> ic),</a>
+<a class="sourceLine" id="cb748-7" data-line-number="7">     <span class="dt">points =</span> T)</a></code></pre></div>
 <p><img src="_main_files/figure-html/unnamed-chunk-427-1.png" width="384" /></p>
 </div>
 <div id="reference-6" class="section level2 unnumbered">
@@ -1232,10 +1231,10 @@ b7<span class="fl">.5</span>_factor &lt;-<span class="st"> </span><span class="k
 </div>
 <div id="session-info-6" class="section level2 unnumbered">
 <h2>Session info</h2>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">sessionInfo</span>()</code></pre>
+<div class="sourceCode" id="cb749"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb749-1" data-line-number="1"><span class="kw">sessionInfo</span>()</a></code></pre></div>
 <pre><code>## R version 3.6.0 (2019-04-26)
 ## Platform: x86_64-pc-linux-gnu (64-bit)
-## Running under: Ubuntu 18.04.2 LTS
+## Running under: Ubuntu 18.04.3 LTS
 ## 
 ## Matrix products: default
 ## BLAS:   /opt/R/3.6.0/lib/R/lib/libRblas.so
@@ -1278,20 +1277,20 @@ b7<span class="fl">.5</span>_factor &lt;-<span class="st"> </span><span class="k
 ##  [58] cellranger_1.1.0          tools_3.6.0               cli_1.1.0                
 ##  [61] generics_0.0.2            pacman_0.5.1              broom_0.5.2              
 ##  [64] ggridges_0.5.1            evaluate_0.14             yaml_2.2.0               
-##  [67] processx_3.3.1            knitr_1.23                pander_0.6.3             
-##  [70] nlme_3.1-140              mime_0.7                  xml2_1.2.0               
-##  [73] compiler_3.6.0            bayesplot_1.7.0           shinythemes_1.1.2        
-##  [76] rstudioapi_0.10           stringi_1.4.3             highr_0.8                
-##  [79] ps_1.3.0                  Brobdingnag_1.2-6         lattice_0.20-38          
-##  [82] Matrix_1.2-17             markdown_1.0              shinyjs_1.0              
-##  [85] vctrs_0.1.0               pillar_1.4.1              bridgesampling_0.6-0     
-##  [88] httpuv_1.5.1              R6_2.4.0                  bookdown_0.11            
-##  [91] promises_1.0.1            gridExtra_2.3             codetools_0.2-16         
-##  [94] colourpicker_1.0          MASS_7.3-51.4             gtools_3.8.1             
-##  [97] assertthat_0.2.1          rprojroot_1.3-2           withr_2.1.2              
-## [100] shinystan_2.5.0           hms_0.4.2                 coda_0.19-2              
-## [103] rmarkdown_1.13            shiny_1.3.2               lubridate_1.7.4          
-## [106] base64enc_0.1-3           dygraphs_1.1.1.6</code></pre>
+##  [67] processx_3.3.1            knitr_1.23                nlme_3.1-140             
+##  [70] mime_0.7                  xml2_1.2.0                compiler_3.6.0           
+##  [73] bayesplot_1.7.0           shinythemes_1.1.2         rstudioapi_0.10          
+##  [76] stringi_1.4.3             highr_0.8                 ps_1.3.0                 
+##  [79] Brobdingnag_1.2-6         lattice_0.20-38           Matrix_1.2-17            
+##  [82] markdown_1.0              shinyjs_1.0               vctrs_0.1.0              
+##  [85] pillar_1.4.1              bridgesampling_0.6-0      httpuv_1.5.1             
+##  [88] R6_2.4.0                  bookdown_0.12             promises_1.0.1           
+##  [91] gridExtra_2.3             codetools_0.2-16          colourpicker_1.0         
+##  [94] MASS_7.3-51.4             gtools_3.8.1              assertthat_0.2.1         
+##  [97] rprojroot_1.3-2           withr_2.1.2               shinystan_2.5.0          
+## [100] hms_0.4.2                 coda_0.19-2               rmarkdown_1.13           
+## [103] shiny_1.3.2               lubridate_1.7.4           base64enc_0.1-3          
+## [106] dygraphs_1.1.1.6</code></pre>
 
 </div>
 </div>
