@@ -31,5 +31,6 @@ Imports: logging,
   fiftystater,
   rethinking,
   extrafont,
-  mapproj
+  mapproj,
+  psych
 RoxygenNote: 6.1.1
