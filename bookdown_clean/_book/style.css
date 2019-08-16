@@ -1,0 +1,22 @@
+pre.r {
+    background-color: rgb(226, 236, 248);   
+}
+
+pre.python {
+    background-color: #f3ffdf;
+}
+
+code.r {                      /* Code block in R*/
+  /* color: #454545;
+  background-color: #F5A8AA; */
+  /* font-size: 20px; */
+  font-family: 'Roboto Mono', Monaco, Menlo, Consolas, monospace;
+  /* font-family: 'Lucida Console', Consolas, monospace; */
+}
+
+code.python {                   /* Code block in Python*/
+  /* color: #5ef0fa;
+  background-color: #F8F878; */
+  /* font-size: 20px; */
+  font-family: Courier New, Courier, monospace;
+}

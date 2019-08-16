@@ -1,0 +1,22 @@
+---
+title: "test"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+library(dplyr)
+library(ggplot2)
+library(hrbrthemes)
+
+hrbrthemes::import_roboto_condensed()
+extrafont::font_import()
+
+```
+
+```{r}
+extrafont::loadfonts(quiet=TRUE)
+iris %>%
+  ggplot(aes(Sepal.Length, Sepal.Width)) + 
+  geom_point() + 
+  theme_ipsum_rc()
+```
